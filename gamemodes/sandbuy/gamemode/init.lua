@@ -34,6 +34,24 @@ concommand.Add("reloadprices", function(ply)
 	print("Reloaded prices")
 end)
 
+concommand.Add("cleanprices", function(ply)
+	local count = 0
+
+	local items = list.GetForEdit("Weapon")
+	for k,v in pairs(pricer.WepPrices.individual) do
+		if !items[k] or !items[k].Spawnable then
+			print("Not spawnable: " .. k)
+			count = count + 1
+		end
+	end
+	
+	if count == 0 then
+		print("Prices clean")	
+	else
+		print(count .. " items not spawnable")
+	end
+end)
+
 function GM:Initialize()
 	pricer.LoadPrices()
 	buylogger.Init()
@@ -50,7 +68,7 @@ end
 function GM:PlayerAuthed(ply, steamid, uniqueid)
 	net.Start("newprices")
 	net.WriteBool(false)
-	net.WriteTable(pricer.WepPrices)
+	net.WritePriceTable(pricer.WepPrices)
 	net.Send(ply)
 	
 	return BaseClass.PlayerAuthed(self, ply, steamid, uniqueid)

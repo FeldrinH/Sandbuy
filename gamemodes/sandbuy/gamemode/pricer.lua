@@ -29,12 +29,12 @@ function net.ReadPriceTable()
 end
 
 local function LoadFile(filename)
-	local file = file.Read("gamemodes/sandbuy/prices/" .. filename, "GAME")
-	if !file then
+	local inclfile = file.Read("gamemodes/sandbuy/prices/" .. filename, "GAME")
+	if !inclfile then
 		ErrorNoHalt("ERROR: No included " .. filename)
 		return
 	end
-	local prices = util.JSONToTable(file)
+	local prices = util.JSONToTable(inclfile)
 	if !prices then
 		ErrorNoHalt("ERROR: Included " .. filename .. " invalid")
 		return

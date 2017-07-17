@@ -143,7 +143,6 @@
 		"weapon_752_luger": 300,
 		"weapon_752_mg34": 4000,
 		"weapon_752_mp40": 1500,
-		"weapon_752_t100": 500,
 		"weapon_752_t38_s": 400,
 		"weapon_752_panzerschreck": 3200,
 		"weapon_752_bar": 1000,

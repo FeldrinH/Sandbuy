@@ -39,6 +39,10 @@ net.Receive("newprices", function(len)
 	
 	pricer.WepPrices = net.ReadPriceTable()
 	
+	for k,v in pairs(list.GetForEdit("Weapon")) do
+		v.Spawnable = pricer.GetPrice(v.ClassName, pricer.WepPrices) > -2
+	end
+	
 	if reload then
 		RunConsoleCommand("spawnmenu_reload")
 	end
