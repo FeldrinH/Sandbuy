@@ -1,5 +1,5 @@
 AddCSLuaFile('shared.lua')
-AddCSLuaFile('cl_getmoneyfix.lua')
+AddCSLuaFile('playermoney.lua')
 AddCSLuaFile('pricer.lua')
 AddCSLuaFile('player_class/player_sandbuy.lua')
 AddCSLuaFile('cl_init.lua')
@@ -28,7 +28,7 @@ concommand.Add("reloadprices", function(ply)
 
 	net.Start("newprices")
 	net.WriteBool(true)
-	net.WriteTable(pricer.WepPrices)
+	net.WritePriceTable(pricer.WepPrices)
 	net.Broadcast()
 
 	print("Reloaded prices")

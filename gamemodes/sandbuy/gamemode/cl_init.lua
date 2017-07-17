@@ -4,11 +4,11 @@ include("spawnmenu_prices.lua")
 
 DEFINE_BASECLASS("gamemode_sandbox")
 
-function GM:Initialize()
-	--pricer.LoadPrices()
+--[[local HiddenCategories = {["M9K"] = true}
 
-	return BaseClass.Initialize(self)
-end
+function GM:PreGamemodeLoaded()	
+	return BaseClass.PreGamemodeLoaded(self)
+end]]--
 
 function GM:OnSpawnMenuOpen()
 	if IsValid(g_SpawnMenu) then
@@ -37,9 +37,9 @@ net.Receive("newprices", function(len)
 	
 	local reload = net.ReadBool()
 	
-	pricer.WepPrices = net.ReadTable()
+	pricer.WepPrices = net.ReadPriceTable()
 	
-	if reload then	
+	if reload then
 		RunConsoleCommand("spawnmenu_reload")
 	end
 end)

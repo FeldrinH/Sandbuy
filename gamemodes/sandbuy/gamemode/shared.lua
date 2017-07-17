@@ -1,6 +1,6 @@
 DeriveGamemode( "sandbox" )
 
-include("cl_getmoneyfix.lua")
+include("playermoney.lua")
 include("pricer.lua")
 include("player_class/player_sandbuy.lua")
 
