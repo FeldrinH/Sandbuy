@@ -1,0 +1,9 @@
+{
+	"title"		:	"Sandbuy",
+	"type"		:	"gamemode",
+	"tags"		:	[ "roleplay", "fun" ],
+	"ignore"	:
+	[
+		".git*"
+	]
+}
