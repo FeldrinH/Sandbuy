@@ -170,10 +170,10 @@ function GM:PlayerSpawnSENT(ply, class)
 	end
 end
 
-function GM:PlayerSpawnVehicle(ply, model, class, table)
-	return GetConVar("sbuy_debug"):GetBool() and LimitReachedProcess( ply, "vehicles" )
+function GM:PlayerSpawnVehicle(ply, model, class, vtable)
+	return GetConVar("sbuy_debug"):GetBool() and BaseClass.PlayerSpawnVehicle(self, ply, model, class, vtable)
 end
 
 function GM:PlayerSpawnNPC(ply, class, weapon)
-	return GetConVar("sbuy_debug"):GetBool() and LimitReachedProcess( ply, "npcs" )
+	return GetConVar("sbuy_debug"):GetBool() and BaseClass.PlayerSpawnNPC(self, ply, class, weapon)
 end

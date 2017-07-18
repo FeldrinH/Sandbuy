@@ -5,7 +5,7 @@ DEFINE_BASECLASS( "player_sandbox" )
 local PLAYER = {}
 
 function PLAYER:SetupDataTables()
-	self.Player:NetworkVar( "Int", 0, "Money")
+	self.Player:NetworkVar("Int", 0, "Money")
 	
 	if SERVER then
 		self.Player:NetworkVarNotify("Money", function(ply, name, old, new)
@@ -16,12 +16,9 @@ function PLAYER:SetupDataTables()
 		end)
 		
 		self.Player:SetMoney(pricer.DefaultMoney)
-	else
-		debug.Trace()
-		print(self.Player)
 	end
 
-	return BaseClass.SetupDataTables( self )
+	return BaseClass.SetupDataTables(self)
 end
 
 function PLAYER:Loadout()
