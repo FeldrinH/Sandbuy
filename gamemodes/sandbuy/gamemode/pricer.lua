@@ -61,7 +61,19 @@ end
 function pricer.LoadPrices()
 	pricer.WepPrices = LoadFile("weaponprices.txt") or pricer.WepPrices
 	--pricer.VehiclePrices = LoadFile("vehicleprices.txt") or pricer.VehiclePrices
-	--pricer.EntPrices = LoadFile("entityprices.txt") or pricer.EntPrices
+	pricer.EntPrices = LoadFile("entityprices.txt") or pricer.EntPrices
+end
+
+function pricer.SendPrices(ply ,reload)
+	net.Start("newprices")
+	net.WriteBool(reload)
+	net.WritePriceTable(pricer.WepPrices)
+	net.WritePriceTable(pricer.EntPrices)
+	if ply then
+		net.Send(ply)
+	else
+		net.Broadcast()
+	end
 end
 
 function pricer.GetPrice(name, prices)
@@ -73,6 +85,8 @@ function pricer.GetPrintPrice(price)
 		return "UNDEFINED"
 	elseif price == -1 then
 		return "NOT FOR SALE"
+	elseif price == 0 then
+		return "FREE"
 	else
 		return "$" .. price
 	end

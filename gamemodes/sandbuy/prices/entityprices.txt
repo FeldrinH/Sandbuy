@@ -1,0 +1,7 @@
+{
+	"default": -2,
+	"individual": 
+	{
+		"basetotem": 0
+	}
+}

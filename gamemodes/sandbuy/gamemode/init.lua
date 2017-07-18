@@ -27,10 +27,7 @@ concommand.Add("reloadprices", function(ply)
 
 	pricer.LoadPrices()
 
-	net.Start("newprices")
-	net.WriteBool(true)
-	net.WritePriceTable(pricer.WepPrices)
-	net.Broadcast()
+	pricer.SendPrices(nil, true)
 
 	print("Reloaded prices")
 end)
@@ -41,7 +38,7 @@ concommand.Add("cleanprices", function(ply)
 	local items = list.GetForEdit("Weapon")
 	for k,v in pairs(pricer.WepPrices.individual) do
 		if !items[k] or !items[k].Spawnable then
-			print("Not spawnable: " .. k)
+			print("Weapon not spawnable: " .. k)
 			count = count + 1
 		end
 	end
@@ -70,10 +67,7 @@ function GM:ShutDown()
 end
 
 function GM:PlayerAuthed(ply, steamid, uniqueid)
-	net.Start("newprices")
-	net.WriteBool(false)
-	net.WritePriceTable(pricer.WepPrices)
-	net.Send(ply)
+	pricer.SendPrices(ply, false)
 	
 	return BaseClass.PlayerAuthed(self, ply, steamid, uniqueid)
 end
@@ -155,10 +149,31 @@ function GM:PlayerSpawnSWEP(ply, class, swep)
 	end
 end
 
-function GM:PlayerSpawnVehicle(ply, model, class, table)
-	return false
+function GM:PlayerSpawnSENT(ply, class)
+	local price = pricer.GetPrice(class, pricer.EntPrices)
+	if pricer.CanBuy(ply:GetMoney(), price) then
+		ply:AddMoney(-price)
+		ply:PrintMessage(HUD_PRINTCENTER, "Entity bought for $" .. price)
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+		
+		buylogger.LogBuy(ply, class, ply:GetMoney())
+		
+		return true
+	elseif price >= 0 then
+		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy entity")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	else
+		ply:PrintMessage(HUD_PRINTCENTER, "Entity not for sale")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	end
 end
 
-function GM:PlayerSpawnSENT(ply, class)
-	return false
+function GM:PlayerSpawnVehicle(ply, model, class, table)
+	return GetConVar("sbuy_debug"):GetBool() and LimitReachedProcess( ply, "vehicles" )
+end
+
+function GM:PlayerSpawnNPC(ply, class, weapon)
+	return GetConVar("sbuy_debug"):GetBool() and LimitReachedProcess( ply, "npcs" )
 end

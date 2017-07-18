@@ -10,7 +10,7 @@
 		{
 			"name"		"sbuy_debug"
 			"text"		"Debug"
-			"help"		"If enabled, all weapons and tabs will be visible in spawnmenu. Call reloadprices to apply"
+			"help"		"If enabled, all weapons and tabs will be visible in spawnmenu. Requires restart"
 			"type"		"CheckBox"
 			"default"	"0"
 		}

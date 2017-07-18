@@ -39,10 +39,19 @@ net.Receive("newprices", function(len)
 	local reload = net.ReadBool()
 	
 	pricer.WepPrices = net.ReadPriceTable()
+	pricer.EntPrices = net.ReadPriceTable()
 	
 	if !GetConVar("sbuy_debug"):GetBool() then
-		for k,v in pairs(list.GetForEdit("Weapon")) do
-			v.Spawnable = pricer.GetPrice(v.ClassName, pricer.WepPrices) > -2
+		local itemlist = list.GetForEdit("Weapon")
+		for k,v in pairs(itemlist) do
+			v.Spawnable = pricer.GetPrice(k, pricer.WepPrices) > -2
+		end
+		
+		itemlist = list.GetForEdit("SpawnableEntities")
+		for k,v in pairs(itemlist) do
+			if pricer.GetPrice(k, pricer.EntPrices) <= -2 then
+				itemlist[k] = nil
+			end
 		end
 	end
 	
