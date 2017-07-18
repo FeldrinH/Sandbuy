@@ -36,26 +36,3 @@ function spawnmenu.UpdateSpawnlistHasWeapon(wep)
 		end
 	end
 end
-
-spawnmenu.AddCreationTab( "#spawnmenu.category.weapons", function()
-
-	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
-	ctrl:CallPopulateHook( "PopulateWeapons" )
-	
-	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
-	label:Dock(TOP)
-	label:SetHeight(60)
-	label:SetContentAlignment(5)
-	label:SetFont("BigMoney")
-	label:SetTextColor(Color(255,255,255))
-	label:SetText("$989898")
-	
-	
-	if !g_SpawnMenu.MoneyLables then
-		g_SpawnMenu.MoneyLables = {}
-	end
-	table.insert(g_SpawnMenu.MoneyLables, label)
-	
-	return ctrl
-
-end, "icon16/gun.png", 10 )

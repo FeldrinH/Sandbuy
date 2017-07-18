@@ -5,6 +5,7 @@ AddCSLuaFile('player_class/player_sandbuy.lua')
 AddCSLuaFile('cl_init.lua')
 AddCSLuaFile('cl_scoreboard.lua')
 AddCSLuaFile('spawnmenu_prices.lua')
+AddCSLuaFile('spawnmenu_content.lua')
 
 include('buylogger.lua')
 include('shared.lua')
@@ -111,13 +112,34 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 	
 	local price = pricer.GetPrice(class, pricer.WepPrices)
 	if pricer.CanBuy(ply:GetMoney(), price) then
-		ply:SetMoney(ply:GetMoney() - price)
+		ply:AddMoney(-price)
 		ply:PrintMessage(HUD_PRINTCENTER, "Weapon bought for $" .. price)
 		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 		
 		net.Start("weaponbought")
 		net.WriteString(class)
 		net.Send(ply)
+		
+		buylogger.LogBuy(ply, class, ply:GetMoney())
+		
+		return true
+	elseif price >= 0 then
+		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy weapon")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	else
+		ply:PrintMessage(HUD_PRINTCENTER, "Weapon not for sale")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	end
+end
+
+function GM:PlayerSpawnSWEP(ply, class, swep)
+	local price = pricer.GetPrice(class, pricer.WepPrices)
+	if pricer.CanBuy(ply:GetMoney(), price) then
+		ply:AddMoney(-price)
+		ply:PrintMessage(HUD_PRINTCENTER, "Weapon bought for $" .. price)
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 		
 		buylogger.LogBuy(ply, class, ply:GetMoney())
 		
