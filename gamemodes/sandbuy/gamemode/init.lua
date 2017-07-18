@@ -54,7 +54,10 @@ end)
 
 function GM:Initialize()
 	pricer.LoadPrices()
-	buylogger.Init()
+	
+	if GetConVar("sbuy_log"):GetBool() then
+		buylogger.Init()
+	end
 	
 	return BaseClass.Initialize(self)
 end
