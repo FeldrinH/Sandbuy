@@ -12,6 +12,14 @@ if !GetConVar("sbuy_debug"):GetBool() then
 	spawntabs["#spawnmenu.category.dupes"] = nil
 end
 
+local function MouseReleased( self, mousecode )
+	DButton.OnMouseReleased( self, mousecode )
+	if ( self.m_MenuClicking && mousecode == MOUSE_LEFT ) then
+		self.m_MenuClicking = false
+		--CloseDermaMenus()
+	end
+end
+
 spawnmenu.AddContentType( "weapon", function( container, obj )
 
 	if ( !obj.material ) then return end
@@ -46,10 +54,32 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 		RunConsoleCommand( "gm_spawnswep", obj.spawnname )
 		--surface.PlaySound( "ui/buttonclickrelease.wav" )
 	end
-
+	
 	icon.OpenMenu = function( icon )
 
 		local menu = DermaMenu()
+			local wep = LocalPlayer():GetWeapon( obj.spawnname )
+			if IsValid(wep) then
+				if wep:GetPrimaryAmmoType() != -1 then  
+					local ammo = game.GetAmmoName(wep:GetPrimaryAmmoType())
+					local clip = wep:GetMaxClip1()
+					local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * clip
+					local opt = menu:AddOption( "Buy Clip of Primary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, clip) end )
+					opt.OnMouseReleased = MouseReleased
+				end
+				if wep:GetSecondaryAmmoType() != -1 then
+					local ammo = game.GetAmmoName(wep:GetSecondaryAmmoType())
+					local clip = wep:GetMaxClip2()
+					local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * clip
+					local opt = menu:AddOption( "Buy Clip of Secondary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() end )
+					opt.OnMouseReleased = MouseReleased
+				end
+			else
+				local opt = menu:AddOption( "Need to Own Weapon to Buy Ammo" )
+				opt:SetTextColor(Color(250,0,0))
+				opt:SetMouseInputEnabled(false)
+				opt:SetCursor("none")
+			end
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "3" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
 			menu:AddSpacer()

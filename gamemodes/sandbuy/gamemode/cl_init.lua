@@ -40,6 +40,8 @@ net.Receive("newprices", function(len)
 	
 	pricer.WepPrices = net.ReadPriceTable()
 	pricer.EntPrices = net.ReadPriceTable()
+	--pricer.VehiclePrices = net.ReadPriceTable()
+	pricer.AmmoPrices = net.ReadPriceTable()
 	
 	if !GetConVar("sbuy_debug"):GetBool() then
 		local itemlist = list.GetForEdit("Weapon")

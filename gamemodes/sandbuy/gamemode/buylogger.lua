@@ -31,9 +31,9 @@ function buylogger.LogDeath(ply, newmoney)
 	end
 end
 
-function buylogger.LogBuy(ply, class, newmoney)
+function buylogger.LogBuy(ply, class, buytype, newmoney)
 	if buylogger.Active then
-		buylogger.File:Write("buy;" .. ply:Nick() .. ";" .. class .. ";" .. newmoney .. "\n")
+		buylogger.File:Write("buy-" .. buytype .. ";" .. ply:Nick() .. ";" .. class .. ";" .. newmoney .. "\n")
 		buylogger.File:Flush()
 	end
 end

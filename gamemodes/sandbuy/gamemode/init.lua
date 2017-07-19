@@ -50,6 +50,15 @@ concommand.Add("cleanprices", function(ply)
 	end
 end)
 
+concommand.Add("sbuy_giveammo", function(ply, cmd, args)
+	local ammo = args[1]
+	local amount = args[2]
+	
+	if !gamemode.Call("PlayerGiveAmmo", ply, ammo, amount) then return end
+	
+	ply:GiveAmmo(amount, ammo, false)
+end)
+
 function GM:Initialize()
 	pricer.LoadPrices()
 	
@@ -114,7 +123,7 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 		net.WriteString(class)
 		net.Send(ply)
 		
-		buylogger.LogBuy(ply, class, ply:GetMoney())
+		buylogger.LogBuy(ply, class, "weapon", ply:GetMoney())
 		
 		return true
 	elseif price >= 0 then
@@ -135,7 +144,7 @@ function GM:PlayerSpawnSWEP(ply, class, swep)
 		ply:PrintMessage(HUD_PRINTCENTER, "Weapon bought for $" .. price)
 		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 		
-		buylogger.LogBuy(ply, class, ply:GetMoney())
+		buylogger.LogBuy(ply, class, "weapon-drop", ply:GetMoney())
 		
 		return true
 	elseif price >= 0 then
@@ -149,6 +158,27 @@ function GM:PlayerSpawnSWEP(ply, class, swep)
 	end
 end
 
+function GM:PlayerGiveAmmo(ply, ammo, amount)
+	local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * amount
+	if pricer.CanBuy(ply:GetMoney(), price) then
+		ply:AddMoney(-price)
+		ply:PrintMessage(HUD_PRINTCENTER, "Ammo bought for $" .. price)
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+		
+		buylogger.LogBuy(ply, ammo, "ammo", ply:GetMoney())
+		
+		return true
+	elseif price >= 0 then
+		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy ammo")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	else
+		ply:PrintMessage(HUD_PRINTCENTER, "Ammo type not for sale")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	end
+end
+
 function GM:PlayerSpawnSENT(ply, class)
 	local price = pricer.GetPrice(class, pricer.EntPrices)
 	if pricer.CanBuy(ply:GetMoney(), price) then
@@ -156,7 +186,7 @@ function GM:PlayerSpawnSENT(ply, class)
 		ply:PrintMessage(HUD_PRINTCENTER, "Entity bought for $" .. price)
 		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 		
-		buylogger.LogBuy(ply, class, ply:GetMoney())
+		buylogger.LogBuy(ply, class, "entity", ply:GetMoney())
 		
 		return true
 	elseif price >= 0 then

@@ -162,6 +162,11 @@
 		"m9k_smgp90": 1200,
 		"m9k_mp5sd": 1500,
 		"m9k_kac_pdw": 2200,
-		"m9k_vector": 1500
+		"m9k_vector": 1500,		
+		"weapon_neurowep_m60": 3000,
+		"weapon_neurowep_gau8": 6500,
+		"weapon_neurowep_pkm": 3000,
+		"weapon_neurowep_minigun": 4500,
+		"weapon_neurowep_m249": 3000
 	}
 }
