@@ -16,9 +16,6 @@ function PLAYER:SetupDataTables()
 		end)
 		
 		self.Player:SetMoney(pricer.DefaultMoney)
-	else
-		debug.Trace()
-		print(self.Player)
 	end
 
 	return BaseClass.SetupDataTables( self )
