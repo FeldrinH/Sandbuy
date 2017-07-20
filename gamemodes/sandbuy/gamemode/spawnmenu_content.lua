@@ -125,6 +125,125 @@ spawnmenu.AddCreationTab( "#spawnmenu.category.weapons", function()
 
 end, "icon16/gun.png", 10 )
 
+hook.Add( "PopulateAmmo", "AddEntityContent", function( pnlContent, tree, node )
+
+	local Categorised = {}
+
+	-- Add this list into the tormoil
+	local Ammo = pricer.AmmoData
+	for k, v in pairs( Ammo ) do
+
+		v.SpawnName = k
+		v.Category = v.Category or "Other"
+		Categorised[ v.Category ] = Categorised[ v.Category ] or {}
+		table.insert( Categorised[ v.Category ], v )
+
+	end
+
+	-- Add a tree node for each category
+	for CategoryName, v in SortedPairs( Categorised ) do
+
+		-- Add a node to the tree
+		local node = tree:AddNode( CategoryName, CategoryName == "Miscellaneous" and "icon16/bricks.png" or CategoryName == "Bullets" and "icon16/gun.png" or "icon16/bomb.png" )
+
+			-- When we click on the node - populate it using this function
+		node.DoPopulate = function( self )
+
+			-- If we've already populated it - forget it.
+			if ( self.PropPanel ) then return end
+
+			-- Create the container panel
+			self.PropPanel = vgui.Create( "ContentContainer", pnlContent )
+			self.PropPanel:SetVisible( false )
+			self.PropPanel:SetTriggerSpawnlistChange( false )
+
+			for k, ent in SortedPairsByMemberValue( v, "PrintName" ) do
+
+				spawnmenu.CreateContentIcon( "ammo", self.PropPanel, {
+					nicename	= ent.Name or ent.SpawnName,
+					spawnname	= ent.SpawnName,
+					amount		= ent.Amount,
+					material	= "entities/" .. ent.Icon .. ".png",
+					--admin		= ent.AdminOnly
+				} )
+
+			end
+
+		end
+
+		-- If we click on the node populate it and switch to it.
+		node.DoClick = function( self )
+
+			self:DoPopulate()
+			pnlContent:SwitchPanel( self.PropPanel )
+
+		end
+
+	end
+
+	-- Select the first node
+	local FirstNode = tree:Root():GetChildNode( 0 )
+	if ( IsValid( FirstNode ) ) then
+		FirstNode:InternalDoClick()
+	end
+
+end )
+
+spawnmenu.AddContentType( "ammo", function( container, obj )
+
+	if ( !obj.material ) then return end
+	if ( !obj.nicename ) then return end
+	if ( !obj.spawnname ) then return end
+	if ( !obj.amount ) then return end
+
+	local icon = vgui.Create( "ContentIcon", container )
+	icon:SetContentType( "weapon" )
+	icon:SetSpawnName( obj.spawnname )
+	icon:SetName( obj.nicename )
+	icon:SetMaterial( obj.material )
+	icon:SetAdminOnly( obj.admin )
+	icon:SetColor( Color( 135, 206, 250, 255 ) )
+	icon.DoClick = function()
+
+		RunConsoleCommand( "sbuy_giveammo", obj.spawnname, obj.amount )
+		--surface.PlaySound( "ui/buttonclickrelease.wav" )
+
+	end
+
+	icon.DoMiddleClick = function()
+
+		--RunConsoleCommand( "gm_spawnswep", obj.spawnname )
+		--surface.PlaySound( "ui/buttonclickrelease.wav" )
+
+	end
+
+	icon.OpenMenu = function( icon )
+
+		local menu = DermaMenu()
+			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
+			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "3" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
+			menu:AddSpacer()
+			menu:AddOption( "Delete", function() icon:Remove() hook.Run( "SpawnlistContentChanged", icon ) end )
+		menu:Open()
+
+	end
+
+	if ( IsValid( container ) ) then
+		container:Add( icon )
+	end
+
+	return icon
+
+end )
+
+spawnmenu.AddCreationTab( "Ammo", function()
+
+	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
+	ctrl:CallPopulateHook( "PopulateAmmo" )
+	return ctrl
+
+end, "icon16/bomb.png", 11 )
+
 spawnmenu.AddContentType( "entity", function( container, obj )
 
 	if ( !obj.material ) then return end

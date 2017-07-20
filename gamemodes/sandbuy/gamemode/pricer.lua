@@ -5,7 +5,8 @@ pricer = pricer or {
 	WepPrices={default=-2,individual={}},
 	AmmoPrices={default=-2,individual={}},
 	VehiclePrices={default=-2,individual={}},
-	EntPrices={default=-2,individual={}}
+	EntPrices={default=-2,individual={}},
+	AmmoData={}
 }
 
 --[[local hl2wepammo = {
@@ -83,11 +84,28 @@ local function LoadFile(filename)
 	return prices
 end
 
+local function LoadAmmoData()
+	local ammo = LoadFile("ammo.txt")
+	if !ammo then return end
+	
+	pricer.AmmoData = ammo.individual
+	
+	local prices = {}
+	prices.default = ammo.default
+	prices.individual = {}
+	for k,v in pairs(ammo.individual) do
+		prices.individual[k] = v.Price
+		v.Price = nil
+	end
+	
+	pricer.AmmoPrices = prices
+end
+
 function pricer.LoadPrices()
 	pricer.WepPrices = LoadFile("weaponprices.txt") or pricer.WepPrices
 	pricer.EntPrices = LoadFile("entityprices.txt") or pricer.EntPrices
 	--pricer.VehiclePrices = LoadFile("vehicleprices.txt") or pricer.VehiclePrices
-	pricer.AmmoPrices = LoadFile("ammoprices.txt") or pricer.AmmoPrices
+	LoadAmmoData()
 end
 
 function pricer.SendPrices(ply ,reload)
@@ -97,6 +115,7 @@ function pricer.SendPrices(ply ,reload)
 	net.WritePriceTable(pricer.EntPrices)
 	--net.WritePriceTable(pricer.VehiclePrices)
 	net.WritePriceTable(pricer.AmmoPrices)
+	net.WriteTable(pricer.AmmoData)
 	if ply then
 		net.Send(ply)
 	else

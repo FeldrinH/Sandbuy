@@ -1,6 +1,0 @@
-{
-	"default": 2,
-	"individual": 
-	{
-	}
-}
