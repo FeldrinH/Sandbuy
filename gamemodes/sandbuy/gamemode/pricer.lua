@@ -88,6 +88,13 @@ local function LoadAmmoData()
 	local ammo = LoadFile("ammo.txt")
 	if !ammo then return end
 	
+	for k,v in pairs(ammo.individual) do
+		if !isstring(k) then
+			ammo.individual[tostring(k)] = v
+			ammo.individual[k] = nil
+		end
+	end
+	
 	pricer.AmmoData = ammo.individual
 	
 	local prices = {}

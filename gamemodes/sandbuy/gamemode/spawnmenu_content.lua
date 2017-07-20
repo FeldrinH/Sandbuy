@@ -134,7 +134,6 @@ hook.Add( "PopulateAmmo", "AddEntityContent", function( pnlContent, tree, node )
 	for k, v in pairs( Ammo ) do
 
 		v.SpawnName = k
-		v.Category = v.Category or "Other"
 		Categorised[ v.Category ] = Categorised[ v.Category ] or {}
 		table.insert( Categorised[ v.Category ], v )
 
@@ -203,19 +202,27 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	icon:SetMaterial( obj.material )
 	icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 135, 206, 250, 255 ) )
+	
+	local price = pricer.GetPrice( obj.spawnname, pricer.AmmoPrices ) * obj.amount
+	icon:SetText( pricer.GetPrintPrice(price) )
+	icon:SetContentAlignment( 7 )
+	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
+		icon:SetTextColor( ( LocalPlayer():HasWeapon(obj.spawnname) and has_color ) or ( pricer.CanBuy(LocalPlayer():GetMoney(), price) and buy_color ) or nobuy_color )
+	else
+		icon:SetTextColor( nobuy_color )
+	end
+	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetTextInset(8,8)
+	
 	icon.DoClick = function()
-
 		RunConsoleCommand( "sbuy_giveammo", obj.spawnname, obj.amount )
 		--surface.PlaySound( "ui/buttonclickrelease.wav" )
-
 	end
 
-	icon.DoMiddleClick = function()
-
+	--icon.DoMiddleClick = function()
 		--RunConsoleCommand( "gm_spawnswep", obj.spawnname )
 		--surface.PlaySound( "ui/buttonclickrelease.wav" )
-
-	end
+	--end
 
 	icon.OpenMenu = function( icon )
 
@@ -228,6 +235,13 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 
 	end
 
+	if price >= 0 then
+		if !g_SpawnMenu.PriceIcons then
+			g_SpawnMenu.PriceIcons = {}
+		end
+		table.insert(g_SpawnMenu.PriceIcons, icon)
+	end
+	
 	if ( IsValid( container ) ) then
 		container:Add( icon )
 	end

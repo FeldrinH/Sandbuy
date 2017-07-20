@@ -1,149 +1,149 @@
 {
-	"default": 2,
+	"default": -2,
 	"individual": 
 	{
 		"Grenade": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_frags",
 			"Category": "Explosives",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Frag Grenades"
 		},
 		"C4Explosive": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_c4",
 			"Category": "Explosives",
-			"Price": "1",
+			"Price": 1,
 			"Name": "C4"
 		},
 		"AirboatGun": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_winchester",
 			"Category": "Bullets",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Winchester??? Ammo"
 		},
 		"Improvised_Explosive": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_ieds",
 			"Category": "Explosives",
-			"Price": "1",
+			"Price": 1,
 			"Name": "IEDs"
 		},
 		"Buckshot": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_buckshot",
 			"Category": "Bullets",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Buckshot"
 		},
 		"StickyGrenade": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_stickynades",
 			"Category": "Explosives",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Sticky Grenades"
 		},
 		"357": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_357",
 			"Category": "Bullets",
-			"Price": "1",
+			"Price": 1,
 			"Name": ".357 Rounds"
 		},
 		"Nuclear_Warhead": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_nuke",
 			"Category": "Explosives",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Nuclear Warhead"
 		},
 		"SMG1": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_smg",
 			"Category": "Bullets",
-			"Price": "1",
+			"Price": 1,
 			"Name": "SMG Rounds"
 		},
 		"ProxMine": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_proxmines",
 			"Category": "Explosives",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Prox Mines"
 		},
 		"NerveGas": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_nervegas",
 			"Category": "Miscellaneous",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Nerve Gas Vials"
 		},
 		"40mmGrenade": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_40mm",
 			"Category": "Explosives",
-			"Price": "1",
+			"Price": 1,
 			"Name": "40mm Grenades"
 		},
 		"SatCannon": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_orbital_strike",
 			"Category": "Miscellaneous",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Orbital Strike ammo"
 		},
 		"RPG_Round": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_rockets",
 			"Category": "Explosives",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Rockets"
 		},
 		"AR2": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_ar2",
 			"Category": "Bullets",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Assault Ammo"
 		},
 		"Pistol": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_pistol",
 			"Category": "Bullets",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Pistol Rounds"
 		},
 		"SniperPenetratedRound": 
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "m9k_ammo_sniper_rounds",
 			"Category": "Bullets",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Sniper Rounds"
 		},
 		"AR2AltFire":
 		{
-			"Amount": "-1",
+			"Amount": 10,
 			"Icon": "item_ammo_ar2_altfire",
 			"Category": "Miscellaneous",
-			"Price": "1",
+			"Price": 1,
 			"Name": "Plasma Orbs"
 		}
 	}
