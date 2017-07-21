@@ -111,8 +111,21 @@ end
 function pricer.LoadPrices()
 	pricer.WepPrices = LoadFile("weaponprices.txt") or pricer.WepPrices
 	pricer.EntPrices = LoadFile("entityprices.txt") or pricer.EntPrices
-	--pricer.VehiclePrices = LoadFile("vehicleprices.txt") or pricer.VehiclePrices
+	pricer.VehiclePrices = LoadFile("vehicleprices.txt") or pricer.VehiclePrices
 	LoadAmmoData()
+	
+	local itemlist = list.GetForEdit("Weapon")
+	for k,v in pairs(itemlist) do
+		if v.AdminOnly and pricer.GetPrice(k, pricer.WepPrices) >= 0 then
+			v.AdminOnly = false
+		end
+	end
+	--[[itemlist = list.GetForEdit("SpawnableEntities")
+	for k,v in pairs(itemlist) do
+		if v.AdminOnly and v.Category != "Base Totem" and pricer.GetPrice(k, pricer.WepPrices) >= 0 then
+			v.AdminOnly = false
+		end
+	end]]--
 end
 
 function pricer.SendPrices(ply ,reload)
@@ -120,7 +133,7 @@ function pricer.SendPrices(ply ,reload)
 	net.WriteBool(reload)
 	net.WritePriceTable(pricer.WepPrices)
 	net.WritePriceTable(pricer.EntPrices)
-	--net.WritePriceTable(pricer.VehiclePrices)
+	net.WritePriceTable(pricer.VehiclePrices)
 	net.WritePriceTable(pricer.AmmoPrices)
 	net.WriteTable(pricer.AmmoData)
 	if ply then

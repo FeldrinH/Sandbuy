@@ -7,11 +7,14 @@ local has_color = Color( 150, 150, 150 )
 local function UpdateWepPrice( icon, money )
 	icon:SetTextColor( ( LocalPlayer():HasWeapon( icon:GetSpawnName() ) and has_color ) or ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.WepPrices ) ) and buy_color ) or nobuy_color )
 end
+local function UpdateEntPrice( icon, money )
+	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.EntPrices ) ) and buy_color ) or nobuy_color )
+end
 local function UpdateVehiclePrice( icon, money )
 	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.VehiclePrices ) ) and buy_color ) or nobuy_color )
 end
-local function UpdateEntPrice( icon, money )
-	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.EntPrices ) ) and buy_color ) or nobuy_color )
+local function UpdateAmmoPrice( icon, money )
+	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.AmmoPrices ) ) and buy_color ) or nobuy_color )
 end
 
 function spawnmenu.UpdateSpawnlistMoney(money)
@@ -26,6 +29,10 @@ function spawnmenu.UpdateSpawnlistMoney(money)
 				UpdateWepPrice(v, money)
 			elseif v:GetContentType() == "entity" then
 				UpdateEntPrice(v, money)
+			elseif v:GetContentType() == "vehicle" or v:GetContentType() == "simfphys_vehicles" then
+				UpdateVehiclePrice(v, money)
+			elseif v:GetContentType() == "ammo" then
+				UpdateAmmoPrice(v, money)
 			end
 		end
 	end

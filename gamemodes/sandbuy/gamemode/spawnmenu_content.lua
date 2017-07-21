@@ -196,7 +196,7 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	if ( !obj.amount ) then return end
 
 	local icon = vgui.Create( "ContentIcon", container )
-	icon:SetContentType( "weapon" )
+	icon:SetContentType( "ammo" )
 	icon:SetSpawnName( obj.spawnname )
 	icon:SetName( obj.nicename )
 	icon:SetMaterial( obj.material )
@@ -254,6 +254,20 @@ spawnmenu.AddCreationTab( "Ammo", function()
 
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	ctrl:CallPopulateHook( "PopulateAmmo" )
+	
+	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
+	label:Dock(TOP)
+	label:SetHeight(60)
+	label:SetContentAlignment(5)
+	label:SetFont("BigMoney")
+	label:SetTextColor(Color(255,255,255))
+	label:SetText("$0")
+	
+	if !g_SpawnMenu.MoneyLables then
+		g_SpawnMenu.MoneyLables = {}
+	end
+	table.insert(g_SpawnMenu.MoneyLables, label)
+	
 	return ctrl
 
 end, "icon16/bomb.png", 11 )
@@ -334,3 +348,155 @@ spawnmenu.AddCreationTab( "#spawnmenu.category.entities", function()
 	return ctrl
 
 end, "icon16/bricks.png", 20 )
+
+spawnmenu.AddContentType( "vehicle", function( container, obj )
+
+	if ( !obj.material ) then return end
+	if ( !obj.nicename ) then return end
+	if ( !obj.spawnname ) then return end
+
+	local icon = vgui.Create( "ContentIcon", container )
+	icon:SetContentType( "vehicle" )
+	icon:SetSpawnName( obj.spawnname )
+	icon:SetName( obj.nicename )
+	icon:SetMaterial( obj.material )
+	icon:SetAdminOnly( obj.admin )
+	icon:SetColor( Color( 0, 0, 0, 255 ) )
+	
+	local price = pricer.GetPrice( obj.spawnname, pricer.VehiclePrices )
+	icon:SetText( pricer.GetPrintPrice(price) )
+	icon:SetContentAlignment( 7 )
+	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
+		icon:SetTextColor( ( pricer.CanBuy(LocalPlayer():GetMoney(), price) and buy_color ) or nobuy_color )
+	else
+		icon:SetTextColor( nobuy_color )
+	end
+	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetTextInset(8,8)
+	
+	icon.DoClick = function()
+		RunConsoleCommand( "gm_spawnvehicle", obj.spawnname )
+		--surface.PlaySound( "ui/buttonclickrelease.wav" )
+	end
+	icon.OpenMenu = function( icon )
+
+		local menu = DermaMenu()
+			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
+			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "1" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
+			menu:AddSpacer()
+			menu:AddOption( "Delete", function() icon:Remove() hook.Run( "SpawnlistContentChanged", icon ) end )
+		menu:Open()
+
+	end
+
+	if price >= 0 then
+		if !g_SpawnMenu.PriceIcons then
+			g_SpawnMenu.PriceIcons = {}
+		end
+		table.insert(g_SpawnMenu.PriceIcons, icon)
+	end
+	
+	if ( IsValid( container ) ) then
+		container:Add( icon )
+	end
+
+	return icon
+
+end )
+
+spawnmenu.AddCreationTab( "#spawnmenu.category.vehicles", function()
+
+	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
+	ctrl:CallPopulateHook( "PopulateVehicles" )
+	
+	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
+	label:Dock(TOP)
+	label:SetHeight(60)
+	label:SetContentAlignment(5)
+	label:SetFont("BigMoney")
+	label:SetTextColor(Color(255,255,255))
+	label:SetText("$0")
+	
+	if !g_SpawnMenu.MoneyLables then
+		g_SpawnMenu.MoneyLables = {}
+	end
+	table.insert(g_SpawnMenu.MoneyLables, label)
+	
+	return ctrl
+
+end, "icon16/car.png", 50 )
+
+spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
+	if not obj.material then return end
+	if not obj.nicename then return end
+	if not obj.spawnname then return end
+
+	local icon = vgui.Create( "ContentIcon", container )
+	icon:SetContentType( "simfphys_vehicles" )
+	icon:SetSpawnName( obj.spawnname )
+	icon:SetName( obj.nicename )
+	icon:SetMaterial( obj.material )
+	icon:SetAdminOnly( obj.admin )
+	icon:SetColor( Color( 0, 0, 0, 255 ) )
+	
+	local price = pricer.GetPrice( obj.spawnname, pricer.VehiclePrices )
+	icon:SetText( pricer.GetPrintPrice(price) )
+	icon:SetContentAlignment( 7 )
+	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
+		icon:SetTextColor( ( pricer.CanBuy(LocalPlayer():GetMoney(), price) and buy_color ) or nobuy_color )
+	else
+		icon:SetTextColor( nobuy_color )
+	end
+	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetTextInset(8,8)
+	
+	icon.DoClick = function()
+		RunConsoleCommand( "simfphys_spawnvehicle", obj.spawnname )
+		--surface.PlaySound( "ui/buttonclickrelease.wav" )
+	end
+	icon.OpenMenu = function( icon )
+
+		local menu = DermaMenu()
+			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
+			--menu:AddSpacer()
+			--menu:AddOption( "Delete", function() icon:Remove() hook.Run( "SpawnlistContentChanged", icon ) end )
+		menu:Open()
+
+	end
+	
+	if price >= 0 then
+		if !g_SpawnMenu.PriceIcons then
+			g_SpawnMenu.PriceIcons = {}
+		end
+		table.insert(g_SpawnMenu.PriceIcons, icon)
+	end
+	
+	if IsValid( container ) then
+		container:Add( icon )
+	end
+
+	return icon
+
+end )
+
+spawnmenu.AddCreationTab( "simfphys", function()
+
+	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
+	ctrl:CallPopulateHook( "SimfphysPopulateVehicles" )
+	
+	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
+	label:Dock(TOP)
+	label:SetHeight(60)
+	label:SetContentAlignment(5)
+	label:SetFont("BigMoney")
+	label:SetTextColor(Color(255,255,255))
+	label:SetText("$0")
+	
+	if !g_SpawnMenu.MoneyLables then
+		g_SpawnMenu.MoneyLables = {}
+	end
+	table.insert(g_SpawnMenu.MoneyLables, label)
+	
+	return ctrl
+
+end, "icon16/car.png", 50 )

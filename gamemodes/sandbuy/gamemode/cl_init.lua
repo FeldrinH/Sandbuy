@@ -5,12 +5,6 @@ include("spawnmenu_content.lua")
 
 DEFINE_BASECLASS("gamemode_sandbox")
 
---[[local HiddenCategories = {["M9K"] = true}
-
-function GM:PreGamemodeLoaded()	
-	return BaseClass.PreGamemodeLoaded(self)
-end]]--
-
 function GM:OnSpawnMenuOpen()
 	if IsValid(g_SpawnMenu) then
 		spawnmenu.UpdateSpawnlistMoney(LocalPlayer():GetMoney())
@@ -40,7 +34,7 @@ net.Receive("newprices", function(len)
 	
 	pricer.WepPrices = net.ReadPriceTable()
 	pricer.EntPrices = net.ReadPriceTable()
-	--pricer.VehiclePrices = net.ReadPriceTable()
+	pricer.VehiclePrices = net.ReadPriceTable()
 	pricer.AmmoPrices = net.ReadPriceTable()
 	pricer.AmmoData = net.ReadTable()
 	
@@ -53,6 +47,20 @@ net.Receive("newprices", function(len)
 		itemlist = list.GetForEdit("SpawnableEntities")
 		for k,v in pairs(itemlist) do
 			if pricer.GetPrice(k, pricer.EntPrices) <= -2 then
+				itemlist[k] = nil
+			end
+		end
+		
+		itemlist = list.GetForEdit("Vehicles")
+		for k,v in pairs(itemlist) do
+			if pricer.GetPrice(k, pricer.VehiclePrices) <= -2 then
+				itemlist[k] = nil
+			end
+		end
+		
+		itemlist = list.GetForEdit("simfphys_vehicles")
+		for k,v in pairs(itemlist) do
+			if pricer.GetPrice(k, pricer.VehiclePrices) <= -2 then
 				itemlist[k] = nil
 			end
 		end

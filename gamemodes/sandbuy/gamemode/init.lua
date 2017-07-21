@@ -201,7 +201,24 @@ function GM:PlayerSpawnSENT(ply, class)
 end
 
 function GM:PlayerSpawnVehicle(ply, model, class, vtable)
-	return GetConVar("sbuy_debug"):GetBool() and BaseClass.PlayerSpawnVehicle(self, ply, model, class, vtable)
+	local price = pricer.GetPrice(class, pricer.VehiclePrices)
+	if pricer.CanBuy(ply:GetMoney(), price) then
+		ply:AddMoney(-price)
+		ply:PrintMessage(HUD_PRINTCENTER, "Vehicle bought for $" .. price)
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+		
+		buylogger.LogBuy(ply, class, "vehicle", ply:GetMoney())
+		
+		return true
+	elseif price >= 0 then
+		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy vehicle")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	else
+		ply:PrintMessage(HUD_PRINTCENTER, "Vehicle not for sale")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	end
 end
 
 function GM:PlayerSpawnNPC(ply, class, weapon)
