@@ -4,8 +4,8 @@ hook.Remove("PlayerSpawnSENT", "BlockNuclearSEnts")
 hook.Remove("PlayerGiveSWEP", "BlockNukeSWep")
 hook.Remove("PlayerSpawnSWEP", "BlockNukeSpawn")
 
-hook.Remove("PlayerSwitchWeapon", "AutoGiveAmmo")
---[[hook.Add("PlayerSwitchWeapon", "AutoGiveAmmo", function(ply, oldWpn, newWpn)
+--hook.Remove("PlayerSwitchWeapon", "AutoGiveAmmo")
+hook.Add("PlayerSwitchWeapon", "AutoGiveAmmo", function(ply, oldWpn, newWpn)
 	local primary_ammo = newWpn:GetPrimaryAmmoType()
 	if !blocked_ammo[primary_ammo] then
 		print("Score1", primary_ammo)
@@ -17,4 +17,4 @@ hook.Remove("PlayerSwitchWeapon", "AutoGiveAmmo")
 		print("Score2", secondary_ammo)
 		ply:SetAmmo( 9999, secondary_ammo )
 	end
-end)]]--
+end)

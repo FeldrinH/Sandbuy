@@ -58,7 +58,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 	icon.OpenMenu = function( icon )
 
 		local menu = DermaMenu()
-			local wep = LocalPlayer():GetWeapon( obj.spawnname )
+			--[[local wep = LocalPlayer():GetWeapon( obj.spawnname )
 			if IsValid(wep) then
 				if wep:GetPrimaryAmmoType() != -1 then  
 					local ammo = game.GetAmmoName(wep:GetPrimaryAmmoType())
@@ -79,7 +79,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 				opt:SetTextColor(Color(250,0,0))
 				opt:SetMouseInputEnabled(false)
 				opt:SetCursor("none")
-			end
+			end]]--
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "3" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
 			menu:AddSpacer()
@@ -250,7 +250,7 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 
 end )
 
-spawnmenu.AddCreationTab( "Ammo", function()
+--[[spawnmenu.AddCreationTab( "Ammo", function()
 
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	ctrl:CallPopulateHook( "PopulateAmmo" )
@@ -270,7 +270,7 @@ spawnmenu.AddCreationTab( "Ammo", function()
 	
 	return ctrl
 
-end, "icon16/bomb.png", 11 )
+end, "icon16/bomb.png", 11 )]]--
 
 spawnmenu.AddContentType( "entity", function( container, obj )
 
