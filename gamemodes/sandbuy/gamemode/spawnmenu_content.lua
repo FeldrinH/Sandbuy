@@ -10,6 +10,7 @@ if !GetConVar("sbuy_debug"):GetBool() then
 	spawntabs["#spawnmenu.category.npcs"] = nil
 	spawntabs["#spawnmenu.category.saves"] = nil
 	spawntabs["#spawnmenu.category.dupes"] = nil
+	spawntabs["#spawnmenu.category.vehicles"] = nil
 end
 
 local function MouseReleased( self, mousecode )
@@ -404,7 +405,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 
 end )
 
-spawnmenu.AddCreationTab( "#spawnmenu.category.vehicles", function()
+--[[spawnmenu.AddCreationTab( "#spawnmenu.category.vehicles", function()
 
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	ctrl:CallPopulateHook( "PopulateVehicles" )
@@ -424,7 +425,7 @@ spawnmenu.AddCreationTab( "#spawnmenu.category.vehicles", function()
 	
 	return ctrl
 
-end, "icon16/car.png", 50 )
+end, "icon16/car.png", 50 )]]--
 
 spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 	if not obj.material then return end
