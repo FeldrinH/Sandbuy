@@ -44,6 +44,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 		icon:SetTextColor( nobuy_color )
 	end
 	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
 	icon.DoClick = function()
@@ -199,6 +200,7 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	local icon = vgui.Create( "ContentIcon", container )
 	icon:SetContentType( "ammo" )
 	icon:SetSpawnName( obj.spawnname )
+	icon.AmmoAmount = obj.amount
 	icon:SetName( obj.nicename )
 	icon:SetMaterial( obj.material )
 	icon:SetAdminOnly( obj.admin )
@@ -208,12 +210,27 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	icon:SetText( pricer.GetPrintPrice(price) )
 	icon:SetContentAlignment( 7 )
 	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
-		icon:SetTextColor( ( LocalPlayer():HasWeapon(obj.spawnname) and has_color ) or ( pricer.CanBuy(LocalPlayer():GetMoney(), price) and buy_color ) or nobuy_color )
+		icon:SetTextColor( ( pricer.CanBuy(LocalPlayer():GetMoney(), price) and buy_color ) or nobuy_color )
 	else
 		icon:SetTextColor( nobuy_color )
 	end
 	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
+	
+	local label = vgui.Create("DLabel", icon)
+	label:DockMargin(8,8,8,8)
+	label:Dock(FILL)
+	label:SetText(obj.amount .. "x")
+	label:SetContentAlignment( 9 )
+	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
+		label:SetTextColor( ( pricer.CanBuy(LocalPlayer():GetMoney(), price) and buy_color ) or nobuy_color )
+	else
+		label:SetTextColor( nobuy_color )
+	end
+	label:SetFont( "Trebuchet24" )
+	label:SetExpensiveShadow(1, Color(0,0,0))
+	icon.AmountLabel = label
 	
 	icon.DoClick = function()
 		RunConsoleCommand( "sbuy_giveammo", obj.spawnname, obj.amount )
@@ -296,6 +313,7 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 		icon:SetTextColor( nobuy_color )
 	end
 	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
 	icon.DoClick = function()
@@ -373,6 +391,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 		icon:SetTextColor( nobuy_color )
 	end
 	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
 	icon.DoClick = function()
@@ -405,7 +424,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 
 end )
 
-spawnmenu.AddCreationTab( "#spawnmenu.category.vehicles", function()
+--[[spawnmenu.AddCreationTab( "#spawnmenu.category.vehicles", function()
 
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	ctrl:CallPopulateHook( "PopulateVehicles" )
@@ -425,7 +444,7 @@ spawnmenu.AddCreationTab( "#spawnmenu.category.vehicles", function()
 	
 	return ctrl
 
-end, "icon16/car.png", 50 )
+end, "icon16/car.png", 50 )]]--
 
 spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 	if not obj.material then return end
@@ -449,6 +468,7 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 		icon:SetTextColor( nobuy_color )
 	end
 	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
 	icon.DoClick = function()
