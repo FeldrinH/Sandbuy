@@ -10,6 +10,7 @@ if !GetConVar("sbuy_debug"):GetBool() then
 	spawntabs["#spawnmenu.category.npcs"] = nil
 	spawntabs["#spawnmenu.category.saves"] = nil
 	spawntabs["#spawnmenu.category.dupes"] = nil
+	spawntabs["#spawnmenu.category.vehicles"] = nil
 end
 
 local function MouseReleased( self, mousecode )
