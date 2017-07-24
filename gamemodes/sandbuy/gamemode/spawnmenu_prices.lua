@@ -18,8 +18,17 @@ local function UpdateAmmoPrice( icon, money )
 	icon:SetTextColor( iconcolor )
 	icon.AmountLabel:SetTextColor( iconcolor )
 end
+local function UpdateAmmoOption( opt, money )
+	opt:SetTextColor( ( pricer.CanBuy( money, opt.AmmoPrice ) and buy_color ) or nobuy_color )
+end
 
 function spawnmenu.UpdateSpawnlistMoney(money)
+	if IsValid(g_SpawnMenu.PrimaryAmmoOption) then
+		UpdateAmmoOption(g_SpawnMenu.PrimaryAmmoOption, money)
+	end
+	if IsValid(g_SpawnMenu.SecondaryAmmoOption) then
+		UpdateAmmoOption(g_SpawnMenu.SecondaryAmmoOption, money)
+	end
 	if g_SpawnMenu.MoneyLables then
 		for k,v in pairs(g_SpawnMenu.MoneyLables) do
 			v:SetText("$" .. money)

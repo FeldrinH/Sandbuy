@@ -145,6 +145,46 @@
 			"Category": "Miscellaneous",
 			"Price": 1,
 			"Name": "Plasma Orbs"
+		},
+		"Harpoon":
+		{
+			"Amount": 10,
+			"Icon": "m9k_harpoon",
+			"Category": "Miscellaneous",
+			"Price": 1,
+			"Name": "Harpoon"
+		},
+		"SMG1_Grenade":
+		{
+			"Amount": 10,
+			"Icon": "",
+			"Category": "Explosives",
+			"Price": 1,
+			"Name": "SMG Grenade"
+		},
+		"XBowBolt":
+		{
+			"Amount": 10,
+			"Icon": "",
+			"Category": "Miscellaneous",
+			"Price": 1,
+			"Name": "Crossbow Bolt"
+		},
+		"nitroG":
+		{
+			"Amount": 10,
+			"Icon": "",
+			"Category": "Explosives",
+			"Price": 1,
+			"Name": "Nitroglycerin"
+		},
+		"slam":
+		{
+			"Amount": 10,
+			"Icon": "",
+			"Category": "Explosives",
+			"Price": 1,
+			"Name": "SLAM?"
 		}
 	}
 }

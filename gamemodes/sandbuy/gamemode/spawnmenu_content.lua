@@ -67,14 +67,20 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 					local clip = wep:GetMaxClip1()
 					local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * clip
 					local opt = menu:AddOption( "Buy Clip of Primary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, clip) end )
+					opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), price ) and buy_color ) or nobuy_color )
+					opt.AmmoPrice = price
 					opt.OnMouseReleased = MouseReleased
+					g_SpawnMenu.PrimaryAmmoOption = opt
 				end
 				if wep:GetSecondaryAmmoType() != -1 then
 					local ammo = game.GetAmmoName(wep:GetSecondaryAmmoType())
 					local clip = wep:GetMaxClip2()
 					local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * clip
-					local opt = menu:AddOption( "Buy Clip of Secondary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() end )
+					local opt = menu:AddOption( "Buy Clip of Secondary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, clip) end )
+					opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), price ) and buy_color ) or nobuy_color )
+					opt.AmmoPrice = price
 					opt.OnMouseReleased = MouseReleased
+					g_SpawnMenu.SecondaryAmmoOption = opt
 				end
 			else
 				local opt = menu:AddOption( "Need to Own Weapon to Buy Ammo" )
