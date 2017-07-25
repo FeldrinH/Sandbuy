@@ -24,7 +24,7 @@
 			"Icon": "m9k_ammo_winchester",
 			"Category": "Bullets",
 			"Price": 1,
-			"Name": "Winchester??? Ammo"
+			"Name": "High-Caliber Rounds"
 		},
 		"Improvised_Explosive": 
 		{
@@ -104,7 +104,7 @@
 			"Icon": "m9k_orbital_strike",
 			"Category": "Miscellaneous",
 			"Price": 1,
-			"Name": "Orbital Strike ammo"
+			"Name": "Orbital Strike"
 		},
 		"RPG_Round": 
 		{
@@ -157,7 +157,7 @@
 		"SMG1_Grenade":
 		{
 			"Amount": 10,
-			"Icon": "",
+			"Icon": "item_ammo_smg1_grenade",
 			"Category": "Explosives",
 			"Price": 1,
 			"Name": "SMG Grenade"
@@ -165,7 +165,7 @@
 		"XBowBolt":
 		{
 			"Amount": 10,
-			"Icon": "",
+			"Icon": "item_ammo_crossbow",
 			"Category": "Miscellaneous",
 			"Price": 1,
 			"Name": "Crossbow Bolt"
@@ -173,18 +173,26 @@
 		"nitroG":
 		{
 			"Amount": 10,
-			"Icon": "",
+			"Icon": "m9k_nitro",
 			"Category": "Explosives",
 			"Price": 1,
-			"Name": "Nitroglycerin"
+			"Name": "Nitro Glycerine"
 		},
 		"slam":
 		{
 			"Amount": 10,
-			"Icon": "",
+			"Icon": "weapon_slam",
 			"Category": "Explosives",
 			"Price": 1,
-			"Name": "SLAM?"
+			"Name": "SLAM"
+		},
+		"Shuriken":
+		{
+			"Amount": 10,
+			"Icon": "weapon_neurowep_shuriken",
+			"Category": "Miscellaneous",
+			"Price": 1,
+			"Name": "Shuriken"
 		}
 	}
 }

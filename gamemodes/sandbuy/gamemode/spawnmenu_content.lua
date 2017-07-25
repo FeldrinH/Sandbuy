@@ -69,6 +69,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 					local opt = menu:AddOption( "Buy Clip of Primary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, clip) end )
 					opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), price ) and buy_color ) or nobuy_color )
 					opt.AmmoPrice = price
+					opt:SetDoubleClickingEnabled(false)
 					opt.OnMouseReleased = MouseReleased
 					g_SpawnMenu.PrimaryAmmoOption = opt
 				end
@@ -79,6 +80,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 					local opt = menu:AddOption( "Buy Clip of Secondary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, clip) end )
 					opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), price ) and buy_color ) or nobuy_color )
 					opt.AmmoPrice = price
+					opt:SetDoubleClickingEnabled(false)
 					opt.OnMouseReleased = MouseReleased
 					g_SpawnMenu.SecondaryAmmoOption = opt
 				end
@@ -212,7 +214,8 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 135, 206, 250, 255 ) )
 	
-	local price = pricer.GetPrice( obj.spawnname, pricer.AmmoPrices ) * obj.amount
+	local singleprice = pricer.GetPrice( obj.spawnname, pricer.AmmoPrices )
+	local price = singleprice * obj.amount
 	icon:SetText( pricer.GetPrintPrice(price) )
 	icon:SetContentAlignment( 7 )
 	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
@@ -251,6 +254,12 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	icon.OpenMenu = function( icon )
 
 		local menu = DermaMenu()
+			local opt = menu:AddOption( "Buy 1 (" .. pricer.GetPrintPrice(singleprice) .. ")", function() RunConsoleCommand( "sbuy_giveammo", obj.spawnname, 1 ) end )
+			opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), singleprice ) and buy_color ) or nobuy_color )
+			opt.AmmoPrice = singleprice
+			opt:SetDoubleClickingEnabled(false)
+			opt.OnMouseReleased = MouseReleased
+			g_SpawnMenu.PrimaryAmmoOption = opt
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "3" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
 			menu:AddSpacer()

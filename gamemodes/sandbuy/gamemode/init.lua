@@ -6,6 +6,7 @@ AddCSLuaFile('cl_init.lua')
 AddCSLuaFile('cl_scoreboard.lua')
 AddCSLuaFile('spawnmenu_prices.lua')
 AddCSLuaFile('spawnmenu_content.lua')
+AddCSLuaFile('patches_shared.lua')
 
 include('buylogger.lua')
 include('shared.lua')
@@ -89,6 +90,7 @@ function GM:PlayerSpawn(ply)
 		ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. pricer.DefaultMoney)
 		buylogger.LogBailout(ply, pricer.DefaultMoney)
 	end
+	ply.HasDied = false
 	
 	return BaseBaseClass.PlayerSpawn(self, ply)
 end

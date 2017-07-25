@@ -22,10 +22,7 @@ function PLAYER:SetupDataTables()
 end
 
 function PLAYER:Loadout()
-	if self.Player.HasDied then
-		self.Player.HasDied = false
-		self.Player:RemoveAllAmmo()
-	end
+	self.Player:RemoveAllAmmo()
 end
 
 player_manager.RegisterClass( "player_sandbuy", PLAYER, "player_sandbox" )
