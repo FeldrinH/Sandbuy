@@ -16,7 +16,7 @@ end
 local function UpdateAmmoPrice( icon, money )
 	local iconcolor = ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.AmmoPrices ) * icon.AmmoAmount ) and buy_color ) or nobuy_color
 	icon:SetTextColor( iconcolor )
-	icon.AmountLabel:SetTextColor( iconcolor )
+	--icon.AmountLabel:SetTextColor( iconcolor )
 end
 local function UpdateAmmoOption( opt, money )
 	opt:SetTextColor( ( pricer.CanBuy( money, opt.AmmoPrice ) and buy_color ) or nobuy_color )

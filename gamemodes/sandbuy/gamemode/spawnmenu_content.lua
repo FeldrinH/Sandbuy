@@ -209,7 +209,7 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	icon:SetContentType( "ammo" )
 	icon:SetSpawnName( obj.spawnname )
 	icon.AmmoAmount = obj.amount
-	icon:SetName( obj.nicename )
+	icon:SetName( obj.nicename .. " (" .. obj.amount .. ")" )
 	icon:SetMaterial( obj.material )
 	icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 135, 206, 250, 255 ) )
@@ -227,7 +227,7 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
-	local label = vgui.Create("DLabel", icon)
+	--[[local label = vgui.Create("DLabel", icon)
 	label:DockMargin(8,8,8,8)
 	label:Dock(FILL)
 	label:SetText(obj.amount .. "x")
@@ -239,7 +239,7 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	end
 	label:SetFont( "Trebuchet24" )
 	label:SetExpensiveShadow(1, Color(0,0,0))
-	icon.AmountLabel = label
+	icon.AmountLabel = label]]--
 	
 	icon.DoClick = function()
 		RunConsoleCommand( "sbuy_giveammo", obj.spawnname, obj.amount )

@@ -12,7 +12,7 @@
 		},
 		"C4Explosive": 
 		{
-			"Amount": 10,
+			"Amount": 1,
 			"Icon": "m9k_ammo_c4",
 			"Category": "Explosives",
 			"Price": 1,
@@ -28,7 +28,7 @@
 		},
 		"Improvised_Explosive": 
 		{
-			"Amount": 10,
+			"Amount": 1,
 			"Icon": "m9k_ammo_ieds",
 			"Category": "Explosives",
 			"Price": 1,
@@ -60,7 +60,7 @@
 		},
 		"Nuclear_Warhead": 
 		{
-			"Amount": 10,
+			"Amount": 1,
 			"Icon": "m9k_ammo_nuke",
 			"Category": "Explosives",
 			"Price": 1,
@@ -76,7 +76,7 @@
 		},
 		"ProxMine": 
 		{
-			"Amount": 10,
+			"Amount": 1,
 			"Icon": "m9k_ammo_proxmines",
 			"Category": "Explosives",
 			"Price": 1,
@@ -100,7 +100,7 @@
 		},
 		"SatCannon": 
 		{
-			"Amount": 10,
+			"Amount": 1,
 			"Icon": "m9k_orbital_strike",
 			"Category": "Miscellaneous",
 			"Price": 1,
@@ -148,7 +148,7 @@
 		},
 		"Harpoon":
 		{
-			"Amount": 10,
+			"Amount": 1,
 			"Icon": "m9k_harpoon",
 			"Category": "Miscellaneous",
 			"Price": 1,
