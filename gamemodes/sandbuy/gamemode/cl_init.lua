@@ -38,7 +38,7 @@ net.Receive("newprices", function(len)
 	pricer.AmmoPrices = net.ReadPriceTable()
 	pricer.AmmoData = net.ReadTable()
 	
-	if !GetConVar("sbuy_debug"):GetBool() then
+	if !GetConVar("sbuy_debug") or !GetConVar("sbuy_debug"):GetBool() then
 		local itemlist = list.GetForEdit("Weapon")
 		for k,v in pairs(itemlist) do
 			v.Spawnable = pricer.GetPrice(k, pricer.WepPrices) > -2
