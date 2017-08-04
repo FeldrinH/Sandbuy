@@ -44,6 +44,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 		icon:SetTextColor( nobuy_color )
 	end
 	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
 	icon.DoClick = function()
@@ -213,6 +214,7 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 		icon:SetTextColor( nobuy_color )
 	end
 	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
 	icon.DoClick = function()
@@ -296,6 +298,7 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 		icon:SetTextColor( nobuy_color )
 	end
 	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
 	icon.DoClick = function()
@@ -373,6 +376,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 		icon:SetTextColor( nobuy_color )
 	end
 	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
 	icon.DoClick = function()
@@ -449,6 +453,7 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 		icon:SetTextColor( nobuy_color )
 	end
 	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
 	icon.DoClick = function()
