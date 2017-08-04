@@ -2,7 +2,7 @@ local nobuy_color = Color( 255, 0, 0 )
 local buy_color = Color( 0, 255, 0 )
 local has_color = Color( 150, 150, 150 )
 
-if !GetConVar("sbuy_debug"):GetBool() then
+if !GetConVar("sbuy_debug") or !GetConVar("sbuy_debug"):GetBool() then
 	local spawntabs = spawnmenu.GetCreationTabs()
 	
 	spawntabs["NeuroTec"] = nil

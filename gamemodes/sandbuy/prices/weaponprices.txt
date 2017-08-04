@@ -231,6 +231,7 @@
 		"weapon_neurowep_scout": 2200,
 		"weapon_neurowep_50cal_ap": 3800,
 		"weapon_neurowep_acr10": 2800,
-		"weapon_neurowep_m24": 3000
+		"weapon_neurowep_m24": 3000,
+		"weapon_medkit": 0
 	}
 }
