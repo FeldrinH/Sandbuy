@@ -14,6 +14,6 @@ hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 	wep = weapons.GetStored("weapon_neurowep_shuriken")
 	wep.Primary.Ammo = "Shuriken"
 
-	--wep = weapons.GetForEdit("weapon_neurowep_stickynade")
-	--wep.Primary.Ammo = "StickyGrenade"
+	wep = weapons.GetStored("weapon_neurowep_stickynade")
+	wep.Primary.Ammo = "StickyGrenade"
 end)

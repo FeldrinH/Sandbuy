@@ -1,7 +1,9 @@
 surface.CreateFont("BigMoney", {font="Arial", size=50})
 
 local nobuy_color = Color( 255, 0, 0 )
+local nobuy_color_dark = Color( 230, 0, 0 )
 local buy_color = Color( 0, 255, 0 )
+local buy_color_dark = Color( 0, 160, 0 )
 local has_color = Color( 150, 150, 150 )
 
 local function UpdateWepPrice( icon, money )
@@ -19,15 +21,16 @@ local function UpdateAmmoPrice( icon, money )
 	--icon.AmountLabel:SetTextColor( iconcolor )
 end
 local function UpdateAmmoOption( opt, money )
-	opt:SetTextColor( ( pricer.CanBuy( money, opt.AmmoPrice ) and buy_color ) or nobuy_color )
+	opt:SetTextColor( ( pricer.CanBuy( money, opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
 end
 
 function spawnmenu.UpdateSpawnlistMoney(money)
-	if IsValid(g_SpawnMenu.PrimaryAmmoOption) then
-		UpdateAmmoOption(g_SpawnMenu.PrimaryAmmoOption, money)
-	end
-	if IsValid(g_SpawnMenu.SecondaryAmmoOption) then
-		UpdateAmmoOption(g_SpawnMenu.SecondaryAmmoOption, money)
+	if g_SpawnMenu.AmmoOptions then
+		for k,v in pairs(g_SpawnMenu.AmmoOptions) do
+			if IsValid(v) then
+				UpdateAmmoOption(v, money)
+			end
+		end
 	end
 	if g_SpawnMenu.MoneyLables then
 		for k,v in pairs(g_SpawnMenu.MoneyLables) do
