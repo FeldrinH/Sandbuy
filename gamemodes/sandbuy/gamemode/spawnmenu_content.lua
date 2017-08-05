@@ -150,6 +150,7 @@ spawnmenu.AddCreationTab( "#spawnmenu.category.weapons", function()
 
 end, "icon16/gun.png", 10 )
 
+if GetConVar("sbuy_debug") and GetConVar("sbuy_debug"):GetBool() then
 hook.Add( "PopulateAmmo", "AddEntityContent", function( pnlContent, tree, node )
 
 	local Categorised = {}
@@ -319,6 +320,7 @@ spawnmenu.AddCreationTab( "Ammo", function()
 	return ctrl
 
 end, "icon16/bomb.png", 11 )
+end
 
 spawnmenu.AddContentType( "entity", function( container, obj )
 
