@@ -51,6 +51,16 @@ concommand.Add("cleanprices", function(ply)
 	end
 end)
 
+concommand.Add("sbuy_reset", function(ply)
+	for k,v in pairs(player.GetAll()) do
+		ply:RemoveAllAmmo()
+		ply:StripWeapons()
+		ply:SetMoney(pricer.DefaultMoney)
+	end
+	
+	buylogger.LogReset()
+end)
+
 concommand.Add("sbuy_giveammo", function(ply, cmd, args)
 	local ammo = args[1]
 	local amount = args[2]

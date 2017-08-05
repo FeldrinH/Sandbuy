@@ -6,7 +6,7 @@ function buylogger.Init()
 	end
 	
 	buylogger.File = file.Open("buylog.txt", "a", "DATA")
-	buylogger.File:Write("--SERVER STARTED--\n")
+	buylogger.File:Write( os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --LOGGING STARTED--\n")
 	buylogger.Active = true
 end
 
@@ -34,13 +34,22 @@ end
 function buylogger.LogBuy(ply, class, buytype, newmoney)
 	if buylogger.Active then
 		buylogger.File:Write("buy-" .. buytype .. "," .. ply:Nick() .. "," .. class .. "," .. newmoney .. "\n")
-		buylogger.File:Flush()
+		if buytype != "ammo" then
+			buylogger.File:Flush()
+		end
 	end
 end
 
 function buylogger.LogBailout(ply, newmoney)
 	if buylogger.Active then
 		buylogger.File:Write("bailout," .. ply:Nick() .. ",," .. newmoney .. "\n")
+		--buylogger.File:Flush()
+	end
+end
+
+function buylogger.LogReset()
+	if buylogger.Active then
+		buylogger.File:Write("reset,,," .. pricer.DefaultMoney .. "\n")
 		--buylogger.File:Flush()
 	end
 end
