@@ -10,7 +10,6 @@ pricer = pricer or {
 }
 
 pricer.ClipCount = {
-	sbuy_medkit = 1
 }
 
 --[[local hl2wepammo = {
@@ -171,6 +170,10 @@ end
 	
 	return {}
 end]]--
+
+function pricer.GetClipCount(wep, clip)
+	return pricer.ClipCount[wep] or (clip < 3 and 3) or 1
+end
 
 function pricer.GetPrice(name, prices)
 	return prices.individual[name] or prices.default
