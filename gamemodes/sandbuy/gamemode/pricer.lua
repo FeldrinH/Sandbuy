@@ -9,6 +9,10 @@ pricer = pricer or {
 	AmmoData={}
 }
 
+pricer.ClipCount = {
+	sbuy_medkit = 1
+}
+
 --[[local hl2wepammo = {
 	weapon_357={p="357"},
 	weapon_ar2={p="AR2", s="AR2AltFire"},
