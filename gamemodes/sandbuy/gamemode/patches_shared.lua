@@ -16,4 +16,19 @@ hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 
 	wep = weapons.GetStored("weapon_neurowep_stickynade")
 	wep.Primary.Ammo = "StickyGrenade"
+	
+	wep = weapons.GetStored("weapon_neurowep_50cal")
+	wep.Primary.Ammo = "SniperPenetratedRound"
+	
+	wep = weapons.GetStored("weapon_neurowep_50cal_ap")
+	wep.Primary.Ammo = "SniperPenetratedRound"
+	
+	wep = weapons.GetStored("weapon_neurowep_acr10")
+	wep.Primary.Ammo = "SniperPenetratedRound"
+	
+	wep = weapons.GetStored("weapon_neurowep_m24")
+	wep.Primary.Ammo = "SniperPenetratedRound"
+	
+	wep = weapons.GetStored("weapon_neurowep_ptrs41")
+	wep.Primary.Ammo = "SniperPenetratedRound"
 end)
