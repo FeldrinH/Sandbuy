@@ -2,6 +2,10 @@ AddCSLuaFile()
 
 game.AddAmmoType({name = "MedkitHealth"})
 
+if CLIENT then
+	language.Add("MedkitHealth_ammo", "Medkit Health Vial")
+end
+
 SWEP.PrintName = "Medkit"
 SWEP.Author = "robotboy655 & MaxOfS2D (Modified by FeldrinH)"
 SWEP.Purpose = "Heal people with your primary attack, or yourself with the secondary. Buy refills for money."
@@ -16,8 +20,8 @@ SWEP.WorldModel = Model( "models/weapons/w_medkit.mdl" )
 SWEP.ViewModelFOV = 54
 SWEP.UseHands = true
 
-SWEP.Primary.ClipSize = 100
-SWEP.Primary.DefaultClip = 50
+SWEP.Primary.ClipSize = -1
+SWEP.Primary.DefaultClip = -1
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "MedkitHealth"
 
@@ -38,13 +42,13 @@ function SWEP:Initialize()
 
 	if ( CLIENT ) then return end
 
-	timer.Create( "medkit_ammo" .. self:EntIndex(), 1, 0, function()
+	--[[timer.Create( "medkit_ammo" .. self:EntIndex(), 1, 0, function()
 		if self:Clip1() < self.MaxAmmo and self.Owner:GetAmmoCount(self.Primary.Ammo) > 0 then 
 			local charge = math.min( self:Clip1() + math.min( self.Owner:GetAmmoCount(self.Primary.Ammo), 2 ), self.MaxAmmo ) - self:Clip1()
 			self:SetClip1( self:Clip1() + charge )
 			self.Owner:RemoveAmmo( charge, self.Primary.Ammo )
 		end
-	end )
+	end )]]--
 
 end
 
@@ -63,7 +67,7 @@ function SWEP:PrimaryAttack()
 	local need = self.HealAmount
 	if ( IsValid( ent ) ) then need = math.min( ent:GetMaxHealth() - ent:Health(), self.HealAmount ) end
 
-	if ( IsValid( ent ) && self:Clip1() >= need && ( ent:IsPlayer() or ent:IsNPC() ) && ent:Health() < 100 ) then
+	if ( IsValid( ent ) && self:Ammo1() >= need && ( ent:IsPlayer() or ent:IsNPC() ) && ent:Health() < 100 ) then
 
 		self:TakePrimaryAmmo( need )
 
@@ -96,7 +100,7 @@ function SWEP:SecondaryAttack()
 	local need = self.HealAmount
 	if ( IsValid( ent ) ) then need = math.min( ent:GetMaxHealth() - ent:Health(), self.HealAmount ) end
 
-	if ( IsValid( ent ) && self:Clip1() >= need && ent:Health() < ent:GetMaxHealth() ) then
+	if ( IsValid( ent ) && self:Ammo1() >= need && ent:Health() < ent:GetMaxHealth() ) then
 
 		self:TakePrimaryAmmo( need )
 

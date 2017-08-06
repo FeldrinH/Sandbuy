@@ -75,13 +75,18 @@ concommand.Add("sbuy_giveprimaryammo", function(ply, cmd, args)
 	if !IsValid(wep) then return end
 	
 	local ammo = wep:GetPrimaryAmmoType()
-	local amount = wep:GetMaxClip1()
-	
+	local amount = args[1] or pricer.ClipSize[wep:GetClass()] or wep:GetMaxClip1()
 	if ammo == -1 then
-		ammo = wep:GetSecondaryAmmo()
-		amount = wep:GetMaxClip2()
+		ammo = wep:GetSecondaryAmmoType()
+		amount = args[1] or pricer.ClipSize[wep:GetClass()] or wep:GetMaxClip2()
 		if ammo == -1 then return end
 	end
+	
+	if args[1] == "max" then
+		amount = math.floor(ply:GetMoney() / pricer.GetPrice(game.GetAmmoName(ammo), pricer.AmmoPrices))
+	end
+	
+	if amount <= 0 then return end
 	
 	if !gamemode.Call("PlayerGiveAmmo", ply, game.GetAmmoName(ammo), amount) then return end
 	

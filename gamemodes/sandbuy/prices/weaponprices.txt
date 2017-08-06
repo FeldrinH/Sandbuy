@@ -232,6 +232,6 @@
 		"weapon_neurowep_50cal_ap": 3800,
 		"weapon_neurowep_acr10": 2800,
 		"weapon_neurowep_m24": 3000,
-		"sbuy_medkit": 200
+		"sbuy_medkit": 0
 	}
 }
