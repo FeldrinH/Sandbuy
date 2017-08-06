@@ -31,7 +31,7 @@
 		"m9k_m3": 1000,
 		"m9k_ithacam37": 1000,
 		"m9k_jackhammer": 4000,
-		"m9k_remington870": 1500,
+		"m9k_remington870": 3000,
 		"m9k_usas": 4500,
 		"m9k_1887winchester": 1500,
 		"m9k_1897winchester": 1200,
@@ -232,6 +232,6 @@
 		"weapon_neurowep_50cal_ap": 3800,
 		"weapon_neurowep_acr10": 2800,
 		"weapon_neurowep_m24": 3000,
-		"sbuy_medkit": 0
+		"sbuy_medkit": 200
 	}
 }

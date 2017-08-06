@@ -17,7 +17,7 @@ SWEP.ViewModelFOV = 54
 SWEP.UseHands = true
 
 SWEP.Primary.ClipSize = 100
-SWEP.Primary.DefaultClip = 0
+SWEP.Primary.DefaultClip = 50
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "MedkitHealth"
 

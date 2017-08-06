@@ -70,6 +70,24 @@ concommand.Add("sbuy_giveammo", function(ply, cmd, args)
 	ply:GiveAmmo(amount, ammo, false)
 end)
 
+concommand.Add("sbuy_giveprimaryammo", function(ply, cmd, args)
+	local wep = ply:GetActiveWeapon()
+	if !IsValid(wep) then return end
+	
+	local ammo = wep:GetPrimaryAmmoType()
+	local amount = wep:GetMaxClip1()
+	
+	if ammo == -1 then
+		ammo = wep:GetSecondaryAmmo()
+		amount = wep:GetMaxClip2()
+		if ammo == -1 then return end
+	end
+	
+	if !gamemode.Call("PlayerGiveAmmo", ply, game.GetAmmoName(ammo), amount) then return end
+	
+	ply:GiveAmmo(amount, ammo, false)
+end)
+
 function GM:Initialize()
 	pricer.LoadPrices()
 	
@@ -106,10 +124,11 @@ function GM:PlayerSpawn(ply)
 end
 
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
-	ply:AddMoney(-pricer.DeathMoney)
+	local deltamoney = math.ceil(ply:GetMoney() * 0.2)
+	ply:AddMoney(-deltamoney)
 	
 	if attacker:IsValid() && attacker:IsPlayer() &&  attacker != ply then
-		attacker:AddMoney(pricer.KillMoney)
+		attacker:AddMoney(deltamoney + 1000)
 		buylogger.LogKill(attacker, ply, attacker:GetMoney())
 	else
 		buylogger.LogDeath(ply, ply:GetMoney())
