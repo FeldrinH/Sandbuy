@@ -51,7 +51,21 @@ concommand.Add("cleanprices", function(ply)
 	end
 end)
 
+concommand.Add("fullreset", function(ply)
+	if !ply:IsAdmin() then return end
+
+	ply:ConCommand("sbuy_reset")
+	
+	for k,v in pairs(player.GetAll()) do
+		v:Spawn()
+	end
+	
+	ply:ConCommand("resetstats")
+end)
+
 concommand.Add("sbuy_reset", function(ply)
+	if !ply:IsAdmin() then return end
+	
 	for k,v in pairs(player.GetAll()) do
 		v:RemoveAllAmmo()
 		v:StripWeapons()
