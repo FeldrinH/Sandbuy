@@ -53,12 +53,12 @@ end)
 
 concommand.Add("sbuy_reset", function(ply)
 	for k,v in pairs(player.GetAll()) do
-		ply:RemoveAllAmmo()
-		ply:StripWeapons()
-		ply:SetMoney(pricer.DefaultMoney)
+		v:RemoveAllAmmo()
+		v:StripWeapons()
+		v:SetMoney(pricer.DefaultMoney)
 	end
 	
-	buylogger.LogReset()
+	buylogger.LogReset(pricer.DefaultMoney)
 end)
 
 concommand.Add("sbuy_giveammo", function(ply, cmd, args)
@@ -119,29 +119,39 @@ function GM:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
 	if ply.GetMoney and ply.HasDied and ply:GetMoney() < pricer.DefaultMoney then
+		buylogger.LogBailout(ply, pricer.DefaultMoney, pricer.DefaultMoney - ply:GetMoney())
 		ply:SetMoney(pricer.DefaultMoney)
 		ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. pricer.DefaultMoney)
-		buylogger.LogBailout(ply, pricer.DefaultMoney)
 	end
 	ply.HasDied = false
 	
 	return BaseBaseClass.PlayerSpawn(self, ply)
 end
 
-function GM:DoPlayerDeath(ply, attacker, dmginfo)
+function GM:PlayerDeath(ply, inflictor, attacker)
 	local deltamoney = math.ceil(ply:GetMoney() * 0.2)
 	ply:AddMoney(-deltamoney)
 	
-	if attacker:IsValid() && attacker:IsPlayer() &&  attacker != ply then
-		attacker:AddMoney(deltamoney + 1000)
-		buylogger.LogKill(attacker, ply, attacker:GetMoney())
-	else
-		buylogger.LogDeath(ply, ply:GetMoney())
+	local weapon = inflictor
+	
+	if !IsValid(weapon) && IsValid(attacker) then
+		weapon = attacker
 	end
+
+	if IsValid(weapon) && weapon == attacker && (weapon:IsPlayer() || weapon:IsNPC()) then
+		weapon = weapon:GetActiveWeapon()
+		if !IsValid(weapon) then weapon = attacker end
+	end
+	
+	if attacker:IsValid() && attacker:IsPlayer() && attacker != ply then
+		attacker:AddMoney(deltamoney + 1000)
+		buylogger.LogKill(attacker, ply, weapon, attacker:GetMoney(), deltamoney + 1000)
+	end
+	buylogger.LogDeath(ply, attacker, weapon, ply:GetMoney(), -deltamoney)
 	
 	ply.HasDied = true
 	
-	return BaseClass.DoPlayerDeath(self, ply, attacker, dmginfo)
+	return BaseClass.PlayerDeath(self, ply, inflictor, attacker)
 end
 
 function GM:PlayerGiveSWEP(ply, class, swep)
@@ -159,7 +169,7 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 		net.WriteString(class)
 		net.Send(ply)
 		
-		buylogger.LogBuy(ply, class, "weapon", ply:GetMoney())
+		buylogger.LogBuy(ply, class, "weapon", ply:GetMoney(), -price)
 		
 		return true
 	elseif price >= 0 then
@@ -180,7 +190,7 @@ function GM:PlayerSpawnSWEP(ply, class, swep)
 		ply:PrintMessage(HUD_PRINTCENTER, "Weapon bought for $" .. price)
 		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 		
-		buylogger.LogBuy(ply, class, "weapon-drop", ply:GetMoney())
+		buylogger.LogBuy(ply, class, "weapon-drop", ply:GetMoney(), -price)
 		
 		return true
 	elseif price >= 0 then
@@ -201,7 +211,7 @@ function GM:PlayerGiveAmmo(ply, ammo, amount)
 		ply:PrintMessage(HUD_PRINTCENTER, "Ammo bought for $" .. price)
 		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 		
-		buylogger.LogBuy(ply, ammo, "ammo", ply:GetMoney())
+		buylogger.LogBuy(ply, ammo, "ammo", ply:GetMoney(), -price)
 		
 		return true
 	elseif price >= 0 then
@@ -222,7 +232,7 @@ function GM:PlayerSpawnSENT(ply, class)
 		ply:PrintMessage(HUD_PRINTCENTER, "Entity bought for $" .. price)
 		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 		
-		buylogger.LogBuy(ply, class, "entity", ply:GetMoney())
+		buylogger.LogBuy(ply, class, "entity", ply:GetMoney(), -price)
 		
 		return true
 	elseif price >= 0 then
@@ -243,7 +253,7 @@ function GM:PlayerSpawnVehicle(ply, model, class, vtable)
 		ply:PrintMessage(HUD_PRINTCENTER, "Vehicle bought for $" .. price)
 		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 		
-		buylogger.LogBuy(ply, class, "vehicle", ply:GetMoney())
+		buylogger.LogBuy(ply, class, "vehicle", ply:GetMoney(), -price)
 		
 		return true
 	elseif price >= 0 then
