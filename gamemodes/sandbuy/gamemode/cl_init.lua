@@ -5,6 +5,38 @@ include("spawnmenu_content.lua")
 
 DEFINE_BASECLASS("gamemode_sandbox")
 
+surface.CreateFont("DollarSignFont", {
+	font = "Roboto Light",
+	size = 32,
+	weight = 1000,
+	antialias = true,
+	additive = true
+})
+
+local bg_color = Color(0, 0, 0, 76)
+local text_color = Color(255, 235, 20)
+
+local lastmoney = -1
+local lastwidth = 0
+
+function GM:HUDPaint()
+	BaseClass.HUDPaint(self)
+	
+	if gamemode.Call("HUDShouldDraw", "CHudHealth") and LocalPlayer():GetObserverMode() == OBS_MODE_NONE and LocalPlayer():Alive() then
+		local curmoney = LocalPlayer():GetMoney()
+		
+		if curmoney != lastmoney then
+			surface.SetFont("HudNumbers")
+			lastwidth = surface.GetTextSize(curmoney) + 32
+			lastmoney = curmoney
+		end
+		
+		draw.RoundedBox(5,25,635,lastwidth,44, bg_color)
+		draw.SimpleText(curmoney, "HudNumbers",48,640, text_color)
+		draw.SimpleText("$","DollarSignFont",32,640, text_color)
+	end
+end
+
 function GM:OnSpawnMenuOpen()
 	if IsValid(g_SpawnMenu) then
 		spawnmenu.UpdateSpawnlistMoney(LocalPlayer():GetMoney())
