@@ -15,6 +15,21 @@ if !GetConVar("sbuy_debug") or !GetConVar("sbuy_debug"):GetBool() then
 	spawntabs["#spawnmenu.category.vehicles"] = nil
 end
 
+local function AddMoneyLabel(ctrl)
+	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
+	label:Dock(TOP)
+	label:SetHeight(60)
+	label:SetContentAlignment(5)
+	label:SetFont("BigMoney")
+	label:SetTextColor(Color(255,255,255))
+	label:SetText("$0")
+	
+	if !g_SpawnMenu.MoneyLables then
+		g_SpawnMenu.MoneyLables = {}
+	end
+	table.insert(g_SpawnMenu.MoneyLables, label)
+end
+
 local function MouseReleased( self, mousecode )
 	DButton.OnMouseReleased( self, mousecode )
 	if ( self.m_MenuClicking && mousecode == MOUSE_LEFT ) then
@@ -22,6 +37,25 @@ local function MouseReleased( self, mousecode )
 		--CloseDermaMenus()
 	end
 end
+
+spawnmenu.AddCreationTab( "#spawnmenu.content_tab", function()
+
+	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
+
+	AddMoneyLabel(ctrl)
+	
+	ctrl.OldSpawnlists = ctrl.ContentNavBar.Tree:AddNode( "#spawnmenu.category.browse", "icon16/cog.png" )
+
+	ctrl:EnableModify()
+	hook.Call( "PopulatePropMenu", GAMEMODE )
+	ctrl:CallPopulateHook( "PopulateContent" )
+
+	ctrl.OldSpawnlists:MoveToFront()
+	ctrl.OldSpawnlists:SetExpanded( true )
+
+	return ctrl
+
+end, "icon16/application_view_tile.png", -10 )
 
 spawnmenu.AddContentType( "weapon", function( container, obj )
 
@@ -135,18 +169,7 @@ spawnmenu.AddCreationTab( "#spawnmenu.category.weapons", function()
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	ctrl:CallPopulateHook( "PopulateWeapons" )
 	
-	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
-	label:Dock(TOP)
-	label:SetHeight(60)
-	label:SetContentAlignment(5)
-	label:SetFont("BigMoney")
-	label:SetTextColor(Color(255,255,255))
-	label:SetText("$0")
-	
-	if !g_SpawnMenu.MoneyLables then
-		g_SpawnMenu.MoneyLables = {}
-	end
-	table.insert(g_SpawnMenu.MoneyLables, label)
+	AddMoneyLabel(ctrl)
 	
 	return ctrl
 
@@ -306,18 +329,7 @@ spawnmenu.AddCreationTab( "Ammo", function()
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	ctrl:CallPopulateHook( "PopulateAmmo" )
 	
-	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
-	label:Dock(TOP)
-	label:SetHeight(60)
-	label:SetContentAlignment(5)
-	label:SetFont("BigMoney")
-	label:SetTextColor(Color(255,255,255))
-	label:SetText("$0")
-	
-	if !g_SpawnMenu.MoneyLables then
-		g_SpawnMenu.MoneyLables = {}
-	end
-	table.insert(g_SpawnMenu.MoneyLables, label)
+	AddMoneyLabel(ctrl)
 	
 	return ctrl
 
@@ -385,18 +397,7 @@ spawnmenu.AddCreationTab( "#spawnmenu.category.entities", function()
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	ctrl:CallPopulateHook( "PopulateEntities" )
 
-	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
-	label:Dock(TOP)
-	label:SetHeight(60)
-	label:SetContentAlignment(5)
-	label:SetFont("BigMoney")
-	label:SetTextColor(Color(255,255,255))
-	label:SetText("$0")
-	
-	if !g_SpawnMenu.MoneyLables then
-		g_SpawnMenu.MoneyLables = {}
-	end
-	table.insert(g_SpawnMenu.MoneyLables, label)
+	AddMoneyLabel(ctrl)
 	
 	return ctrl
 
@@ -463,18 +464,7 @@ end )
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	ctrl:CallPopulateHook( "PopulateVehicles" )
 	
-	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
-	label:Dock(TOP)
-	label:SetHeight(60)
-	label:SetContentAlignment(5)
-	label:SetFont("BigMoney")
-	label:SetTextColor(Color(255,255,255))
-	label:SetText("$0")
-	
-	if !g_SpawnMenu.MoneyLables then
-		g_SpawnMenu.MoneyLables = {}
-	end
-	table.insert(g_SpawnMenu.MoneyLables, label)
+	AddMoneyLabel(ctrl)
 	
 	return ctrl
 
@@ -539,18 +529,7 @@ spawnmenu.AddCreationTab( "simfphys", function()
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	ctrl:CallPopulateHook( "SimfphysPopulateVehicles" )
 	
-	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
-	label:Dock(TOP)
-	label:SetHeight(60)
-	label:SetContentAlignment(5)
-	label:SetFont("BigMoney")
-	label:SetTextColor(Color(255,255,255))
-	label:SetText("$0")
-	
-	if !g_SpawnMenu.MoneyLables then
-		g_SpawnMenu.MoneyLables = {}
-	end
-	table.insert(g_SpawnMenu.MoneyLables, label)
+	AddMoneyLabel(ctrl)
 	
 	return ctrl
 
