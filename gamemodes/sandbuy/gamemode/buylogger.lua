@@ -6,7 +6,7 @@ function buylogger.Init()
 	end
 	
 	buylogger.File = file.Open("buylog.txt", "a", "DATA")
-	buylogger.File:Write( os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --LOGGING STARTED--\n")
+	buylogger.File:Write( os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " " .. game.GetMap() .. " --LOGGING STARTED--\n")
 	buylogger.Active = true
 end
 
