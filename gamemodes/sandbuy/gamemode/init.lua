@@ -54,24 +54,16 @@ end)
 concommand.Add("fullreset", function(ply)
 	if !ply:IsAdmin() then return end
 
-	ply:ConCommand("sbuy_reset")
-	
 	for k,v in pairs(player.GetAll()) do
+		v.HasDied = true
+		v:StripWeaponsRaw()
+		v:RemoveAllAmmo()
+		v:SetMoney(pricer.DefaultMoney)
 		v:Spawn()
 	end
 	
 	ply:ConCommand("resetstats")
-end)
 
-concommand.Add("sbuy_reset", function(ply)
-	if !ply:IsAdmin() then return end
-	
-	for k,v in pairs(player.GetAll()) do
-		v:RemoveAllAmmo()
-		v:StripWeapons()
-		v:SetMoney(pricer.DefaultMoney)
-	end
-	
 	buylogger.LogReset(pricer.DefaultMoney)
 end)
 
@@ -137,9 +129,10 @@ function GM:PlayerSpawn(ply)
 		ply:SetMoney(pricer.DefaultMoney)
 		ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. pricer.DefaultMoney)
 	end
-	ply.HasDied = false
 	
-	return BaseBaseClass.PlayerSpawn(self, ply)
+	BaseBaseClass.PlayerSpawn(self, ply)
+	
+	ply.HasDied = false
 end
 
 function GM:PlayerDeath(ply, inflictor, attacker)
@@ -147,21 +140,26 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	ply:AddMoney(-deltamoney)
 	
 	local weapon = inflictor
+	local killer = attacker
 	
-	if !IsValid(weapon) && IsValid(attacker) then
-		weapon = attacker
+	if ( IsValid( killer ) && killer:IsVehicle() && IsValid( killer:GetDriver() ) ) then
+		killer = killer:GetDriver()
+	end
+	
+	if !IsValid(weapon) && IsValid(killer) then
+		weapon = killer
 	end
 
-	if IsValid(weapon) && weapon == attacker && (weapon:IsPlayer() || weapon:IsNPC()) then
+	if IsValid(weapon) && weapon == killer && (weapon:IsPlayer() || weapon:IsNPC()) then
 		weapon = weapon:GetActiveWeapon()
-		if !IsValid(weapon) then weapon = attacker end
+		if !IsValid(weapon) then weapon = killer end
 	end
 	
-	if attacker:IsValid() && attacker:IsPlayer() && attacker != ply then
-		attacker:AddMoney(deltamoney + 1000)
-		buylogger.LogKill(attacker, ply, weapon, attacker:GetMoney(), deltamoney + 1000)
+	if killer:IsValid() && killer:IsPlayer() && killer != ply then
+		killer:AddMoney(deltamoney + 1000)
+		buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), deltamoney + 1000)
 	end
-	buylogger.LogDeath(ply, attacker, weapon, ply:GetMoney(), -deltamoney)
+	buylogger.LogDeath(ply, killer, weapon, ply:GetMoney(), -deltamoney)
 	
 	ply.HasDied = true
 	
