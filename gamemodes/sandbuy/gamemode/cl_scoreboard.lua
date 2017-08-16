@@ -264,6 +264,7 @@ function GM:ScoreboardShow()
 		g_Scoreboard:Show()
 		g_Scoreboard:MakePopup()
 		g_Scoreboard:SetKeyboardInputEnabled( false )
+		g_Scoreboard:SetMouseInputEnabled( false )
 	end
 
 end

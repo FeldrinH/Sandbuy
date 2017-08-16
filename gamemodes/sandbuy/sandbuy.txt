@@ -26,6 +26,15 @@
 	
 		3
 		{
+			"name"		"sbuy_noundo"
+			"text"		"Disable Undo"
+			"help"		"If enabled, undo will be disabled. Requires restart"
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+		
+		4
+		{
 			"name"		"physgun_limited"
 			"text"		"limit_physgun"
 			"help"		"If enabled, the Physics Gun will not be able to pick up certain map entities"
@@ -33,7 +42,7 @@
 			"default"	"0"
 		}
 
-		4
+		5
 		{
 			"name"		"sbox_noclip"
 			"text"		"noclip"
@@ -42,7 +51,7 @@
 			"default"	"1"
 		}
 
-		5
+		6
 		{
 			"name"		"sbox_godmode"
 			"text"		"god_mode"
@@ -51,7 +60,7 @@
 			"default"	"0"
 		}
 
-		6
+		7
 		{
 			"name"		"sbox_playershurtplayers"
 			"text"		"players_damage_players"
@@ -60,7 +69,7 @@
 			"default"	"1"
 		}
 
-		7
+		8
 		{
 			"name"		"sbox_maxprops"
 			"text"		"max_props"
@@ -69,7 +78,7 @@
 			"default"	"200"
 		}
 
-		8
+		9
 		{
 			"name"		"sbox_maxragdolls"
 			"text"		"max_ragdolls"
@@ -78,7 +87,7 @@
 			"default"	"10"
 		}
 
-		9
+		10
 		{
 			"name"		"sbox_maxvehicles"
 			"text"		"max_vehicles"
@@ -87,7 +96,7 @@
 			"default"	"4"
 		}
 
-		10
+		11
 		{
 			"name"		"sbox_maxeffects"
 			"text"		"max_effects"
@@ -96,7 +105,7 @@
 			"default"	"200"
 		}
 
-		11
+		12
 		{
 			"name"		"sbox_maxballoons"
 			"text"		"max_balloons"
@@ -105,7 +114,7 @@
 			"default"	"100"
 		}
 
-		12
+		13
 		{
 			"name"		"sbox_maxcameras"
 			"text"		"max_cameras"
@@ -114,7 +123,7 @@
 			"default"	"10"
 		}
 
-		13
+		14
 		{
 			"name"		"sbox_maxnpcs"
 			"text"		"max_npcs"
@@ -123,7 +132,7 @@
 			"default"	"10"
 		}
 
-		14
+		15
 		{
 			"name"		"sbox_maxsents"
 			"text"		"max_entities"
@@ -132,7 +141,7 @@
 			"default"	"100"
 		}
 
-		15
+		16
 		{
 			"name"		"sbox_maxdynamite"
 			"text"		"max_dynamite"
@@ -141,7 +150,7 @@
 			"default"	"10"
 		}
 
-		16
+		17
 		{
 			"name"		"sbox_maxlamps"
 			"text"		"max_lamps"
@@ -150,7 +159,7 @@
 			"default"	"3"
 		}
 
-		17
+		18
 		{
 			"name"		"sbox_maxlights"
 			"text"		"max_lights"
@@ -159,7 +168,7 @@
 			"default"	"5"
 		}
 
-		18
+		19
 		{
 			"name"		"sbox_maxwheels"
 			"text"		"max_wheels"
@@ -168,7 +177,7 @@
 			"default"	"50"
 		}
 
-		19
+		20
 		{
 			"name"		"sbox_maxthrusters"
 			"text"		"max_thrusters"
@@ -177,7 +186,7 @@
 			"default"	"50"
 		}
 
-		20
+		21
 		{
 			"name"		"sbox_maxhoverballs"
 			"text"		"max_hoverballs"
@@ -186,7 +195,7 @@
 			"default"	"50"
 		}
 
-		21
+		22
 		{
 			"name"		"sbox_maxbuttons"
 			"text"		"max_buttons"
@@ -195,7 +204,7 @@
 			"default"	"50"
 		}
 
-		22
+		23
 		{
 			"name"		"sbox_maxemitters"
 			"text"		"max_emitters"
@@ -204,7 +213,7 @@
 			"default"	"20"
 		}
 
-		23
+		24
 		{
 			"name"		"sbox_bonemanip_npc"
 			"text"		"bone_manipulate_npcs"
@@ -213,7 +222,7 @@
 			"default"	"1"
 		}
 
-		24
+		25
 		{
 			"name"		"sbox_bonemanip_player"
 			"text"		"bone_manipulate_players"
@@ -222,7 +231,7 @@
 			"default"	"0"
 		}
 
-		25
+		26
 		{
 			"name"		"sbox_bonemanip_misc"
 			"text"		"bone_manipulate_others"
@@ -231,7 +240,7 @@
 			"default"	"0"
 		}
 
-		26
+		27
 		{
 			"name"		"sbox_persist"
 			"text"		"persistent_mode"

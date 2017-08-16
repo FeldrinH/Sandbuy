@@ -1,5 +1,9 @@
 local blocked_ammo = {[10]=true, [30]=true, [32]=true, [33]=true, [35]=true, [37]=true}
 
+if GetConVar("sbuy_noundo"):GetBool() then
+	undo.Do_Undo = function() end
+end
+
 hook.Remove("PlayerSpawnSENT", "BlockNuclearSEnts")
 hook.Remove("PlayerGiveSWEP", "BlockNukeSWep")
 hook.Remove("PlayerSpawnSWEP", "BlockNukeSpawn")

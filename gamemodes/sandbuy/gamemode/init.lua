@@ -279,6 +279,10 @@ function GM:PlayerSpawnVehicle(ply, model, class, vtable)
 	end
 end
 
+function GM:PlayerSpawnProp(ply, model)
+	return false
+end
+
 function GM:PlayerSpawnNPC(ply, class, weapon)
 	return GetConVar("sbuy_debug"):GetBool() and BaseClass.PlayerSpawnNPC(self, ply, class, weapon)
 end

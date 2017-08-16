@@ -19,6 +19,9 @@ local text_color = Color(255, 235, 20)
 local lastmoney = -1
 local lastwidth = 0
 
+local hoffset = math.floor(ScrH() * 696 / 768) - 56
+local voffset = math.ceil(ScrW() * 25 / 1366)
+
 function GM:HUDPaint()
 	BaseClass.HUDPaint(self)
 	
@@ -30,10 +33,10 @@ function GM:HUDPaint()
 			lastwidth = surface.GetTextSize(curmoney) + 32
 			lastmoney = curmoney
 		end
-		
-		draw.RoundedBox(5,25,635,lastwidth,44, bg_color)
-		draw.SimpleText(curmoney, "HudNumbers",48,640, text_color)
-		draw.SimpleText("$","DollarSignFont",32,640, text_color)
+		--
+		draw.RoundedBox(5, voffset, hoffset - 5, lastwidth, 44, bg_color)
+		draw.SimpleText(curmoney, "HudNumbers", voffset + 23, hoffset, text_color)
+		draw.SimpleText("$", "DollarSignFont", voffset + 7, hoffset, text_color)
 	end
 end
 
