@@ -15,6 +15,8 @@ include('patches.lua')
 DEFINE_BASECLASS("gamemode_sandbox")
 local BaseBaseClass = baseclass.Get( "gamemode_base" )
 
+TotalKillMoney = TotalKillMoney or 0
+
 --resource.AddSingleFile("data/weaponprices.txt")
 --resource.AddSingleFile("data/vehicleprices.txt")
 --resource.AddSingleFile("data/entityprices.txt")
@@ -124,10 +126,15 @@ end
 function GM:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
-	if ply.GetMoney and ply.HasDied and ply:GetMoney() < pricer.DefaultMoney then
-		buylogger.LogBailout(ply, pricer.DefaultMoney, pricer.DefaultMoney - ply:GetMoney())
-		ply:SetMoney(pricer.DefaultMoney)
-		ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. pricer.DefaultMoney)
+	local bailoutamount = pricer.DefaultMoney
+	if !ply.LastDeathSuicide then
+		bailoutamount = pricer.DefaultMoney + math.sqrt(TotalKillMoney)
+	end
+	
+	if ply.GetMoney and ply.HasDied and ply:GetMoney() < bailoutamount then
+		buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply:GetMoney())
+		ply:SetMoney(bailoutamount)
+		ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
 	end
 	
 	BaseBaseClass.PlayerSpawn(self, ply)
@@ -158,6 +165,10 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	if killer:IsValid() && killer:IsPlayer() && killer != ply then
 		killer:AddMoney(deltamoney + 1000)
 		buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), deltamoney + 1000)
+		TotalKillMoney = TotalKillMoney + 1000 + deltamoney
+		ply.LastDeathSuicide = false
+	else
+		ply.LastDeathSuicide = true
 	end
 	buylogger.LogDeath(ply, killer, weapon, ply:GetMoney(), -deltamoney)
 	
