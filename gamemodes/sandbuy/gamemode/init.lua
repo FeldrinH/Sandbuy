@@ -15,8 +15,6 @@ include('patches.lua')
 DEFINE_BASECLASS("gamemode_sandbox")
 local BaseBaseClass = baseclass.Get( "gamemode_base" )
 
-TotalKillMoney = TotalKillMoney or 0
-
 --resource.AddSingleFile("data/weaponprices.txt")
 --resource.AddSingleFile("data/vehicleprices.txt")
 --resource.AddSingleFile("data/entityprices.txt")
@@ -123,12 +121,18 @@ function GM:PlayerAuthed(ply, steamid, uniqueid)
 	return BaseClass.PlayerAuthed(self, ply, steamid, uniqueid)
 end
 
+function GM:PlayerInitialSpawn(ply)
+	ply.TotalKillMoney = ply.TotalKillMoney or 0
+	
+	BaseClass.PlayerInitialSpawn(self, ply)
+end
+
 function GM:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
 	local bailoutamount = pricer.DefaultMoney
 	if !ply.LastDeathSuicide then
-		bailoutamount = pricer.DefaultMoney + math.sqrt(TotalKillMoney)
+		bailoutamount = pricer.DefaultMoney + math.sqrt(ply.TotalKillMoney)
 	end
 	
 	if ply.GetMoney and ply.HasDied and ply:GetMoney() < bailoutamount then
@@ -165,7 +169,7 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	if killer:IsValid() && killer:IsPlayer() && killer != ply then
 		killer:AddMoney(deltamoney + 1000)
 		buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), deltamoney + 1000)
-		TotalKillMoney = TotalKillMoney + 1000 + deltamoney
+		ply.TotalKillMoney = ply.TotalKillMoney + 1000 + deltamoney
 		ply.LastDeathSuicide = false
 	else
 		ply.LastDeathSuicide = true
