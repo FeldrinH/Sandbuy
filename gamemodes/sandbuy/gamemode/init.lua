@@ -1,5 +1,5 @@
 AddCSLuaFile('shared.lua')
-AddCSLuaFile('playermoney.lua')
+AddCSLuaFile('playermeta.lua')
 AddCSLuaFile('pricer.lua')
 AddCSLuaFile('player_class/player_sandbuy.lua')
 AddCSLuaFile('cl_init.lua')
@@ -49,22 +49,6 @@ concommand.Add("cleanprices", function(ply)
 	else
 		print(count .. " items not spawnable")
 	end
-end)
-
-concommand.Add("fullreset", function(ply)
-	if !ply:IsAdmin() then return end
-
-	for k,v in pairs(player.GetAll()) do
-		v.HasDied = true
-		v:StripWeaponsRaw()
-		v:RemoveAllAmmo()
-		v:SetMoney(pricer.DefaultMoney)
-		v:Spawn()
-	end
-	
-	ply:ConCommand("resetstats")
-
-	buylogger.LogReset(pricer.DefaultMoney)
 end)
 
 concommand.Add("sbuy_giveammo", function(ply, cmd, args)
@@ -132,7 +116,7 @@ function GM:PlayerSpawn(ply)
 	
 	local bailoutamount = pricer.DefaultMoney
 	if !ply.LastDeathSuicide then
-		bailoutamount = pricer.DefaultMoney + math.sqrt(ply.TotalKillMoney)
+		bailoutamount = pricer.DefaultMoney + ply:GetBailoutBonus()
 	end
 	
 	if ply.GetMoney and ply.HasDied and ply:GetMoney() < bailoutamount then

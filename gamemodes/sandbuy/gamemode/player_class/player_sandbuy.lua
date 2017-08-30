@@ -4,6 +4,8 @@ DEFINE_BASECLASS( "player_sandbox" )
 
 local PLAYER = {}
 
+PLAYER.DropWeaponOnDie = true
+
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Int", 0, "Money")
 	

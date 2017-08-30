@@ -9,3 +9,9 @@ end
 function meta:AddMoney(delta)
 	self:SetMoney(self:GetMoney() + delta)
 end
+
+if SERVER then
+	function meta:GetBailoutBonus()
+		return 0 --math.floor(math.sqrt(0.25 + self.TotalKillMoney / 1500) - 0.5) * 50
+	end
+end
