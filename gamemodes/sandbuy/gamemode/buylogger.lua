@@ -6,14 +6,14 @@ function buylogger.Init()
 	end
 	
 	buylogger.File = file.Open("buylog.txt", "a", "DATA")
-	buylogger.File:Write( os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " " .. game.GetMap() .. " --LOGGING STARTED--\n")
+	buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " " .. game.GetMap() .. " --LOGGING STARTED--\n")
 	buylogger.Active = true
 end
 
 function buylogger.Close()
 	if buylogger.Active then
 		buylogger.Active = false
-		buylogger.File:Write( os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --LOGGING ENDED--\n")
+		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --LOGGING ENDED--\n")
 		buylogger.File:Close()
 	end
 end
@@ -53,5 +53,17 @@ function buylogger.LogReset(newmoney)
 	if buylogger.Active then
 		buylogger.File:Write("reset,,," .. newmoney .. "\n")
 		--buylogger.File:Flush()
+	end
+end
+
+function buylogger.LogJoin(ply)
+	if buylogger.Active then
+		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --" .. ply:Nick() .. " JOINED--\n")
+	end
+end
+
+function buylogger.LogLeave(ply)
+	if buylogger.Active then
+		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --" .. ply:Nick() .. " LEFT--\n")
 	end
 end

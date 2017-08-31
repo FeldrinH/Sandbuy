@@ -106,9 +106,17 @@ function GM:PlayerAuthed(ply, steamid, uniqueid)
 end
 
 function GM:PlayerInitialSpawn(ply)
+	buylogger.LogJoin(ply)
+	
 	ply.TotalKillMoney = ply.TotalKillMoney or 0
 	
 	BaseClass.PlayerInitialSpawn(self, ply)
+end
+
+function GM:PlayerDisconnected(ply)
+	buylogger.LogLeave(ply)
+	
+	BaseClass.PlayerDisconnected(self, ply)
 end
 
 function GM:PlayerSpawn(ply)
