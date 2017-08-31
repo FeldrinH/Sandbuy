@@ -30,6 +30,12 @@ hook.Add("PlayerLoadout","NeuroPlanes_LoadWeapons", function(ply)
 	end
 end)
 
+hook.Add("PlayerCanPickupWeapon","FixPickupWhenWeaponNotMoving", function(ply, wep)
+	if IsValid(wep:GetPhysicsObject()) then
+		wep:GetPhysicsObject():ApplyForceCenter(Vector(0,0,50))
+	end
+end)
+
 local meta = FindMetaTable( "Player" )
 
 if !meta.StripWeaponsRaw then

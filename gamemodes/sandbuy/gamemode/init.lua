@@ -153,7 +153,7 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	if killer:IsValid() && killer:IsPlayer() && killer != ply then
 		killer:AddMoney(deltamoney + 1000)
 		buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), deltamoney + 1000)
-		ply.TotalKillMoney = ply.TotalKillMoney + 1000 + deltamoney
+		killer.TotalKillMoney = killer.TotalKillMoney + 1000 + deltamoney
 		ply.LastDeathSuicide = false
 	else
 		ply.LastDeathSuicide = true

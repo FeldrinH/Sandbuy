@@ -27,7 +27,7 @@
 		"m9k_scar": 2500,		
 		"m9k_browningauto5": 2800,
 		"m9k_spas12": 5000,
-		"m9k_dbarrel": 3500,
+		"m9k_dbarrel": 4000,
 		"m9k_m3": 2500,
 		"m9k_ithacam37": 2000,
 		"m9k_jackhammer": 4000,
