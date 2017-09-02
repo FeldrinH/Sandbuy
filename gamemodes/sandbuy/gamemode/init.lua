@@ -65,21 +65,38 @@ concommand.Add("sbuy_giveprimaryammo", function(ply, cmd, args)
 	local wep = ply:GetActiveWeapon()
 	if !IsValid(wep) then return end
 	
+	local isprimary = true
 	local ammo = wep:GetPrimaryAmmoType()
-	local amount = args[1] or pricer.ClipSize[wep:GetClass()] or wep:GetMaxClip1()
-	if ammo == -1 then
+	if ammo == -1 or args[2] == "secondary" then
 		ammo = wep:GetSecondaryAmmoType()
-		amount = args[1] or pricer.ClipSize[wep:GetClass()] or wep:GetMaxClip2()
+		isprimary = false
 		if ammo == -1 then return end
 	end
+	ammo = game.GetAmmoName(ammo)
 	
-	if args[1] == "max" then
-		amount = math.floor(ply:GetMoney() / pricer.GetPrice(game.GetAmmoName(ammo), pricer.AmmoPrices))
+	local amount = 1
+	if pricer.GetPrice(ammo, pricer.AmmoPrices) < 0 then
+		--Ammo not for sale
+	elseif args[1] == nil or args[1] == "smart" then
+		amount = pricer.ClipSize[wep:GetClass()] or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
+		if (amount > 0) and (pricer.GetPrice(ammo, pricer.AmmoPrices) * amount > ply:GetMoney()) then
+			amount = math.floor(ply:GetMoney() / pricer.GetPrice(ammo, pricer.AmmoPrices))
+		end
+		if amount < 1 then
+			amount = 1
+		end
+	elseif args[1] == "clip" then
+		amount = pricer.ClipSize[wep:GetClass()] or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
+	elseif args[1] == "max" then
+		amount = math.floor(ply:GetMoney() / pricer.GetPrice(ammo, pricer.AmmoPrices))
+		if amount < 1 then
+			amount = 1
+		end
+	elseif tonumber(args[1]) != nil then
+		amount = tonumber(args[1])
 	end
 	
-	if amount <= 0 then return end
-	
-	if !gamemode.Call("PlayerGiveAmmo", ply, game.GetAmmoName(ammo), amount) then return end
+	if !gamemode.Call("PlayerGiveAmmo", ply, ammo, amount) then return end
 	
 	ply:GiveAmmo(amount, ammo, false)
 end)
@@ -225,6 +242,8 @@ function GM:PlayerSpawnSWEP(ply, class, swep)
 end
 
 function GM:PlayerGiveAmmo(ply, ammo, amount)
+	if amount <= 0 then return false end
+	
 	local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * amount
 	if pricer.CanBuy(ply:GetMoney(), price) then
 		ply:AddMoney(-price)
