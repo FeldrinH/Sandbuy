@@ -65,9 +65,9 @@ function SWEP:PrimaryAttack()
 	local ent = tr.Entity
 
 	local need = self.HealAmount
-	if ( IsValid( ent ) ) then need = math.min( ent:GetMaxHealth() - ent:Health(), self.HealAmount ) end
+	if ( IsValid( ent ) ) then need = math.min( ent:GetMaxHealth() - ent:Health(), self.HealAmount, self:Ammo1() ) end
 
-	if ( IsValid( ent ) && self:Ammo1() >= need && ( ent:IsPlayer() or ent:IsNPC() ) && ent:Health() < 100 ) then
+	if ( IsValid( ent ) && need > 0 && ( ent:IsPlayer() or ent:IsNPC() ) && ent:Health() < 100 ) then
 
 		self:TakePrimaryAmmo( need )
 
@@ -98,9 +98,9 @@ function SWEP:SecondaryAttack()
 	local ent = self.Owner
 
 	local need = self.HealAmount
-	if ( IsValid( ent ) ) then need = math.min( ent:GetMaxHealth() - ent:Health(), self.HealAmount ) end
+	if ( IsValid( ent ) ) then need = math.min( ent:GetMaxHealth() - ent:Health(), self.HealAmount, self:Ammo1() ) end
 
-	if ( IsValid( ent ) && self:Ammo1() >= need && ent:Health() < ent:GetMaxHealth() ) then
+	if ( IsValid( ent ) && need > 0 && ent:Health() < ent:GetMaxHealth() ) then
 
 		self:TakePrimaryAmmo( need )
 

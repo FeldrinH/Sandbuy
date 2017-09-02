@@ -32,7 +32,7 @@ hook.Add("PlayerInitialSpawn", "LoadStats", function(ply)
 		
 		ply.StatSaver_RestoreWeapons = true
 		
-		ply.DefaultMoneyOverride = ply.money
+		ply.DefaultMoneyOverride = plystats.money
 		ply.TotalKillMoney = plystats.killmoney
 	end
 end)
@@ -45,7 +45,7 @@ hook.Add("PlayerLoadout", "LoadSandbuyWeapons", function(ply)
 		if plystats then
 			for k,v in pairs(plystats.weps) do
 				ply:Give(v.wep, true)
-				local wep = self:GetWeapon(v.wep)
+				local wep = ply:GetWeapon(v.wep)
 				if v.clip1 >= 0 then
 					wep:SetClip1(v.clip1)
 				end
@@ -59,7 +59,7 @@ hook.Add("PlayerLoadout", "LoadSandbuyWeapons", function(ply)
 			end
 			
 			if plystats.activewep != nil then
-				self:SelectWeapon(plystats.activewep)
+				ply:SelectWeapon(plystats.activewep)
 			end
 			
 			return true

@@ -3,6 +3,7 @@
 	"individual": 
 	{
 		"basetotem": 0,
+		"finishbox": 0,
 		"sent_f-14a_p": 4500,
 		"sent_f35lightning": 6500,
 		"sent_su-25_p": 4000,
