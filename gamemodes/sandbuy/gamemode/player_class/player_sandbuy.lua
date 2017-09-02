@@ -17,7 +17,7 @@ function PLAYER:SetupDataTables()
 			net.Send(ply)
 		end)
 		
-		self.Player:SetMoney(pricer.DefaultMoney)
+		self.Player:SetMoney(self.Player.DefaultMoneyOverride or pricer.DefaultMoney)
 	end
 
 	return BaseClass.SetupDataTables(self)

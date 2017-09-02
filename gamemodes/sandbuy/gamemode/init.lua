@@ -11,6 +11,7 @@ AddCSLuaFile('patches_shared.lua')
 include('buylogger.lua')
 include('shared.lua')
 include('patches.lua')
+include('statsaver.lua')
 
 DEFINE_BASECLASS("gamemode_sandbox")
 local BaseBaseClass = baseclass.Get( "gamemode_base" )
