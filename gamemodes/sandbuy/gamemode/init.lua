@@ -54,7 +54,7 @@ end)
 
 concommand.Add("sbuy_giveammo", function(ply, cmd, args)
 	local ammo = args[1]
-	local amount = args[2]
+	local amount = tonumber(args[2])
 	
 	if !gamemode.Call("PlayerGiveAmmo", ply, ammo, amount) then return end
 	
