@@ -1,5 +1,5 @@
 pricer = pricer or {
-	DefaultMoney=800,
+	DefaultMoney=2000,
 	KillMoney=1000,
 	DeathMoney=200,
 	WepPrices={default=-2,individual={}},
