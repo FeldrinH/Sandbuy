@@ -177,9 +177,16 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	end
 	
 	if killer:IsValid() && killer:IsPlayer() && killer != ply then
-		killer:AddMoney(deltamoney + 1000)
-		buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), deltamoney + 1000)
-		killer.TotalKillMoney = killer.TotalKillMoney + 1000 + deltamoney
+		if ply:Team() != TEAM_UNASSIGNED and ply:Team() == killer:Team() then
+			killer:AddMoney(-pricer.TeamKillPenalty)
+			buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), -pricer.TeamKillPenalty)
+			ply:AddMoney(deltamoney)
+			deltamoney = 0
+		else
+			killer:AddMoney(deltamoney + pricer.KillMoney)
+			buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), deltamoney + pricer.KillMoney)
+			killer.TotalKillMoney = killer.TotalKillMoney + pricer.KillMoney + deltamoney
+		end
 		ply.LastDeathSuicide = false
 	else
 		ply.LastDeathSuicide = true

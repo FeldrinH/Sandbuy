@@ -12,6 +12,6 @@ end
 
 if SERVER then
 	function meta:GetBailoutBonus()
-		return math.floor(math.sqrt(0.25 + self.TotalKillMoney / 1500) - 0.5) * 100
+		return math.floor(math.sqrt(0.25 + self.TotalKillMoney / 1500) - 0.5) * 50
 	end
 end

@@ -1,7 +1,7 @@
 pricer = pricer or {
-	DefaultMoney=2000,
+	DefaultMoney=800,
 	KillMoney=1000,
-	DeathMoney=200,
+	TeamKillPenalty=200,
 	WepPrices={default=-2,individual={}},
 	AmmoPrices={default=-2,individual={}},
 	VehiclePrices={default=-2,individual={}},
