@@ -49,9 +49,9 @@ function buylogger.LogBailout(ply, newmoney, delta)
 	end
 end
 
-function buylogger.LogReset(newmoney)
+function buylogger.LogReset(resettype, newmoney)
 	if buylogger.Active then
-		buylogger.File:Write("reset,,," .. newmoney .. "\n")
+		buylogger.File:Write("reset-" .. resettype .. ",,," .. newmoney .. "\n")
 		--buylogger.File:Flush()
 	end
 end

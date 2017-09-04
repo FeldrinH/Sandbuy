@@ -1,7 +1,7 @@
 local stats = {}
 
-concommand.Add("resetstats", function( ply )
-	if !ply:IsAdmin() and ply:Nick() != "FeldrinH" then return end
+concommand.Add("resetfull", function( ply )
+	if !ply:IsAdmin() then return end
 	
 	for k,v in pairs(player.GetAll()) do
 		v:SetFrags(0)
@@ -16,7 +16,40 @@ concommand.Add("resetstats", function( ply )
 	
 	stats = {}
 	
-	buylogger.LogReset(pricer.DefaultMoney)
+	buylogger.LogReset("full", pricer.DefaultMoney)
+end)
+
+concommand.Add("resetplayers", function( ply )
+	if !ply:IsAdmin() then return end
+	
+	for k,v in pairs(player.GetAll()) do
+		v:SetFrags(0)
+		v:SetDeaths(0)
+		v:StripWeaponsRaw()
+		v:RemoveAllAmmo()
+		v:SetMoney(pricer.DefaultMoney)
+		v.TotalKillMoney = 0
+	end
+	
+	stats = {}
+	
+	buylogger.LogReset("players", pricer.DefaultMoney)
+end)
+
+concommand.Add("resetstats", function( ply )
+	if !ply:IsAdmin() then return end
+	
+	for k,v in pairs(player.GetAll()) do
+		v:SetFrags(0)
+		v:SetDeaths(0)
+	end
+	
+	for k,v in pairs(stats) do
+		v.frags = 0
+		v.deaths = 0
+	end
+	
+	buylogger.LogReset("stats", "")
 end)
 
 if !GetConVar("sbuy_statsaver"):GetBool() then return end
