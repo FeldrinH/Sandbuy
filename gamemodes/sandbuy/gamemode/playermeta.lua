@@ -12,6 +12,6 @@ end
 
 if SERVER then
 	function meta:GetBailoutBonus()
-		return math.floor(math.sqrt(0.25 + self.TotalKillMoney / 1500) - 0.5) * 50
+		return math.floor(math.sqrt(0.25 + self.TotalKillMoney / (500 * GetConVar("sbuy_levelsize"):GetFloat())) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
 	end
 end

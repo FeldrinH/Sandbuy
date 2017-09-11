@@ -1,6 +1,4 @@
 pricer = pricer or {
-	DefaultMoney=800,
-	KillMoney=1000,
 	TeamKillPenalty=200,
 	WepPrices={default=-2,individual={}},
 	AmmoPrices={default=-2,individual={}},

@@ -45,6 +45,46 @@
 		
 		5
 		{
+			"name"		"sbuy_defaultmoney"
+			"text"		"Base Money"
+			"help"		"Amount of mony given to players upon initial spawn and as bailout."
+			"type"		"Numeric"
+			"default"	"800"
+			"singleplayer" "1"
+		}
+		
+		6
+		{
+			"name"		"sbuy_killmoney"
+			"text"		"Kill Money"
+			"help"		"Base money given per kill."
+			"type"		"Numeric"
+			"default"	"1000"
+			"singleplayer" "1"
+		}
+		
+		7
+		{
+			"name"		"sbuy_levelsize"
+			"text"		"Money Required Per Level"
+			"help"		"Amount of money required per level of bailout bonus (Multiplied by level)."
+			"type"		"Numeric"
+			"default"	"3"
+			"singleplayer" "1"
+		}
+		
+		8
+		{
+			"name"		"sbuy_levelbonus"
+			"text"		"Bonus Per Level"
+			"help"		"Bailout bonus added per level."
+			"type"		"Numeric"
+			"default"	"50"
+			"singleplayer" "1"
+		}
+		
+		9
+		{
 			"name"		"physgun_limited"
 			"text"		"limit_physgun"
 			"help"		"If enabled, the Physics Gun will not be able to pick up certain map entities"
@@ -52,7 +92,7 @@
 			"default"	"0"
 		}
 
-		6
+		10
 		{
 			"name"		"sbox_noclip"
 			"text"		"noclip"
@@ -61,7 +101,7 @@
 			"default"	"0"
 		}
 
-		7
+		11
 		{
 			"name"		"sbox_godmode"
 			"text"		"god_mode"
@@ -70,7 +110,7 @@
 			"default"	"0"
 		}
 
-		8
+		12
 		{
 			"name"		"sbox_playershurtplayers"
 			"text"		"players_damage_players"
@@ -79,7 +119,7 @@
 			"default"	"1"
 		}
 
-		9
+		13
 		{
 			"name"		"sbox_maxprops"
 			"text"		"max_props"
@@ -88,7 +128,7 @@
 			"default"	"200"
 		}
 
-		10
+		14
 		{
 			"name"		"sbox_maxragdolls"
 			"text"		"max_ragdolls"
@@ -97,7 +137,7 @@
 			"default"	"10"
 		}
 
-		11
+		15
 		{
 			"name"		"sbox_maxvehicles"
 			"text"		"max_vehicles"
@@ -106,7 +146,7 @@
 			"default"	"4"
 		}
 
-		12
+		16
 		{
 			"name"		"sbox_maxeffects"
 			"text"		"max_effects"
@@ -115,7 +155,7 @@
 			"default"	"200"
 		}
 
-		13
+		17
 		{
 			"name"		"sbox_maxballoons"
 			"text"		"max_balloons"
@@ -124,7 +164,7 @@
 			"default"	"100"
 		}
 
-		14
+		18
 		{
 			"name"		"sbox_maxcameras"
 			"text"		"max_cameras"
@@ -133,7 +173,7 @@
 			"default"	"10"
 		}
 
-		15
+		19
 		{
 			"name"		"sbox_maxnpcs"
 			"text"		"max_npcs"
@@ -142,7 +182,7 @@
 			"default"	"10"
 		}
 
-		16
+		20
 		{
 			"name"		"sbox_maxsents"
 			"text"		"max_entities"
@@ -151,7 +191,7 @@
 			"default"	"100"
 		}
 
-		17
+		21
 		{
 			"name"		"sbox_maxdynamite"
 			"text"		"max_dynamite"
@@ -160,7 +200,7 @@
 			"default"	"10"
 		}
 
-		18
+		22
 		{
 			"name"		"sbox_maxlamps"
 			"text"		"max_lamps"
@@ -169,7 +209,7 @@
 			"default"	"3"
 		}
 
-		19
+		23
 		{
 			"name"		"sbox_maxlights"
 			"text"		"max_lights"
@@ -178,7 +218,7 @@
 			"default"	"5"
 		}
 
-		20
+		24
 		{
 			"name"		"sbox_maxwheels"
 			"text"		"max_wheels"
@@ -187,7 +227,7 @@
 			"default"	"50"
 		}
 
-		21
+		25
 		{
 			"name"		"sbox_maxthrusters"
 			"text"		"max_thrusters"
@@ -196,7 +236,7 @@
 			"default"	"50"
 		}
 
-		22
+		26
 		{
 			"name"		"sbox_maxhoverballs"
 			"text"		"max_hoverballs"
@@ -205,7 +245,7 @@
 			"default"	"50"
 		}
 
-		23
+		27
 		{
 			"name"		"sbox_maxbuttons"
 			"text"		"max_buttons"
@@ -214,7 +254,7 @@
 			"default"	"50"
 		}
 
-		24
+		28
 		{
 			"name"		"sbox_maxemitters"
 			"text"		"max_emitters"
@@ -223,7 +263,7 @@
 			"default"	"20"
 		}
 
-		25
+		29
 		{
 			"name"		"sbox_bonemanip_npc"
 			"text"		"bone_manipulate_npcs"
@@ -232,7 +272,7 @@
 			"default"	"1"
 		}
 
-		26
+		30
 		{
 			"name"		"sbox_bonemanip_player"
 			"text"		"bone_manipulate_players"
@@ -241,7 +281,7 @@
 			"default"	"0"
 		}
 
-		27
+		31
 		{
 			"name"		"sbox_bonemanip_misc"
 			"text"		"bone_manipulate_others"
@@ -250,7 +290,7 @@
 			"default"	"0"
 		}
 
-		28
+		32
 		{
 			"name"		"sbox_persist"
 			"text"		"persistent_mode"

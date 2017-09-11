@@ -9,14 +9,14 @@ concommand.Add("resetfull", function( ply )
 		v.HasDied = true
 		v:StripWeaponsRaw()
 		v:RemoveAllAmmo()
-		v:SetMoney(pricer.DefaultMoney)
+		v:SetMoney(GetConVar("sbuy_defaultmoney"):GetInt())
 		v.TotalKillMoney = 0
 		v:Spawn()
 	end
 	
 	stats = {}
 	
-	buylogger.LogReset("full", pricer.DefaultMoney)
+	buylogger.LogReset("full", GetConVar("sbuy_defaultmoney"):GetInt())
 end)
 
 concommand.Add("resetplayers", function( ply )
@@ -27,13 +27,13 @@ concommand.Add("resetplayers", function( ply )
 		v:SetDeaths(0)
 		v:StripWeaponsRaw()
 		v:RemoveAllAmmo()
-		v:SetMoney(pricer.DefaultMoney)
+		v:SetMoney(GetConVar("sbuy_defaultmoney"):GetInt())
 		v.TotalKillMoney = 0
 	end
 	
 	stats = {}
 	
-	buylogger.LogReset("players", pricer.DefaultMoney)
+	buylogger.LogReset("players", GetConVar("sbuy_defaultmoney"):GetInt())
 end)
 
 concommand.Add("resetstats", function( ply )

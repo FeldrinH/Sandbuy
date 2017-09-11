@@ -140,9 +140,9 @@ end
 function GM:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
-	local bailoutamount = pricer.DefaultMoney
+	local bailoutamount = GetConVar("sbuy_defaultmoney"):GetInt()
 	if !ply.LastDeathSuicide then
-		bailoutamount = pricer.DefaultMoney + ply:GetBailoutBonus()
+		bailoutamount = bailoutamount + ply:GetBailoutBonus()
 	end
 	
 	if ply.GetMoney and ply.HasDied and ply:GetMoney() < bailoutamount then
@@ -183,9 +183,10 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 			ply:AddMoney(deltamoney)
 			deltamoney = 0
 		else
-			killer:AddMoney(deltamoney + pricer.KillMoney)
-			buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), deltamoney + pricer.KillMoney)
-			killer.TotalKillMoney = killer.TotalKillMoney + pricer.KillMoney + deltamoney
+			local killmoney = GetConVar("sbuy_killmoney"):GetInt() + deltamoney
+			killer:AddMoney(killmoney)
+			buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), killmoney)
+			killer.TotalKillMoney = killer.TotalKillMoney + killmoney
 		end
 		ply.LastDeathSuicide = false
 	else
