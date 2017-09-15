@@ -1,0 +1,53 @@
+{
+	"snipers": 
+	[
+		
+	],
+	"shotguns": 
+	[
+		"m9k_browningauto5",
+		"m9k_spas12",
+		"m9k_dbarrel",
+		"m9k_m3",
+		"m9k_ithacam37",
+		"m9k_jackhammer",
+		"m9k_remington870",
+		"m9k_usas",
+		"m9k_1887winchester",
+		"m9k_1897winchester",
+		"m9k_mossberg590",
+		"m9k_striker12"
+	],
+	"pistols": 
+	[
+		
+	],
+	"submachineguns": 
+	[
+		
+	],
+	"machineguns": 
+	[
+		
+	],
+	"assaultrifles": 
+	[
+		
+	],
+	"throwables": 
+	[
+		
+	],
+	"launchers": 
+	[
+		
+	],
+	"dayofdefeat": 
+	[
+		
+	],
+	"halflife2": 
+	[
+		
+	]
+}

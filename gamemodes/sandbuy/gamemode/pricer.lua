@@ -4,6 +4,7 @@ pricer = pricer or {
 	AmmoPrices={default=-2,individual={}},
 	VehiclePrices={default=-2,individual={}},
 	EntPrices={default=-2,individual={}},
+	Categories={},
 	AmmoData={}
 }
 
@@ -30,6 +31,10 @@ pricer.ClipSize = {
 	weapon_stunstick={},
 	weapon_physgun={}
 }]]--
+
+if SERVER then
+	include('modifiers.lua')
+end
 
 function net.WritePriceTable(prices)
 	net.WriteInt(prices.default, 32)
@@ -59,15 +64,23 @@ function net.ReadPriceTable()
 	return prices
 end
 
+function table.ListToLookupTable(vlist)
+	local ltable = {}
+	for k,v in pairs(vlist) do
+		ltable[v] = true
+	end
+	return ltable
+end
+
 local function LoadFile(filename)
 	local inclfile = file.Read("gamemodes/sandbuy/prices/" .. filename, "GAME")
 	if !inclfile then
-		ErrorNoHalt("ERROR: No included " .. filename)
+		ErrorNoHalt("ERROR: No included " .. filename .. "\n")
 		return
 	end
 	local prices = util.JSONToTable(inclfile)
 	if !prices then
-		ErrorNoHalt("ERROR: Included " .. filename .. " invalid")
+		ErrorNoHalt("ERROR: Included " .. filename .. " invalid\n")
 		return
 	end
 	
@@ -82,7 +95,7 @@ local function LoadFile(filename)
 				prices.individual[k] = v
 			end
 		else
-			print("Local " .. filename .. " invalid. Ignoring")
+			ErrorNoHalt("WARNING: Local " .. filename .. " invalid. Ignoring")
 		end
 	end
 	
@@ -118,6 +131,10 @@ function pricer.LoadPrices()
 	pricer.EntPrices = LoadFile("entityprices.txt") or pricer.EntPrices
 	pricer.VehiclePrices = LoadFile("vehicleprices.txt") or pricer.VehiclePrices
 	LoadAmmoData()
+	
+	pricer.Categories = LoadFile("categories.txt") or pricer.Categories
+	
+	pricer.ApplyPriceModifications()
 	
 	local itemlist = list.GetForEdit("Weapon")
 	for k,v in pairs(itemlist) do
