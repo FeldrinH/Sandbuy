@@ -1,13 +1,5 @@
 function pricer.ApplyPriceModifications()
-	--[[for k,v in pairs(pricer.Categories.snipers) do
-		if pricer.WeaponPrices[v] then
-			pricer.WeaponPrices[v] = pricer.WeaponPrices[v] - 500
-		end
-	end
-	
-	for k,v in pairs(pricer.Categories.dayofdefeat) do
-		if pricer.WeaponPrices[v] then
-			pricer.WeaponPrices[v] = pricer.WeaponPrices[v] - 500
-		end
-	end]]--
+	--pricer.ApplyModifier("snipers", pricer.WepPrices, function(price)
+	--	return price - 500
+	--end)
 end

@@ -126,6 +126,22 @@ local function LoadAmmoData()
 	pricer.AmmoPrices = prices
 end
 
+function pricer.ApplyModifier(category, prices, modifier)
+	for k,v in pairs(pricer.Categories[category]) do
+		if pricer.GetPrice(v, prices) >= 0 then
+			prices[v] = modifier(pricer.GetPrice(v, prices))
+		end
+	end
+end
+
+function pricer.PrintModifier(category, prices, modifier)
+	for k,v in pairs(pricer.Categories[category]) do
+		if pricer.GetPrice(v, prices) >= 0 then
+			print('"' .. v .. '": ' .. modifier(pricer.GetPrice(v, prices)) .. ',')
+		end
+	end
+end
+
 function pricer.LoadPrices()
 	pricer.WepPrices = LoadFile("weaponprices.txt") or pricer.WepPrices
 	pricer.EntPrices = LoadFile("entityprices.txt") or pricer.EntPrices
