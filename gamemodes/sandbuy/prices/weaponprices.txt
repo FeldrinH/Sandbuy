@@ -228,6 +228,19 @@
 		"weapon_neurowep_50cal_ap": 3800,
 		"weapon_neurowep_acr10": 2800,
 		"weapon_neurowep_m24": 3000,
-		"sbuy_medkit": 0
+		"sbuy_medkit": 0,
+		"weapon_pistol": 100,
+		"weapon_crossbow": 500,
+		"weapon_smg1": 400,
+		"weapon_bugbait": -2,
+		"weapon_rpg": 800,
+		"weapon_crowbar": 100,
+		"weapon_physcannon": 400,
+		"weapon_frag": 30,
+		"weapon_357": 200,
+		"weapon_shotgun": 300,
+		"weapon_ar2": 400,
+		"weapon_stunstick": 100,
+		"weapon_slam": 300
 	}
 }
