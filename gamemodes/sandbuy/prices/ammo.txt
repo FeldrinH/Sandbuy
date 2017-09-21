@@ -119,7 +119,7 @@
 			"Amount": 1,
 			"Icon": "m9k_ammo_rockets",
 			"Category": "Explosives",
-			"Price": 200,
+			"Price": 500,
 			"Name": "Rockets"
 		},
 		"AR2":
