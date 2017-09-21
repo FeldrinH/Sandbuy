@@ -315,7 +315,7 @@ function GM:PlayerSpawnVehicle(ply, model, class, vtable)
 end
 
 function GM:PlayerSpawnProp(ply, model)
-	return false
+	return false--BaseClass.PlayerSpawnProp(self, ply, model)
 end
 
 function GM:PlayerSpawnNPC(ply, class, weapon)
