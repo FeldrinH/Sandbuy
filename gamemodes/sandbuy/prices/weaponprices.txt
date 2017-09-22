@@ -241,6 +241,13 @@
 		"weapon_shotgun": 300,
 		"weapon_ar2": 400,
 		"weapon_stunstick": 100,
-		"weapon_slam": 300
+		"weapon_slam": 300,
+		"weapon_drr_fuelcan": -2,
+		"weapon_drr_radar": 600,
+		"weapon_drr_remote": 0,
+		"weapon_drr_repairtool": 300,
+		"weapon_drr_jammer": 800,
+		"weapon_drr_menu": -1,
+		"weapon_radar_improved": 800
 	}
 }
