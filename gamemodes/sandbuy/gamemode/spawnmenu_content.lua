@@ -225,7 +225,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
-						RunConsoleCommand("sbuy_setoverrideprice", obj.spawnname ,newprice, "weapon")
+						RunConsoleCommand("sbuy_setoverrideprice", obj.spawnname, newprice, "weapon")
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
@@ -459,8 +459,21 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 		local menu = DermaMenu()
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "0" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
-			menu:AddSpacer()
-			menu:AddOption( "Delete", function() icon:Remove() hook.Run( "SpawnlistContentChanged", icon ) end )
+			if LocalPlayer():IsAdmin() then
+				menu:AddOption( "Set price", function()
+					Derma_StringRequestSmall("Set price", "New price:", price, function(text)
+						local newprice = tonumber(text)
+						if newprice == nil then return end
+						
+						RunConsoleCommand("sbuy_setoverrideprice", obj.spawnname, newprice, "entity")
+						
+						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
+						icon:SetFont("Trebuchet18")
+					end, nil, "Set", "Cancel")
+				end )
+			end
+			--menu:AddSpacer()
+			--menu:AddOption( "Delete", function() icon:Remove() hook.Run( "SpawnlistContentChanged", icon ) end )
 		menu:Open()
 
 	end
@@ -526,8 +539,21 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 		local menu = DermaMenu()
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "1" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
-			menu:AddSpacer()
-			menu:AddOption( "Delete", function() icon:Remove() hook.Run( "SpawnlistContentChanged", icon ) end )
+			if LocalPlayer():IsAdmin() then
+				menu:AddOption( "Set price", function()
+					Derma_StringRequestSmall("Set price", "New price:", price, function(text)
+						local newprice = tonumber(text)
+						if newprice == nil then return end
+						
+						RunConsoleCommand("sbuy_setoverrideprice", obj.spawnname, newprice, "vehicle")
+						
+						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
+						icon:SetFont("Trebuchet18")
+					end, nil, "Set", "Cancel")
+				end )
+			end
+			--menu:AddSpacer()
+			--menu:AddOption( "Delete", function() icon:Remove() hook.Run( "SpawnlistContentChanged", icon ) end )
 		menu:Open()
 
 	end
@@ -591,6 +617,19 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 
 		local menu = DermaMenu()
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
+			if LocalPlayer():IsAdmin() then
+				menu:AddOption( "Set price", function()
+					Derma_StringRequestSmall("Set price", "New price:", price, function(text)
+						local newprice = tonumber(text)
+						if newprice == nil then return end
+						
+						RunConsoleCommand("sbuy_setoverrideprice", obj.spawnname, newprice, "vehicle")
+						
+						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
+						icon:SetFont("Trebuchet18")
+					end, nil, "Set", "Cancel")
+				end )
+			end
 			--menu:AddSpacer()
 			--menu:AddOption( "Delete", function() icon:Remove() hook.Run( "SpawnlistContentChanged", icon ) end )
 		menu:Open()
