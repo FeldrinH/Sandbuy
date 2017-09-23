@@ -12,7 +12,8 @@ pricer.ClipCount = {
 }
 
 pricer.ClipSize = {
-	sbuy_medkit = 100
+	sbuy_medkit = 100,
+	weapon_rpg = 1
 }
 
 --[[local hl2wepammo = {

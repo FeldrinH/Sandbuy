@@ -222,6 +222,22 @@
 		"item_healthcharger": 1200,
 		"item_suitcharger": 1500,
 		"item_battery": 120,
-		"combine_mine": 300
+		"combine_mine": 300,
+		"sent_oldcannon_p": 4500,
+		"npc_vulcan_aa": 4000,
+		"sent_typhoon_p": -1,
+		"npc_phalanx": -1,
+		"sent_neurotec_taepodong": 400,
+		"sent_land_mine": 800,
+		"sent_neurotec_nuke": -1,
+		"sent_improvbomb": 500,
+		"sent_cowbomb": 600,
+		"sent_aerial_mine": 300,
+		"sent_phalanx_p": 1500,
+		"sent_neuro_claymore": -1,
+		"sent_mortar_p": 600,
+		"sent_flying_bomb": 200,
+		"sent_carbomb": 500,
+		"sent_neuro_bouncingbetty": 400
 	}
 }
