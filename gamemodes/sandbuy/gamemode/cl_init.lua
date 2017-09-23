@@ -63,7 +63,7 @@ net.Receive("weaponbought", function(len)
 end)
 
 net.Receive("newprices", function(len)
-	print("Prices received", len)
+	print("Prices received " .. len)
 	
 	local reload = net.ReadBool()
 	

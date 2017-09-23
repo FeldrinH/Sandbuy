@@ -38,6 +38,81 @@ local function MouseReleased( self, mousecode )
 	end
 end
 
+local function Derma_StringRequestSmall( strTitle, strText, strDefaultText, fnEnter, fnCancel, strButtonText, strButtonCancelText )
+
+	local Window = vgui.Create( "DFrame" )
+	Window:SetTitle( strTitle )
+	Window:SetDraggable( true )
+	Window:ShowCloseButton( true )
+	Window:SetDrawOnTop( true )
+
+	local InnerPanel = vgui.Create( "DPanel", Window )
+	InnerPanel:SetPaintBackground( false )
+
+	local Text = vgui.Create( "DLabel", InnerPanel )
+	Text:SetText( strText )
+	Text:SizeToContents()
+	Text:SetContentAlignment( 5 )
+	Text:SetTextColor( color_white )
+
+	local TextEntry = vgui.Create( "DTextEntry", InnerPanel )
+	TextEntry:SetNumeric( true )
+	TextEntry:SetText( strDefaultText or "" )
+	TextEntry.OnEnter = function() Window:Close() fnEnter( TextEntry:GetValue() ) end
+
+	local ButtonPanel = vgui.Create( "DPanel", Window )
+	ButtonPanel:SetTall( 30 )
+	ButtonPanel:SetPaintBackground( false )
+
+	local Button = vgui.Create( "DButton", ButtonPanel )
+	Button:SetText( strButtonText or "OK" )
+	Button:SizeToContents()
+	Button:SetTall( 20 )
+	Button:SetWide( Button:GetWide() + 20 )
+	Button:SetPos( 5, 5 )
+	Button.DoClick = function() Window:Close() fnEnter( TextEntry:GetValue() ) end
+
+	local ButtonCancel = vgui.Create( "DButton", ButtonPanel )
+	ButtonCancel:SetText( strButtonCancelText or "Cancel" )
+	ButtonCancel:SizeToContents()
+	ButtonCancel:SetTall( 20 )
+	ButtonCancel:SetWide( Button:GetWide() + 20 )
+	ButtonCancel:SetPos( 5, 5 )
+	ButtonCancel.DoClick = function() Window:Close() if ( fnCancel ) then fnCancel( TextEntry:GetValue() ) end end
+	ButtonCancel:MoveRightOf( Button, 5 )
+
+	ButtonPanel:SetWide( Button:GetWide() + 5 + ButtonCancel:GetWide() + 10 )
+
+	local w, h = Text:GetSize()
+	w = math.max( w, 200 )
+
+	Window:SetSize( w + 50, h + 25 + 75 + 10 )
+	Window:Center()
+
+	InnerPanel:StretchToParent( 5, 25, 5, 45 )
+
+	Text:StretchToParent( 5, 5, 5, 35 )
+
+	TextEntry:StretchToParent( 5, nil, 5, nil )
+	TextEntry:AlignBottom( 5 )
+
+	TextEntry:RequestFocus()
+	TextEntry:SelectAllText( true )
+
+	ButtonPanel:CenterHorizontal()
+	ButtonPanel:AlignBottom( 8 )
+
+	Window:MakePopup()
+	--Window:DoModal()
+	
+	if IsValid( g_SpawnMenu ) then
+		g_SpawnMenu:HangOpen( true )
+	end
+	
+	return Window
+
+end
+
 spawnmenu.AddCreationTab( "#spawnmenu.content_tab", function()
 
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
@@ -141,10 +216,23 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 				opt:SetMouseInputEnabled(false)
 				opt:SetCursor("none")
 			end
+			menu:AddSpacer()
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "3" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
-			menu:AddSpacer()
-			menu:AddOption( "Delete", function() icon:Remove() hook.Run( "SpawnlistContentChanged", icon ) end )
+			if LocalPlayer():IsAdmin() then
+				menu:AddOption( "Set price", function()
+					Derma_StringRequestSmall("Set price", "New price:", price, function(text)
+						local newprice = tonumber(text)
+						if newprice == nil then return end
+						
+						RunConsoleCommand("sbuy_setoverrideprice", obj.spawnname ,newprice, "weapon")
+						
+						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
+						icon:SetFont("Trebuchet18")
+					end, nil, "Set", "Cancel")
+				end )
+			end
+			--menu:AddOption( "Delete", function() icon:Remove() hook.Run( "SpawnlistContentChanged", icon ) end )
 		menu:Open()
 
 	end

@@ -34,6 +34,25 @@ concommand.Add("reloadprices", function(ply)
 	print("Reloaded prices")
 end)
 
+concommand.Add("sbuy_setoverrideprice", function(ply, cmd, args)
+	if !ply:IsAdmin() then return end
+
+	local wep = args[1]
+	local price = tonumber(args[2])
+	local filename = args[3] .. "prices.txt"
+	
+	if !wep or !price or !args[3] then return end
+	
+	local localfile = file.Read(filename)
+	local pricetable = localfile and util.JSONToTable(localfile) or {individual={}}
+	
+	pricetable.individual[wep] = price
+
+	file.Write(filename, util.TableToJSON(pricetable, true))
+	
+	print("New override price:", wep, "$" .. price)
+end)
+
 concommand.Add("cleanprices", function(ply)
 	local count = 0
 
