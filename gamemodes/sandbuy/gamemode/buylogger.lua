@@ -33,6 +33,13 @@ function buylogger.LogDeath(ply, atk, wep, newmoney, delta)
 	end
 end
 
+function buylogger.LogDestroy(ply, veh, newmoney, delta)
+	if buylogger.Active then
+		buylogger.File:Write("destroy," .. ply:Nick() .. "," .. veh:GetClass() .. "," .. newmoney .. "," .. delta .. "\n")
+		--buylogger.File:Flush()
+	end
+end
+
 function buylogger.LogBuy(ply, class, buytype, newmoney, delta)
 	if buylogger.Active then
 		buylogger.File:Write("buy-" .. buytype .. "," .. ply:Nick() .. "," .. class .. "," .. newmoney .. "," .. delta .. "\n")

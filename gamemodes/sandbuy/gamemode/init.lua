@@ -340,3 +340,45 @@ end
 function GM:PlayerSpawnNPC(ply, class, weapon)
 	return GetConVar("sbuy_debug"):GetBool() and BaseClass.PlayerSpawnNPC(self, ply, class, weapon)
 end
+
+function GM:PlayerSpawnedSENT(ply, ent)
+	local price = pricer.GetPrice(ent:GetClass(), pricer.EntPrices)
+	print(ent:GetClass(), ent.DestroyReward)
+	if price > 0 then
+		ent.DestroyReward = math.floor(price * 0.25)
+		print(ent.DestroyReward)
+	end
+	
+	return BaseClass.PlayerSpawnedSENT(self, ply, ent)
+end
+
+function GM:PlayerSpawnedVehicle(ply, ent)
+	local price = pricer.GetPrice(ent:GetClass(), pricer.VehiclePrices)
+	if price > 0 then
+		ent.DestroyReward = math.floor(price * 0.25)
+	end
+	
+	return BaseClass.PlayerSpawnedSENT(self, ply, ent)
+end
+
+function GM:EntityTakeDamage(target, dmg)
+	if target.DestroyReward then
+		local atk = dmg:GetAttacker()
+		if IsValid(atk) and atk:IsPlayer() then
+			target.DestroyRewardPlayer = atk
+		else
+			target.DestroyRewardPlayer = nil
+		end
+	end
+	
+	return BaseClass.EntityTakeDamage(self, target, dmg)
+end
+
+function GM:EntityRemoved(ent)
+	if ent.DestroyReward and IsValid(ent.DestroyRewardPlayer) then
+		ent.DestroyRewardPlayer:AddMoney(ent.DestroyReward)
+		buylogger.LogDestroy(ent.DestroyRewardPlayer, ent, ent.DestroyRewardPlayer:GetMoney(), ent.DestroyReward)
+	end
+	
+	return BaseClass.EntityRemoved(self, ent)
+end
