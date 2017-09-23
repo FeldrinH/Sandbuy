@@ -238,6 +238,16 @@
 		"sent_mortar_p": 600,
 		"sent_flying_bomb": 200,
 		"sent_carbomb": 500,
-		"sent_neuro_bouncingbetty": 400
+		"sent_neuro_bouncingbetty": 400,
+		"sent_spadxiii_test": 0,
+		"sent_fokker_dr": 0,
+		"sent_me262_p": 0,
+		"sent_bf109_p": 0,
+		"sent_he-111_p": 0,
+		"sent_spitfire_p": 0,
+		"sent_p51mustang_p": 0,
+		"sent_j2m_p": 0,
+		"sent_meteor_p": 0,
+		"sent_b-17_p": 0
 	}
 }
