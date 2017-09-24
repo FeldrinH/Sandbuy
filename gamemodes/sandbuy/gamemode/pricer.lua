@@ -127,6 +127,17 @@ local function LoadAmmoData()
 	pricer.AmmoPrices = prices
 end
 
+local function LoadCategories()
+	local cats = LoadFile("categories.txt")
+	if !cats then return end
+	
+	for k,v in pairs(cats) do
+		cats[k] = table.ListToLookupTable(v)
+	end
+	
+	return cats
+end
+
 function pricer.ApplyModifier(category, prices, modifier)
 	for k,v in pairs(pricer.Categories[category]) do
 		if pricer.GetPrice(v, prices) >= 0 then
@@ -149,7 +160,7 @@ function pricer.LoadPrices()
 	pricer.VehiclePrices = LoadFile("vehicleprices.txt") or pricer.VehiclePrices
 	LoadAmmoData()
 	
-	pricer.Categories = LoadFile("categories.txt") or pricer.Categories
+	pricer.Categories = LoadCategories() or pricer.Categories
 	
 	pricer.ApplyPriceModifications()
 	
@@ -209,6 +220,10 @@ end]]--
 
 function pricer.GetClipCount(wep, clip)
 	return pricer.ClipCount[wep] or (clip < 3 and 3) or 1
+end
+
+function pricer.InCategory(class, category)
+	return (pricer.Categories[category] or {})[class]
 end
 
 function pricer.GetPrice(name, prices)

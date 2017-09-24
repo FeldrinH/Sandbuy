@@ -343,10 +343,8 @@ end
 
 function GM:PlayerSpawnedSENT(ply, ent)
 	local price = pricer.GetPrice(ent:GetClass(), pricer.EntPrices)
-	print(ent:GetClass(), ent.DestroyReward)
-	if price > 0 then
+	if price > 0 and pricer.InCategory(ent:GetClass(), "machines") then
 		ent.DestroyReward = math.floor(price * 0.25)
-		print(ent.DestroyReward)
 	end
 	
 	return BaseClass.PlayerSpawnedSENT(self, ply, ent)
@@ -358,7 +356,7 @@ function GM:PlayerSpawnedVehicle(ply, ent)
 		ent.DestroyReward = math.floor(price * 0.25)
 	end
 	
-	return BaseClass.PlayerSpawnedSENT(self, ply, ent)
+	return BaseClass.PlayerSpawnedVehicle(self, ply, ent)
 end
 
 function GM:EntityTakeDamage(target, dmg)
