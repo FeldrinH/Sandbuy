@@ -27,7 +27,7 @@ end
 
 function buylogger.LogDeath(ply, atk, wep, newmoney, delta)
 	if buylogger.Active then
-		if ply == atk then atk = nil end
+		--if ply == atk then atk = nil end
 		buylogger.File:Write("death," .. ply:Nick() .. "," .. (IsValid(atk) and atk:IsPlayer() and atk:Nick() or "") .. "," .. newmoney .. "," .. delta .. "," .. (IsValid(wep) and wep:GetClass() or "") .. "\n")
 		--buylogger.File:Flush()
 	end
