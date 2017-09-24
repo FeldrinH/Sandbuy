@@ -1,3 +1,9 @@
+local allowed_pickup = {
+	sent_flying_bomb = true,
+	sent_oldcannon_p = true,
+	sent_mortar_p = true
+}
+
 if CLIENT then
 	language.Add("Shuriken_ammo", "Shuriken")
 	language.Add("SniperPenetratedRound_ammo", "Sniper Rounds")
@@ -31,4 +37,13 @@ hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 	
 	wep = weapons.GetStored("weapon_neurowep_ptrs41")
 	wep.Primary.Ammo = "SniperPenetratedRound"
+	
+	wep = weapons.GetStored("weapon_neurowep_he44")
+	wep.Primary.Ammo = "SMG1_Grenade"
+end)
+
+hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
+	if !allowed_pickup[ent:GetClass()] then
+		return false
+	end
 end)
