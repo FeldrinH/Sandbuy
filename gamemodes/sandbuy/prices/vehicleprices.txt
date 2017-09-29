@@ -1,16 +1,15 @@
 {
 	"default": -2,
-	"individual": 
-	{
+	"individual": {
 		"sim_fphys_hedgehog": 1500,
 		"sim_fphys_chaos126p": 1500,
 		"sim_fphys_v8elite_armed": 1000,
 		"sim_fphys_combineapc_armed": 1800,
 		"sim_fphys_jeep_armed": 1000,
 		"sim_fphys_v8elite_armed2": 1000,
-		"sim_fphys_tank": 1500,
+		"sim_fphys_tank": -2,
 		"sim_fphys_conscriptapc_armed": 2000,
-		"sim_fphys_tank2": 1500,
+		"sim_fphys_tank2": -2,
 		"sim_fphys_ratmobile": 1500,
 		"sim_fphys_jeep_armed2": 1000,
 		"sim_fphys_aventador": 1000,
@@ -40,6 +39,6 @@
 		"sim_fphys_opelspeedster": 400,
 		"sim_fphys_packard": 600,
 		"sim_fphys_Lotus_Cortina": 500,
-		"sim_fphys_saab99turbo":600
+		"sim_fphys_saab99turbo": 600
 	}
 }
