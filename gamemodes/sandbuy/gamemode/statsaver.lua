@@ -1,52 +1,88 @@
 local stats = {}
 
-concommand.Add("resetfull", function( ply )
+concommand.Add("resetfull", function( ply, cmd, args, argString  )
 	if !ply:IsAdmin() then return end
 	
 	for k,v in pairs(player.GetAll()) do
-		v:SetFrags(0)
-		v:SetDeaths(0)
-		v.HasDied = true
-		v:StripWeaponsRaw()
-		v:RemoveAllAmmo()
-		v:SetMoney(GetConVar("sbuy_defaultmoney"):GetInt())
-		v.TotalKillMoney = 0
-		v:Spawn()
+		if argString == "" or argString == v:Nick() then
+			v:SetFrags(0)
+			v:SetDeaths(0)
+			v.HasDied = true
+			v:StripWeaponsRaw()
+			v:RemoveAllAmmo()
+			v:SetMoney(GetConVar("sbuy_defaultmoney"):GetInt())
+			v.TotalKillMoney = 0
+			v:Spawn()
+			
+			if argString != "" then
+				targetid = v:SteamID()
+			end
+		end
 	end
 	
-	stats = {}
+	if argString == "" then
+		stats = {}
+	elseif targetid then
+		stats[targetid] = nil
+	end
 	
 	buylogger.LogReset("full", GetConVar("sbuy_defaultmoney"):GetInt())
 end)
 
-concommand.Add("resetplayers", function( ply )
+concommand.Add("resetplayers", function( ply, cmd, args, argString )
 	if !ply:IsAdmin() then return end
 	
+	local targetid = nil
+	
 	for k,v in pairs(player.GetAll()) do
-		v:SetFrags(0)
-		v:SetDeaths(0)
-		v:StripWeaponsRaw()
-		v:RemoveAllAmmo()
-		v:SetMoney(GetConVar("sbuy_defaultmoney"):GetInt())
-		v.TotalKillMoney = 0
+		if argString == "" or argString == v:Nick() then
+			v:SetFrags(0)
+			v:SetDeaths(0)
+			v:StripWeaponsRaw()
+			v:RemoveAllAmmo()
+			v:SetMoney(GetConVar("sbuy_defaultmoney"):GetInt())
+			v.TotalKillMoney = 0
+			
+			if argString != "" then
+				targetid = v:SteamID()
+			end
+		end
 	end
 	
-	stats = {}
+	if argString == "" then
+		stats = {}
+	elseif targetid then
+		stats[targetid] = nil
+	end
 	
 	buylogger.LogReset("players", GetConVar("sbuy_defaultmoney"):GetInt())
 end)
 
-concommand.Add("resetstats", function( ply )
+concommand.Add("resetstats", function( ply, cmd, args, argString  )
 	if !ply:IsAdmin() then return end
 	
 	for k,v in pairs(player.GetAll()) do
-		v:SetFrags(0)
-		v:SetDeaths(0)
+		if argString == "" or argString == v:Nick() then
+			v:SetFrags(0)
+			v:SetDeaths(0)
+			
+			if argString != "" then
+				targetid = v:SteamID()
+			end
+		end
 	end
 	
-	for k,v in pairs(stats) do
-		v.frags = 0
-		v.deaths = 0
+	if argString == "" then
+		for k,v in pairs(stats) do
+			v.frags = 0
+			v.deaths = 0
+		end
+	elseif targetid then
+		local plystats = stats[targetid]
+		if plystats then
+			plystats.frags = 0
+			plystats.deaths = 0
+		end
 	end
 	
 	buylogger.LogReset("stats", "")
