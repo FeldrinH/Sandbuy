@@ -344,7 +344,7 @@ end
 function GM:PlayerSpawnedSENT(ply, ent)
 	local price = pricer.GetPrice(ent:GetClass(), pricer.EntPrices)
 	if price > 0 and pricer.InCategory(ent:GetClass(), "machines") then
-		ent.DestroyReward = math.floor(price * 0.25)
+		ent.DestroyReward = math.floor(price * 0.5)
 	end
 	
 	return BaseClass.PlayerSpawnedSENT(self, ply, ent)
@@ -353,7 +353,7 @@ end
 function GM:PlayerSpawnedVehicle(ply, ent)
 	local price = pricer.GetPrice(ent:GetClass(), pricer.VehiclePrices)
 	if price > 0 then
-		ent.DestroyReward = math.floor(price * 0.25)
+		ent.DestroyReward = math.floor(price * 0.5)
 	end
 	
 	return BaseClass.PlayerSpawnedVehicle(self, ply, ent)
@@ -364,8 +364,7 @@ function GM:EntityTakeDamage(target, dmg)
 		local atk = dmg:GetAttacker()
 		if IsValid(atk) and atk:IsPlayer() then
 			target.DestroyRewardPlayer = atk
-		else
-			target.DestroyRewardPlayer = nil
+			target.DestroyRewardTime = CurTime()
 		end
 	end
 	
@@ -373,7 +372,10 @@ function GM:EntityTakeDamage(target, dmg)
 end
 
 function GM:EntityRemoved(ent)
-	if ent.DestroyReward and IsValid(ent.DestroyRewardPlayer) then
+	--[[if ent.DestroyRewardPlayer then
+		print(ent.DestroyRewardPlayer, ent.DestroyReward, CurTime() - ent.DestroyRewardTime, ent:GetClass())
+	end]]--
+	if ent.DestroyReward and IsValid(ent.DestroyRewardPlayer) and CurTime() - ent.DestroyRewardTime <= 0.5 then
 		ent.DestroyRewardPlayer:AddMoney(ent.DestroyReward)
 		buylogger.LogDestroy(ent.DestroyRewardPlayer, ent, ent.DestroyRewardPlayer:GetMoney(), ent.DestroyReward)
 	end
