@@ -351,7 +351,7 @@ function GM:PlayerSpawnedSENT(ply, ent)
 end
 
 function GM:PlayerSpawnedVehicle(ply, ent)
-	local price = pricer.GetPrice(ent:GetClass(), pricer.VehiclePrices)
+	local price = pricer.GetPrice(ent.VehicleName, pricer.VehiclePrices)
 	if price > 0 then
 		ent.DestroyReward = math.floor(price * 0.5)
 	end
@@ -372,9 +372,6 @@ function GM:EntityTakeDamage(target, dmg)
 end
 
 function GM:EntityRemoved(ent)
-	--[[if ent.DestroyRewardPlayer then
-		print(ent.DestroyRewardPlayer, ent.DestroyReward, CurTime() - ent.DestroyRewardTime, ent:GetClass())
-	end]]--
 	if ent.DestroyReward and IsValid(ent.DestroyRewardPlayer) and CurTime() - ent.DestroyRewardTime <= 0.5 then
 		ent.DestroyRewardPlayer:AddMoney(ent.DestroyReward)
 		buylogger.LogDestroy(ent.DestroyRewardPlayer, ent, ent.DestroyRewardPlayer:GetMoney(), ent.DestroyReward)
