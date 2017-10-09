@@ -183,7 +183,7 @@
 		"weapon_neurowep_knifelauncher": 2000,
 		"weapon_neurowep_handmortar": 1800,
 		"weapon_neurowep_rpc": 2000,
-		"weapon_neurowep_m79": 2000,
+		"weapon_neurowep_m79": 4000,
 		"weapon_neurowep_javelin": 4500,
 		"weapon_neurowep_flamethrower": 3500,
 		"weapon_neurowep_rpg7": 3000,
