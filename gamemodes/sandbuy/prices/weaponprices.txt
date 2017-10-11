@@ -1,7 +1,7 @@
 {
 	"default": -2,
 	"individual": {
-		"gmod_tool": -1,
+		"gmod_tool": 0,
 		"weapon_physgun": 0,
 		"m9k_f2000": 2800,
 		"m9k_m16a4_acog": 2500,
