@@ -240,6 +240,7 @@
 		"weapon_shotgun": 300,
 		"weapon_ar2": 400,
 		"weapon_stunstick": 100,
-		"weapon_slam": 300
+		"weapon_slam": 300,
+		"weapon_radar_improved": 1000
 	}
 }
