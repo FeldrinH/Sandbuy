@@ -113,6 +113,44 @@ local function Derma_StringRequestSmall( strTitle, strText, strDefaultText, fnEn
 
 end
 
+vgui.GetControlTable("DLabel").OnMousePressed = function( self, mousecode )
+
+	if ( self:GetDisabled() ) then return end
+
+	if ( mousecode == MOUSE_LEFT && !dragndrop.IsDragging() && self.m_bDoubleClicking ) then
+
+		if ( self.LastClickTime && SysTime() - self.LastClickTime < 0.2 ) then
+
+			self:DoDoubleClickInternal()
+			self:DoDoubleClick()
+			return
+
+		end
+
+		self.LastClickTime = SysTime()
+
+	end
+
+	-- If we're selectable and have shift held down then go up
+	-- the parent until we find a selection canvas and start box selection
+	if ( self:IsSelectable() && mousecode == MOUSE_LEFT && input.IsKeyDown( KEY_LALT ) ) then
+
+		return self:StartBoxSelection()
+
+	end
+
+	self:MouseCapture( true )
+	self.Depressed = true
+	self:OnDepressed()
+	self:InvalidateLayout( true )
+
+	--
+	-- Tell DragNDrop that we're down, and might start getting dragged!
+	--
+	self:DragMousePress( mousecode )
+
+end
+
 spawnmenu.AddCreationTab( "#spawnmenu.content_tab", function()
 
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
