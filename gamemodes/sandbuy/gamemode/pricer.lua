@@ -1,5 +1,6 @@
 pricer = pricer or {
 	TeamKillPenalty=200,
+	ArmorPrice = 8,
 	WepPrices={default=-2,individual={}},
 	AmmoPrices={default=-2,individual={}},
 	VehiclePrices={default=-2,individual={}},

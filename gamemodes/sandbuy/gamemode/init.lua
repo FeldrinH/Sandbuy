@@ -80,6 +80,33 @@ concommand.Add("sbuy_giveammo", function(ply, cmd, args)
 	ply:GiveAmmo(amount, ammo, false)
 end)
 
+concommand.Add("sbuy_givearmor", function(ply, cmd, args)
+	local amount = tonumber(args[1])
+	if !amount then return end
+	local amount = math.min(amount, 100 - ply:Armor())
+	if amount <= 0 then return end
+	
+	if pricer.ArmorPrice * amount > ply:GetMoney() then
+		amount = math.floor(ply:GetMoney() / pricer.ArmorPrice)
+		if amount < 1 then
+			amount = 1
+		end
+	end
+	
+	local price = pricer.ArmorPrice * amount
+	
+	if price <= ply:GetMoney() then
+		ply:AddMoney(-price)
+		ply:SetArmor(ply:Armor() + amount)
+		
+		ply:PrintMessage(HUD_PRINTCENTER, "Armor bought for $" .. price)
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+	else
+		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy armor")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+	end
+end)
+
 concommand.Add("sbuy_giveprimaryammo", function(ply, cmd, args)
 	local wep = ply:GetActiveWeapon()
 	if !IsValid(wep) then return end
