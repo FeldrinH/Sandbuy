@@ -1,14 +1,14 @@
-local allowed_pickup = {
-	sent_flying_bomb = true,
-	sent_oldcannon_p = true,
-	sent_mortar_p = true
-}
-
 if CLIENT then
 	language.Add("Shuriken_ammo", "Shuriken")
 	language.Add("SniperPenetratedRound_ammo", "Sniper Rounds")
 	language.Add("AirboatGun_ammo", "High-Caliber Rounds")
 	language.Add("AR2AltFire_ammo", "Plasma Orbs")
+	
+	cvars.AddChangeCallback("colour_a", function(cvar, oldv, newv)
+		if newv != "255" then
+			GetConVar("colour_a"):SetString("255")
+		end
+	end, "Sandbuy_BlockTranspColour")
 end
 
 game.AddAmmoType({name = "Shuriken"})
@@ -40,10 +40,4 @@ hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 	
 	wep = weapons.GetStored("weapon_neurowep_he44")
 	wep.Primary.Ammo = "SMG1_Grenade"
-end)
-
-hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
-	if !allowed_pickup[ent:GetClass()] then
-		return false
-	end
 end)
