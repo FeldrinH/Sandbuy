@@ -142,7 +142,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 	icon:SetContentType( "weapon" )
 	icon:SetSpawnName( obj.spawnname )
 	icon:SetName( obj.nicename )
-	if obj.material == "entities/sbuy_medkit.png" then icon:SetMaterial( "entities/weapon_medkit.png" ) else icon:SetMaterial( obj.material ) end
+	icon:SetMaterial( obj.material )
 	icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 135, 206, 250, 255 ) )
 	
