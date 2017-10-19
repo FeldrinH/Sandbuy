@@ -80,7 +80,7 @@ concommand.Add("sbuy_giveammo", function(ply, cmd, args)
 	ply:GiveAmmo(amount, ammo, false)
 end)
 
-concommand.Add("sbuy_givearmor", function(ply, cmd, args)
+--[[concommand.Add("sbuy_givearmor", function(ply, cmd, args)
 	local amount = tonumber(args[1])
 	if !amount then return end
 	local amount = math.min(amount, 100 - ply:Armor())
@@ -105,7 +105,7 @@ concommand.Add("sbuy_givearmor", function(ply, cmd, args)
 		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy armor")
 		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
 	end
-end)
+end)]]--
 
 concommand.Add("sbuy_giveprimaryammo", function(ply, cmd, args)
 	local wep = ply:GetActiveWeapon()
