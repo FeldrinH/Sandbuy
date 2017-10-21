@@ -97,7 +97,6 @@ hook.Add("PlayerInitialSpawn", "LoadStats", function(ply)
 		ply:SetDeaths(plystats.deaths)
 		
 		ply.HasDied = plystats.hasdied
-		ply.LastDeathSuicide = plystats.lastdeathsuicide
 		
 		ply.StatSaver_RestoreWeapons = true
 		
@@ -152,7 +151,7 @@ hook.Add("PlayerDisconnected", "SaveStats", function(ply)
 		end
 	end
 	
-	local plystats = { frags=ply:Frags(), deaths=ply:Deaths(), hasdied=ply.HasDied, lastdeathsuicide=ply.LastDeathSuicide, money=ply:GetMoney(), killmoney=ply.TotalKillMoney, weps=weps, ammo=ammo }
+	local plystats = { frags=ply:Frags(), deaths=ply:Deaths(), hasdied=ply.HasDied, money=ply:GetMoney(), killmoney=ply.TotalKillMoney, weps=weps, ammo=ammo }
 	if ply:Alive() and IsValid(ply:GetActiveWeapon()) then
 		plystats.activewep = ply:GetActiveWeapon():GetClass()
 	end
