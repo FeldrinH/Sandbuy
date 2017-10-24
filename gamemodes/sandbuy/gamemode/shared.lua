@@ -29,7 +29,9 @@ function GM:CanTool(ply, trace, tool)
 end
 
 hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
-	if !allowed_pickup[ent:GetClass()] then
+	if ent:IsVehicle() and !IsValid(ent:GetDriver()) then
+		return
+	elseif !allowed_pickup[ent:GetClass()] then
 		return false
 	end
 end)
