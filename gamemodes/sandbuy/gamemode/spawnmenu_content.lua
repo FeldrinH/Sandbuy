@@ -4,6 +4,14 @@ local buy_color = Color( 0, 255, 0 )
 local buy_color_dark = Color( 0, 160, 0 )
 local has_color = Color( 150, 150, 150 )
 
+surface.CreateFont( "TrebuchetPrice24", {
+	font = "Trebuchet",
+	size = 24,
+	weight = 400,
+	antialias = true,
+	additive = false
+} )
+
 if !GetConVar("sbuy_debug") or !GetConVar("sbuy_debug"):GetBool() then
 	local spawntabs = spawnmenu.GetCreationTabs()
 	
@@ -192,7 +200,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 	else
 		icon:SetTextColor( nobuy_color )
 	end
-	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetFont( ( price >= 0 and "TrebuchetPrice24" ) or "Trebuchet18" )
 	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
@@ -390,7 +398,7 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	else
 		icon:SetTextColor( nobuy_color )
 	end
-	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetFont( ( price >= 0 and "TrebuchetPrice24" ) or "Trebuchet18" )
 	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
@@ -404,7 +412,7 @@ spawnmenu.AddContentType( "ammo", function( container, obj )
 	else
 		label:SetTextColor( nobuy_color )
 	end
-	label:SetFont( "Trebuchet24" )
+	label:SetFont( "TrebuchetPrice24" )
 	label:SetExpensiveShadow(1, Color(0,0,0))
 	icon.AmountLabel = label]]--
 	
@@ -484,7 +492,7 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 	else
 		icon:SetTextColor( nobuy_color )
 	end
-	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetFont( ( price >= 0 and "TrebuchetPrice24" ) or "Trebuchet18" )
 	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
@@ -564,7 +572,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 	else
 		icon:SetTextColor( nobuy_color )
 	end
-	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetFont( ( price >= 0 and "TrebuchetPrice24" ) or "Trebuchet18" )
 	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
@@ -643,7 +651,7 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 	else
 		icon:SetTextColor( nobuy_color )
 	end
-	icon:SetFont( ( price >= 0 and "Trebuchet24" ) or "Trebuchet18" )
+	icon:SetFont( ( price >= 0 and "TrebuchetPrice24" ) or "Trebuchet18" )
 	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
 	
