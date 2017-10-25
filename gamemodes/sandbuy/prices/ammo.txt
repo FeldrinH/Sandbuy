@@ -23,7 +23,7 @@
 			"Amount": 1,
 			"Icon": "m9k_ammo_c4",
 			"Category": "Explosives",
-			"Price": 400,
+			"Price": -1,
 			"Name": "C4"
 		},
 		"AirboatGun":
@@ -87,7 +87,7 @@
 			"Amount": 1,
 			"Icon": "m9k_ammo_proxmines",
 			"Category": "Explosives",
-			"Price": 500,
+			"Price": -1,
 			"Name": "Prox Mines"
 		},
 		"NerveGas":
