@@ -50,6 +50,8 @@ hook.Add("PlayerCanPickupWeapon","FixPickupWhenWeaponNotMoving", function(ply, w
 	end
 end)
 
+timer.Remove("ladder_SaveData")
+
 local meta = FindMetaTable( "Player" )
 
 if !meta.StripWeaponsRaw then
