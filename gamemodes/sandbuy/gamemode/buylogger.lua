@@ -20,7 +20,7 @@ end
 
 function buylogger.LogKill(ply, victim, wep, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write("kill," .. ply:Nick() .. "," .. victim:Nick() .. "," .. newmoney .. "," .. delta .. "," .. (IsValid(wep) and wep:GetClass() or "") .. "\n")
+		buylogger.File:Write("kill," .. ply:Nick() .. "," .. (victim:IsPlayer() and victim:Nick() or victim:GetClass()).. "," .. newmoney .. "," .. delta .. "," .. (IsValid(wep) and wep:GetClass() or "") .. "\n")
 		--buylogger.File:Flush()
 	end
 end
