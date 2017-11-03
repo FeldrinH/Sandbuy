@@ -10,7 +10,6 @@ concommand.Add("resetfull", function( ply, cmd, args, argString  )
 			v.HasDied = true
 			v:StripWeaponsRaw()
 			v:RemoveAllAmmo()
-			v:SetMoney(GetConVar("sbuy_defaultmoney"):GetInt())
 			v.TotalKillMoney = 0
 			v:Spawn()
 			
@@ -40,7 +39,7 @@ concommand.Add("resetplayers", function( ply, cmd, args, argString )
 			v:SetDeaths(0)
 			v:StripWeaponsRaw()
 			v:RemoveAllAmmo()
-			v:SetMoney(GetConVar("sbuy_defaultmoney"):GetInt())
+			v:SetMoney(v:GetBailout())
 			v.TotalKillMoney = 0
 			
 			if argString != "" then

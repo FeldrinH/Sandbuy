@@ -186,7 +186,7 @@ end
 function GM:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
-	local bailoutamount = GetConVar("sbuy_defaultmoney"):GetInt() + ply:GetBailoutBonus()
+	local bailoutamount = ply:GetBailout()
 	
 	if ply.GetMoney and ply.HasDied and ply:GetMoney() < bailoutamount then
 		buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply:GetMoney())
