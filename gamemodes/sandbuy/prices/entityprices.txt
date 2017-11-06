@@ -248,6 +248,8 @@
 		"sent_j2m_p": -2,
 		"sent_meteor_p": -2,
 		"sent_b-17_p": 2500,
-		"edit_fog": 0
+		"edit_fog": 0,
+		"functiontotem": 0,
+		"flagtotem": 0
 	}
 }
