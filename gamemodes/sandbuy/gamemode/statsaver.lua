@@ -10,6 +10,7 @@ concommand.Add("resetfull", function( ply, cmd, args, argString  )
 			v.HasDied = true
 			v:StripWeaponsRaw()
 			v:RemoveAllAmmo()
+			v:SetMoney(v:GetBailout())
 			v.TotalKillMoney = 0
 			v:Spawn()
 			
