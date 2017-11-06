@@ -11,6 +11,34 @@ if CLIENT then
 	end, "Sandbuy_BlockTranspColour")
 end
 
+local toolwhitelist = {
+	paint = true,
+	colour = true,
+	ladder = true
+}
+
+local allowed_pickup = {
+	sent_flying_bomb = true,
+	sent_oldcannon_p = true,
+	sent_mortar_p = true,
+	prop_physics = true
+}
+
+hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
+	if ent:IsVehicle() and !IsValid(ent:GetDriver()) then
+		return
+	elseif !allowed_pickup[ent:GetClass()] then
+		return false
+	end
+end)
+
+hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
+	--print(tool)
+	if !toolwhitelist[tool] then
+		return false
+	end
+end)
+
 game.AddAmmoType({name = "Shuriken"})
 
 hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()

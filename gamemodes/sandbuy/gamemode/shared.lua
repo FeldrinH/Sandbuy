@@ -10,28 +10,3 @@ DEFINE_BASECLASS( "gamemode_sandbox" )
 GM.Name = "Sandbuy"
 GM.Author = "FeldrinH"
 GM.IsSandboxDerived = true
-
-local toolwhitelist = {
-	paint = true,
-	colour = true,
-	ladder = true
-}
-
-local allowed_pickup = {
-	sent_flying_bomb = true,
-	sent_oldcannon_p = true,
-	sent_mortar_p = true
-}
-
-function GM:CanTool(ply, trace, tool)
-	--print(tool)
-	return toolwhitelist[tool] and BaseClass.CanTool(self, ply, trace, tool) or false
-end
-
-hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
-	if ent:IsVehicle() and !IsValid(ent:GetDriver()) then
-		return
-	elseif !allowed_pickup[ent:GetClass()] then
-		return false
-	end
-end)

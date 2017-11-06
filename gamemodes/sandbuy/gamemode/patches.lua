@@ -50,6 +50,17 @@ hook.Add("PlayerCanPickupWeapon","FixPickupWhenWeaponNotMoving", function(ply, w
 	end
 end)
 
+local allowed_freeze = {
+	sent_oldcannon_p = true,
+	sent_mortar_p = true
+}
+
+hook.Add("OnPhysgunFreeze", "Sandbuy_NerfPhysgun", function(wep, physobj, ent, ply)
+	if !allowed_freeze[ent:GetClass()] then
+		return false
+	end
+end)
+
 timer.Remove("ladder_SaveData")
 
 local meta = FindMetaTable( "Player" )
