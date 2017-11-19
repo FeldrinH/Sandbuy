@@ -1,6 +1,4 @@
 pricer = pricer or {
-	TeamKillPenalty=200,
-	ArmorPrice = 8,
 	WepPrices={default=-2,individual={}},
 	AmmoPrices={default=-2,individual={}},
 	VehiclePrices={default=-2,individual={}},
@@ -8,6 +6,10 @@ pricer = pricer or {
 	Categories={},
 	AmmoData={}
 }
+
+pricer.TeamKillPenalty = 200
+pricer.ArmorPrice = 8
+pricer.LadderPrice = 50
 
 pricer.ClipCount = {
 }

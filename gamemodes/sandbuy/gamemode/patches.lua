@@ -50,6 +50,35 @@ hook.Add("PlayerCanPickupWeapon","FixPickupWhenWeaponNotMoving", function(ply, w
 	end
 end)
 
+-- Bad temporary paying system. Move later
+hook.Add("CanTool", "Sandbuy_TweakLadderTool", function(ply, trace, tool)
+	if tool == "ladder" then
+		if trace.HitSky then return false end
+		
+		local price = pricer.LadderPrice
+		local tool = ply:GetTool()
+		if tool:GetStage() != 0 and debug.getinfo(3, "S").linedefined == 208 then
+			if ply:GetMoney() >= price then
+				ply:AddMoney(-price)
+				buylogger.LogBuy(ply, "ladder", "tool", ply:GetMoney(), -price)
+				
+				ply:PrintMessage(HUD_PRINTCENTER, "Ladder bought for $" .. price)
+				ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+				
+				return
+			else
+				tool:SetStage(0)
+				tool:ClearObjects()
+				
+				ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy ladder")
+				ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+				
+				return false
+			end
+		end
+	end
+end)
+
 local allowed_freeze = {
 	sent_oldcannon_p = true,
 	sent_mortar_p = true

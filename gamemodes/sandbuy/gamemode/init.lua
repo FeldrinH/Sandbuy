@@ -65,7 +65,7 @@ concommand.Add("cleanprices", function(ply)
 	end
 	
 	if count == 0 then
-		print("Prices clean")	
+		print("Prices clean")
 	else
 		print(count .. " items not spawnable")
 	end
