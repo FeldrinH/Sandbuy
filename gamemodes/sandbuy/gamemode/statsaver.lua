@@ -1,5 +1,9 @@
 local stats = {}
 
+function GetStatSaverData()
+	return stats
+end
+
 concommand.Add("resetfull", function( ply, cmd, args, argString  )
 	if !ply:IsAdmin() then return end
 	
@@ -10,6 +14,8 @@ concommand.Add("resetfull", function( ply, cmd, args, argString  )
 			v.HasDied = true
 			v:StripWeaponsRaw()
 			v:RemoveAllAmmo()
+			v.NeuroPlanes_SavedWeapons = nil
+			v.NeuroPlanes_ActiveWeapon = nil
 			v.TotalKillMoney = 0
 			v:SetMoney(v:GetBailout())
 			v:Spawn()
@@ -40,6 +46,8 @@ concommand.Add("resetplayers", function( ply, cmd, args, argString )
 			v:SetDeaths(0)
 			v:StripWeaponsRaw()
 			v:RemoveAllAmmo()
+			v.NeuroPlanes_SavedWeapons = nil
+			v.NeuroPlanes_ActiveWeapon = nil
 			v.TotalKillMoney = 0
 			v:SetMoney(v:GetBailout())
 			
@@ -151,7 +159,7 @@ hook.Add("PlayerDisconnected", "SaveStats", function(ply)
 		end
 	end
 	
-	local plystats = { frags=ply:Frags(), deaths=ply:Deaths(), hasdied=ply.HasDied, money=ply:GetMoney(), killmoney=ply.TotalKillMoney, weps=weps, ammo=ammo }
+	local plystats = { nick=ply:Nick(), frags=ply:Frags(), deaths=ply:Deaths(), hasdied=ply.HasDied, money=ply:GetMoney(), killmoney=ply.TotalKillMoney, weps=weps, ammo=ammo }
 	if ply:Alive() and IsValid(ply:GetActiveWeapon()) then
 		plystats.activewep = ply:GetActiveWeapon():GetClass()
 	end

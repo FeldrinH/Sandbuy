@@ -37,13 +37,6 @@ hook.Remove("PlayerSwitchWeapon", "AutoGiveAmmo")
 	end
 end)]]--
 
-hook.Add("PlayerLoadout","NeuroPlanes_LoadWeapons", function(ply)
-	if ply.NeuroPlanes_SavedWeapons then
-		ply:NeuroPlanes_LoadWeapons()
-		return true
-	end
-end)
-
 hook.Add("PlayerCanPickupWeapon","FixPickupWhenWeaponNotMoving", function(ply, wep)
 	if IsValid(wep:GetPhysicsObject()) then
 		wep:GetPhysicsObject():ApplyForceCenter(Vector(0,0,50))
@@ -92,6 +85,10 @@ end)
 
 timer.Remove("ladder_SaveData")
 
+hook.Add("PlayerLoadout","NeuroPlanes_LoadWeapons", function(ply)
+	return ply:NeuroPlanes_LoadWeapons()
+end)
+
 local meta = FindMetaTable( "Player" )
 
 if !meta.StripWeaponsRaw then
@@ -119,19 +116,21 @@ function meta:NeuroPlanes_SaveWeapons()
 end
 
 function meta:NeuroPlanes_LoadWeapons()
-	if !self.HasDied then
-		if self.NeuroPlanes_SavedWeapons != nil then
-			self:StripWeaponsRaw()
-			
-			for k,v in pairs(self.NeuroPlanes_SavedWeapons) do
-				self:Give(v.wep,true)
-				local wep = self:GetWeapon(v.wep)
-				if v.clip1 >= 0 then
-					wep:SetClip1(v.clip1)
-				end
-				if v.clip2 >= 0 then
-					wep:SetClip2(v.clip2)
-				end
+	local restoresuccess = nil
+	
+	if !self.HasDied and self.NeuroPlanes_SavedWeapons != nil then
+		restoresuccess = true
+		
+		self:StripWeaponsRaw()
+		
+		for k,v in pairs(self.NeuroPlanes_SavedWeapons) do
+			self:Give(v.wep,true)
+			local wep = self:GetWeapon(v.wep)
+			if v.clip1 >= 0 then
+				wep:SetClip1(v.clip1)
+			end
+			if v.clip2 >= 0 then
+				wep:SetClip2(v.clip2)
 			end
 		end
 		
@@ -142,4 +141,6 @@ function meta:NeuroPlanes_LoadWeapons()
 	
 	self.NeuroPlanes_SavedWeapons = nil
 	self.NeuroPlanes_ActiveWeapon = nil
+	
+	return restoresuccess
 end
