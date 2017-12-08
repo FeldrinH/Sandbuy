@@ -39,6 +39,7 @@ function spawnmenu.UpdateSpawnlistMoney(money)
 	end
 	if g_SpawnMenu.PriceIcons then
 		for k,v in pairs(g_SpawnMenu.PriceIcons) do
+			if !IsValid(v) then continue end
 			if v:GetContentType() == "weapon" then
 				UpdateWepPrice(v, money)
 			elseif v:GetContentType() == "entity" then
