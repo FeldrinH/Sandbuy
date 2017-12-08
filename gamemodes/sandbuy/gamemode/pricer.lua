@@ -15,7 +15,8 @@ pricer.ClipCount = {
 }
 
 pricer.ClipSize = {
-	sbuy_medkit = 100,
+	sbuy_medkit = 20,
+	sbuy_armorkit = 10,
 	weapon_rpg = 1
 }
 

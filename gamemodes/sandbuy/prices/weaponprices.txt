@@ -241,6 +241,7 @@
 		"weapon_ar2": 400,
 		"weapon_stunstick": 100,
 		"weapon_slam": 900,
-		"seal6-c4": -2
+		"seal6-c4": -2,
+		"sbuy_armorkit": 0
 	}
 }

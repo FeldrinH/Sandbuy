@@ -10,6 +10,14 @@
 			"Price": 4,
 			"Name": "Medkit Health Vials"
 		},
+		"ArmorkitBattery":
+		{
+			"Amount": 1,
+			"Icon": "m9k_ammo_frags",
+			"Category": "Miscellaneous",
+			"Price": 8,
+			"Name": "Armorkit Suit Batteries"
+		},
 		"Grenade":
 		{
 			"Amount": 1,

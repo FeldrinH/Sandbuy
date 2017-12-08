@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/items/armorkit01"
+	"$surfaceprop" "metal"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[ .45 .50 .55]"
+	"$envmapmask" "models/items/armorkit01_mask"
+	"$selfillum" 1
+	"$halflambert" "1"
+}
+
+
