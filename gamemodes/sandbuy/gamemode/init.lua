@@ -34,6 +34,24 @@ concommand.Add("reloadprices", function(ply)
 	print("Reloaded prices")
 end)
 
+concommand.Add("cleanprices", function(ply)
+	local count = 0
+
+	local items = list.GetForEdit("Weapon")
+	for k,v in pairs(pricer.WepPrices.individual) do
+		if !items[k] or !items[k].Spawnable then
+			print("Weapon not spawnable: " .. k)
+			count = count + 1
+		end
+	end
+	
+	if count == 0 then
+		print("Prices clean")
+	else
+		print(count .. " items not spawnable")
+	end
+end)
+
 concommand.Add("sbuy_setoverrideprice", function(ply, cmd, args)
 	if !ply:IsAdmin() then return end
 
@@ -53,21 +71,28 @@ concommand.Add("sbuy_setoverrideprice", function(ply, cmd, args)
 	print("New override price:", wep, "$" .. price)
 end)
 
-concommand.Add("cleanprices", function(ply)
-	local count = 0
-
-	local items = list.GetForEdit("Weapon")
-	for k,v in pairs(pricer.WepPrices.individual) do
-		if !items[k] or !items[k].Spawnable then
-			print("Weapon not spawnable: " .. k)
-			count = count + 1
-		end
+concommand.Add("sbuy_setcategoryprice", function(ply, cmd, args)
+	if !ply:IsAdmin() then return end
+	
+	local category = args[1]
+	if !pricer.Categories[category] then
+		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid category")
+		return
 	end
 	
-	if count == 0 then
-		print("Prices clean")
+	local price = tonumber(args[2])
+	if !price then
+		hook.Remove("ApplyPriceModifiers", "CategoryOverride_" .. category)
+
+		print("Removed category price:", category)
 	else
-		print(count .. " items not spawnable")
+		hook.Add("ApplyPriceModifiers", "CategoryOverride_" .. category, function()
+			pricer.ApplyModifier(category, function()
+				return price
+			end)
+		end)
+		
+		print("New category price:", category, "$" .. price)
 	end
 end)
 
@@ -107,7 +132,7 @@ end)
 	end
 end)]]--
 
-concommand.Add("sbuy_giveprimaryammo", function(ply, cmd, args)
+local function GiveHeldAmmo(ply, cmd, args)
 	local wep = ply:GetActiveWeapon()
 	if !IsValid(wep) then return end
 	
@@ -145,7 +170,10 @@ concommand.Add("sbuy_giveprimaryammo", function(ply, cmd, args)
 	if !gamemode.Call("PlayerGiveAmmo", ply, ammo, amount) then return end
 	
 	ply:GiveAmmo(amount, ammo, false)
-end)
+end
+
+concommand.Add("sbuy_giveheldammo", GiveHeldAmmo)
+concommand.Add("sbuy_giveprimaryammo", GiveHeldAmmo) --Deprecate later
 
 function GM:Initialize()
 	pricer.LoadPrices()

@@ -145,7 +145,7 @@ end
 function pricer.ApplyModifier(category, prices, modifier)
 	for k,v in pairs(pricer.Categories[category]) do
 		if pricer.GetPrice(v, prices) >= 0 then
-			prices[v] = modifier(pricer.GetPrice(v, prices))
+			prices[v] = modifier(pricer.GetPrice(v, prices), v)
 		end
 	end
 end
@@ -166,7 +166,7 @@ function pricer.LoadPrices()
 	
 	pricer.Categories = LoadCategories() or pricer.Categories
 	
-	pricer.ApplyPriceModifications()
+	hook.Run("ApplyPriceModifiers")
 	
 	local itemlist = list.GetForEdit("Weapon")
 	for k,v in pairs(itemlist) do
