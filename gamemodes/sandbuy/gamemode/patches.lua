@@ -18,25 +18,6 @@ if GetConVar("sbuy_noundo"):GetBool() then
 	end
 end
 
-hook.Remove("PlayerSpawnSENT", "BlockNuclearSEnts")
-hook.Remove("PlayerGiveSWEP", "BlockNukeSWep")
-hook.Remove("PlayerSpawnSWEP", "BlockNukeSpawn")
-
-hook.Remove("PlayerSwitchWeapon", "AutoGiveAmmo")
---[[hook.Add("PlayerSwitchWeapon", "AutoGiveAmmo", function(ply, oldWpn, newWpn)
-	local primary_ammo = newWpn:GetPrimaryAmmoType()
-	if !blocked_ammo[primary_ammo] then
-		--print("Score1", primary_ammo)
-		ply:SetAmmo( 9999, primary_ammo )
-	end
-	
-	local secondary_ammo = newWpn:GetSecondaryAmmoType()
-	if !blocked_ammo[secondary_ammo] then
-		--print("Score2", secondary_ammo)
-		ply:SetAmmo( 9999, secondary_ammo )
-	end
-end)]]--
-
 hook.Add("PlayerCanPickupWeapon","FixPickupWhenWeaponNotMoving", function(ply, wep)
 	if IsValid(wep:GetPhysicsObject()) then
 		wep:GetPhysicsObject():ApplyForceCenter(Vector(0,0,50))
@@ -87,6 +68,43 @@ timer.Remove("ladder_SaveData")
 
 hook.Add("PlayerLoadout","NeuroPlanes_LoadWeapons", function(ply)
 	return ply:NeuroPlanes_LoadWeapons()
+end)
+
+hook.Add("OnEntityCreated", "LimitProxySpam", function(ent)
+	if ent:GetClass() == "m9k_proxy" then
+		local entcount = #ents.FindByClass("m9k_proxy")
+		if entcount == 3 then
+			PrintMessage(HUD_PRINTTALK, "[GLOBAL] Proxy Mine limit has been reached. Placing more mines is inadvisable.")
+		elseif entcount > 3 then
+			timer.Simple(0, function() 
+				ent:Explosion()
+			end)
+		end
+	elseif ent:GetClass() == "npc_tripmine" then
+		local entcount = #ents.FindByClass("npc_tripmine")
+		if entcount == 4 then
+			PrintMessage(HUD_PRINTTALK, "SLAM limit has been reached. Placing more tripmines is inadvisable.")
+		elseif entcount > 4 then
+			ent:TakeDamage(1000, ent, ent)
+		end
+	end
+end)
+
+hook.Add("PlayerSwitchWeapon", "ReportProxyLimit", function( ply, oldWpn, newWpn )
+	if !ply:Alive() then return end
+	if newWpn:GetClass() == "m9k_proxy_mine" then
+		if #ents.FindByClass("m9k_proxy") >= 3 then
+			ply:PrintMessage(HUD_PRINTTALK, "Proxy Mine limit has been reached. Placing more mines is inadvisable.")
+		else
+			ply:PrintMessage(HUD_PRINTTALK, "Proxy Mine limit has not been reached. It is safe to place mines.")
+		end
+	elseif newWpn:GetClass() == "weapon_slam" then
+		if #ents.FindByClass("npc_tripmine") >= 4 then
+			ply:PrintMessage(HUD_PRINTTALK, "SLAM limit has been reached. Placing more tripmines is inadvisable.")
+		else
+			ply:PrintMessage(HUD_PRINTTALK, "SLAM limit has not been reached. It is safe to place tripmines.")
+		end
+	end
 end)
 
 local meta = FindMetaTable( "Player" )
