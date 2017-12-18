@@ -301,9 +301,11 @@ end )
 spawnmenu.AddCreationTab( "#spawnmenu.category.weapons", function()
 
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
-	ctrl:CallPopulateHook( "PopulateWeapons" )
 	
 	AddMoneyLabel(ctrl)
+	
+	ctrl:EnableSearch( "weapons", "PopulateWeapons" )
+	ctrl:CallPopulateHook( "PopulateWeapons" )
 	
 	return ctrl
 
@@ -542,9 +544,11 @@ end )
 spawnmenu.AddCreationTab( "#spawnmenu.category.entities", function()
 
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
-	ctrl:CallPopulateHook( "PopulateEntities" )
-
+	
 	AddMoneyLabel(ctrl)
+	
+	ctrl:EnableSearch( "entities", "PopulateEntities" )
+	ctrl:CallPopulateHook( "PopulateEntities" )
 	
 	return ctrl
 
@@ -622,9 +626,11 @@ end )
 --[[spawnmenu.AddCreationTab( "#spawnmenu.category.vehicles", function()
 
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
-	ctrl:CallPopulateHook( "PopulateVehicles" )
 	
 	AddMoneyLabel(ctrl)
+	
+	ctrl:EnableSearch( "vehicles", "PopulateVehicles" )
+	ctrl:CallPopulateHook( "PopulateVehicles" )
 	
 	return ctrl
 
