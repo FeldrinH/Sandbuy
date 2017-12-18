@@ -159,7 +159,7 @@
 			"Amount": 1,
 			"Icon": "item_ammo_ar2_altfire",
 			"Category": "Miscellaneous",
-			"Price": 100,
+			"Price": 500,
 			"Name": "Plasma Orbs"
 		},
 		"Harpoon":
@@ -175,7 +175,7 @@
 			"Amount": 1,
 			"Icon": "item_ammo_smg1_grenade",
 			"Category": "Explosives",
-			"Price": 50,
+			"Price": 100,
 			"Name": "SMG Grenade"
 		},
 		"XBowBolt":
