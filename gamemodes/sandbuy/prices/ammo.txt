@@ -47,7 +47,7 @@
 			"Amount": 1,
 			"Icon": "m9k_ammo_ieds",
 			"Category": "Explosives",
-			"Price": 500,
+			"Price": 600,
 			"Name": "IEDs"
 		},
 		"Buckshot":

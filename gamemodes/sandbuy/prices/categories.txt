@@ -246,36 +246,42 @@
 		"m9k_mossberg590",
 		"m9k_striker12"
 	],
-	"pistols": 
+	"helicopters":
 	[
-		
+		"sent_rah-66comanche_p",
+		"item_battery",
+		"sent_ah-1cobra_p",
+		"sent_uh1_p",
+		"sent_ka-50blackshark_p",
+		"sent_mi-28_p",
+		"sent_ah-64_apache_p",
+		"sent_merlin_p",
+		"sent_combine_helicopter_p",
+		"sent_ah-6_littlebird",
+		"sent_ah64apache",
+		"sent_chinook_p",
+		"sent_ec635_p",
+		"sent_mi-24_p",
+		"sent_uh-60blackhawk_p",
+		"sent_m8drone_p"
 	],
-	"submachineguns": 
+	"badenclosed":
 	[
-		
-	],
-	"machineguns": 
-	[
-		
-	],
-	"assaultrifles": 
-	[
-		
-	],
-	"throwables": 
-	[
-		
-	],
-	"launchers": 
-	[
-		
-	],
-	"dayofdefeat": 
-	[
-		
-	],
-	"halflife2": 
-	[
-		
+		"m9k_nerve_gas",
+		"m9k_proxy_mine",
+		"weapon_slam",
+		"item_ammo_ar2_altfire",
+		"item_ammo_smg1_grenade",
+		"m9k_m202",
+		"m9k_ex41",
+		"m9k_m79gl",
+		"m9k_matador",
+		"m9k_rpg7",
+		"weapon_neurowep_javelin",
+		"weapon_jericho",
+		"weapon_neurowep_m79",
+		"weapon_neurowep_knifelauncher",
+		"weapon_neurowep_rpg7",
+		"weapon_jericho"
 	]
 }
