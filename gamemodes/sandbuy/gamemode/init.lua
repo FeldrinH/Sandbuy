@@ -16,10 +16,6 @@ include('statsaver.lua')
 DEFINE_BASECLASS("gamemode_sandbox")
 local BaseBaseClass = baseclass.Get( "gamemode_base" )
 
---resource.AddSingleFile("data/weaponprices.txt")
---resource.AddSingleFile("data/vehicleprices.txt")
---resource.AddSingleFile("data/entityprices.txt")
-
 util.AddNetworkString("moneychanged")
 util.AddNetworkString("weaponbought")
 util.AddNetworkString("newprices")
@@ -52,6 +48,36 @@ concommand.Add("cleanprices", function(ply)
 	end
 end)
 
+concommand.Add("setcategoryprice", function(ply, cmd, args)
+	if !ply:IsAdmin() then return end
+	
+	local category = args[1]
+	if !pricer.Categories[category] then
+		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid category: " .. category)
+		return
+	end
+	
+	local price = tonumber(args[2])
+	if !price then
+		hook.Remove("ApplyPriceModifiers", "CategoryOverride_" .. category)
+
+		print("Removed category price:", category)
+	else
+		local function ReturnPrice() 
+			return price
+		end
+	
+		hook.Add("ApplyPriceModifiers", "CategoryOverride_" .. category, function()
+			pricer.ApplyModifier(category, pricer.WepPrices, ReturnPrice)
+			pricer.ApplyModifier(category, pricer.EntPrices, ReturnPrice)
+			pricer.ApplyModifier(category, pricer.VehiclePrices, ReturnPrice)
+			pricer.ApplyModifier(category, pricer.AmmoPrices, ReturnPrice)
+		end)
+		
+		print("New category price:", category, "$" .. price)
+	end
+end)
+
 concommand.Add("sbuy_setoverrideprice", function(ply, cmd, args)
 	if !ply:IsAdmin() then return end
 
@@ -69,31 +95,6 @@ concommand.Add("sbuy_setoverrideprice", function(ply, cmd, args)
 	file.Write(filename, util.TableToJSON(pricetable, true))
 	
 	print("New override price:", wep, "$" .. price)
-end)
-
-concommand.Add("sbuy_setcategoryprice", function(ply, cmd, args)
-	if !ply:IsAdmin() then return end
-	
-	local category = args[1]
-	if !pricer.Categories[category] then
-		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid category")
-		return
-	end
-	
-	local price = tonumber(args[2])
-	if !price then
-		hook.Remove("ApplyPriceModifiers", "CategoryOverride_" .. category)
-
-		print("Removed category price:", category)
-	else
-		hook.Add("ApplyPriceModifiers", "CategoryOverride_" .. category, function()
-			pricer.ApplyModifier(category, function()
-				return price
-			end)
-		end)
-		
-		print("New category price:", category, "$" .. price)
-	end
 end)
 
 concommand.Add("sbuy_giveammo", function(ply, cmd, args)

@@ -142,18 +142,18 @@ local function LoadCategories()
 	return cats
 end
 
-function pricer.ApplyModifier(category, prices, modifier)
+function pricer.ApplyModifier(category, prices, modifier)	
 	for k,v in pairs(pricer.Categories[category]) do
-		if pricer.GetPrice(v, prices) >= 0 then
-			prices[v] = modifier(pricer.GetPrice(v, prices), v)
+		if pricer.GetPrice(k, prices) >= 0 then
+			prices.individual[k] = modifier(pricer.GetPrice(k, prices), k)
 		end
 	end
 end
 
 function pricer.PrintModifier(category, prices, modifier)
 	for k,v in pairs(pricer.Categories[category]) do
-		if pricer.GetPrice(v, prices) >= 0 then
-			print('"' .. v .. '": ' .. modifier(pricer.GetPrice(v, prices)) .. ',')
+		if pricer.GetPrice(k, prices) >= 0 then
+			print('"' .. k .. '": ' .. modifier(pricer.GetPrice(k, prices)) .. ',')
 		end
 	end
 end
