@@ -22,10 +22,10 @@ util.AddNetworkString("newprices")
 
 CreateConVar("freebuy", 0, FCVAR_NOTIFY)
 cvars.AddChangeCallback("freebuy", function(convar, old, new)
-	if new == 0 then
-		buylogger.Close(true)
-	else
+	if tonumber(new) == 0 then
 		buylogger.Init(true)
+	else
+		buylogger.Close(true)
 	end
 end, "Sandbuy_Freebuy")
 
