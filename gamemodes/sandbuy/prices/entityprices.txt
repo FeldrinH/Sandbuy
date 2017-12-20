@@ -222,7 +222,7 @@
 		"sent_e100_p": 5500,
 		"item_healthcharger": -2,
 		"item_suitcharger": -2,
-		"item_battery": 120,
+		"item_battery": -1,
 		"combine_mine": 300,
 		"sent_oldcannon_p": 4500,
 		"npc_vulcan_aa": 4000,
