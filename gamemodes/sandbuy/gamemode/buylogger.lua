@@ -1,19 +1,29 @@
 buylogger = buylogger or {Active=false}
 
-function buylogger.Init()
+function buylogger.Init(isfreebuy)
+	if buylogger.Active then return end
+
 	if !file.Exists("buylog.txt", "DATA") then
 		file.Write("buylog.txt", "action,player,target,newmoney,killweapon\n")
 	end
 	
 	buylogger.File = file.Open("buylog.txt", "a", "DATA")
-	buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " " .. game.GetMap() .. " --LOGGING STARTED--\n")
+	if isfreebuy then
+		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " " .. game.GetMap() .. " --FREEBUY DISABLED--\n")
+	else
+		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " " .. game.GetMap() .. " --LOGGING STARTED--\n")
+	end
 	buylogger.Active = true
 end
 
-function buylogger.Close()
+function buylogger.Close(isfreebuy)
 	if buylogger.Active then
 		buylogger.Active = false
-		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --LOGGING ENDED--\n")
+		if isfreebuy then
+			buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " " .. game.GetMap() .. " --FREEBUY ENABLED--\n")
+		else
+			buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --LOGGING ENDED--\n")
+		end
 		buylogger.File:Close()
 	end
 end

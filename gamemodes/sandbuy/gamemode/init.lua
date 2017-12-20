@@ -20,6 +20,15 @@ util.AddNetworkString("moneychanged")
 util.AddNetworkString("weaponbought")
 util.AddNetworkString("newprices")
 
+CreateConVar("freebuy", 0, FCVAR_NOTIFY)
+cvars.AddChangeCallback("freebuy", function(convar, old, new)
+	if new == 0 then
+		buylogger.Close(true)
+	else
+		buylogger.Init(true)
+	end
+end, "Sandbuy_Freebuy")
+
 concommand.Add("reloadprices", function(ply)
 	if !ply:IsAdmin() then return end
 
@@ -272,6 +281,15 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 	if ply:HasWeapon(class) then
 		return true
 	end
+	if GetConVar("freebuy"):GetBool() then
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+		
+		net.Start("weaponbought")
+		net.WriteString(class)
+		net.Send(ply)
+		
+		return true
+	end
 	
 	local price = pricer.GetPrice(class, pricer.WepPrices)
 	if pricer.CanBuy(ply:GetMoney(), price) then
@@ -298,6 +316,11 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 end
 
 function GM:PlayerSpawnSWEP(ply, class, swep)
+	if GetConVar("freebuy"):GetBool() then
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+		return true
+	end
+
 	local price = pricer.GetPrice(class, pricer.WepPrices)
 	if pricer.CanBuy(ply:GetMoney(), price) then
 		ply:AddMoney(-price)
@@ -321,6 +344,11 @@ end
 function GM:PlayerGiveAmmo(ply, ammo, amount)
 	if amount <= 0 then return false end
 	
+	if GetConVar("freebuy"):GetBool() then
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+		return true
+	end
+
 	local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * amount
 	if pricer.CanBuy(ply:GetMoney(), price) then
 		ply:AddMoney(-price)
@@ -342,6 +370,11 @@ function GM:PlayerGiveAmmo(ply, ammo, amount)
 end
 
 function GM:PlayerSpawnSENT(ply, class)
+	if GetConVar("freebuy"):GetBool() then
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+		return true
+	end
+
 	local price = pricer.GetPrice(class, pricer.EntPrices)
 	if pricer.CanBuy(ply:GetMoney(), price) then
 		ply:AddMoney(-price)
@@ -363,6 +396,11 @@ function GM:PlayerSpawnSENT(ply, class)
 end
 
 function GM:PlayerSpawnVehicle(ply, model, class, vtable)
+	if GetConVar("freebuy"):GetBool() then
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+		return true
+	end
+
 	local price = pricer.GetPrice(class, pricer.VehiclePrices)
 	if pricer.CanBuy(ply:GetMoney(), price) then
 		ply:AddMoney(-price)
