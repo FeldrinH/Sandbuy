@@ -160,7 +160,7 @@ local function GiveHeldAmmo(ply, cmd, args)
 		--Ammo not for sale
 	elseif args[1] == nil or args[1] == "smart" then
 		amount = pricer.ClipSize[wep:GetClass()] or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
-		if (amount > 0) and (pricer.GetPrice(ammo, pricer.AmmoPrices) * amount > ply:GetMoney()) then
+		if (amount > 0) and (pricer.GetPrice(ammo, pricer.AmmoPrices) * amount > ply:GetMoney()) and !GetConVar("freebuy"):GetBool() then
 			amount = math.floor(ply:GetMoney() / pricer.GetPrice(ammo, pricer.AmmoPrices))
 		end
 		if amount < 1 then
