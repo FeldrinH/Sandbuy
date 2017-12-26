@@ -23,6 +23,73 @@ if !GetConVar("sbuy_debug") or !GetConVar("sbuy_debug"):GetBool() then
 	spawntabs["#spawnmenu.category.vehicles"] = nil
 end
 
+local function AssembleTooltip(class, nicename)
+	local swep = weapons.GetStored(class)
+	if !swep then return end
+	local firedata = swep.Primary
+	if !firedata then return end
+	
+	local clip = firedata.ClipSize
+	local automatic = firedata.Automatic
+	
+	local damage = nil
+	if firedata.Damage and firedata.Damage > 0 then
+		damage = firedata.Damage * (firedata.NumShots or 1)
+	end
+	
+	local rpm = nil
+	local delay = nil
+	if firedata.RPM then
+		rpm = firedata.RPM
+		delay = 60 / rpm
+	elseif firedata.Delay then
+		rpm = 60 / firedata.Delay
+		delay = firedata.Delay
+	end
+	
+	local dps = nil
+	if damage and rpm and damage > 0 and rpm > 0 then
+		if !automatic and rpm > 600 then
+			dps = 10 * damage
+		else
+			dps = rpm / 60 * damage
+		end
+	end
+	
+	local validammo = firedata.Ammo and game.GetAmmoID(firedata.Ammo) != -1
+	
+	local out = nicename
+	local something = false
+	
+	if dps and (!clip or clip > 1 or !validammo) then
+		out = out .. "\nDPS: " .. math.Round(dps)
+		something = true
+	end
+	
+	if damage then
+		out = out .. "\nDmg: " .. math.Round(damage)
+		something = true
+	end
+	
+	if automatic then
+		if rpm and rpm > 0 and (!clip or clip > 1 or !validammo) then
+			out = out .. "\nRPM: " .. math.Round(rpm)
+			something = true
+		end
+	else
+		if delay and (!clip or clip > 1 or !validammo) then
+			out = out .. "\nDelay: " .. math.Round(delay, 4) .. "s"
+			something = true
+		end
+	end
+	
+	if clip and clip > 0 and (something or clip > 1) and validammo then
+		out = out .. "\nClip: " .. clip
+	end
+	
+	return out
+end
+
 local function AddMoneyLabel(ctrl)
 	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
 	label:Dock(TOP)
@@ -188,6 +255,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 	icon:SetContentType( "weapon" )
 	icon:SetSpawnName( obj.spawnname )
 	icon:SetName( obj.nicename )
+	icon:SetTooltip( AssembleTooltip(obj.spawnname, obj.nicename) or obj.nicename )
 	icon:SetMaterial( obj.material )
 	icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 135, 206, 250, 255 ) )
