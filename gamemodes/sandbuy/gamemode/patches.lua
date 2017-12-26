@@ -25,14 +25,17 @@ hook.Add("PlayerCanPickupWeapon","FixPickupWhenWeaponNotMoving", function(ply, w
 end)
 
 hook.Add("PlayerCanPickupWeapon","ReduceSLAMDefaultAmmo", function(ply, wep)
-	if wep:GetClass() == "weapon_slam" and ply:HasWeapon("weapon_slam") then
-		if wep.HasGivenAmmo == nil then
+	if wep:GetClass() == "weapon_slam" then
+		if wep.HasGivenAmmo then
+			wep:Remove()
+			return false
+		elseif ply:HasWeapon("weapon_slam") then
 			wep.HasGivenAmmo = true
 			ply:GiveAmmo(1, "slam")
-		end
 		
-		wep:Remove()
-		return false
+			wep:Remove()
+			return false
+		end
 	end
 end)
 
