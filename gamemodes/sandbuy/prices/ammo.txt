@@ -47,7 +47,7 @@
 			"Amount": 1,
 			"Icon": "m9k_ammo_ieds",
 			"Category": "Explosives",
-			"Price": 600,
+			"Price": 700,
 			"Name": "IEDs"
 		},
 		"Buckshot":
@@ -103,7 +103,7 @@
 			"Amount": 1,
 			"Icon": "m9k_ammo_nervegas",
 			"Category": "Miscellaneous",
-			"Price": 800,
+			"Price": 900,
 			"Name": "Nerve Gas Vials"
 		},
 		"40mmGrenade":
@@ -199,7 +199,7 @@
 			"Amount": 1,
 			"Icon": "weapon_slam",
 			"Category": "Explosives",
-			"Price": 300,
+			"Price": 700,
 			"Name": "SLAM"
 		},
 		"Shuriken":
