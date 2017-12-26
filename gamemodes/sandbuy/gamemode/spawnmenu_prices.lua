@@ -56,6 +56,7 @@ end
 function spawnmenu.UpdateSpawnlistHasWeapon(wep)
 	if g_SpawnMenu.PriceIcons then
 		for k,v in pairs(g_SpawnMenu.PriceIcons) do
+			if !IsValid(v) then continue end
 			if v:GetSpawnName() == wep then
 				v:SetTextColor( has_color )
 			end
