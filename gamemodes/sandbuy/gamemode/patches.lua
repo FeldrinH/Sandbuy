@@ -24,6 +24,27 @@ hook.Add("PlayerCanPickupWeapon","FixPickupWhenWeaponNotMoving", function(ply, w
 	end
 end)
 
+hook.Add("PlayerCanPickupWeapon","ReduceSLAMDefaultAmmo", function(ply, wep)
+	if wep:GetClass() == "weapon_slam" and ply:HasWeapon("weapon_slam") then
+		if wep.HasGivenAmmo == nil then
+			wep.HasGivenAmmo = true
+			ply:GiveAmmo(1, "slam")
+		end
+		
+		wep:Remove()
+		return false
+	end
+end)
+
+hook.Add("WeaponEquip","ReduceSLAMDefaultAmmo", function(wep, ply)
+	if wep:GetClass() == "weapon_slam" then
+		timer.Simple(0, function()
+			if !IsValid(ply) or !ply:Alive() then return end
+			ply:RemoveAmmo(2, "slam")
+		end)
+	end
+end)
+
 -- Bad temporary paying system. Move later
 hook.Add("CanTool", "Sandbuy_TweakLadderTool", function(ply, trace, tool)
 	if tool == "ladder" then
