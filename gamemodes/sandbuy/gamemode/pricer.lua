@@ -4,7 +4,8 @@ pricer = pricer or {
 	VehiclePrices={default=-2,individual={}},
 	EntPrices={default=-2,individual={}},
 	Categories={},
-	AmmoData={}
+	AmmoData={},
+	KillRewards={default=1,individual={}}
 }
 
 pricer.TeamKillPenalty = 200
@@ -166,6 +167,8 @@ function pricer.LoadPrices()
 	
 	pricer.Categories = LoadCategories() or pricer.Categories
 	
+	pricer.KillRewards = LoadFile("killrewards.txt") or pricer.KillRewards
+	
 	hook.Run("ApplyPriceModifiers")
 	
 	local itemlist = list.GetForEdit("Weapon")
@@ -189,7 +192,7 @@ function pricer.SendPrices(ply ,reload)
 	net.WritePriceTable(pricer.EntPrices)
 	net.WritePriceTable(pricer.VehiclePrices)
 	net.WritePriceTable(pricer.AmmoPrices)
-	net.WriteTable(pricer.AmmoData)
+	--net.WriteTable(pricer.AmmoData)
 	if ply then
 		net.Send(ply)
 	else
@@ -221,6 +224,10 @@ end
 	
 	return {}
 end]]--
+
+function pricer.GetKillReward(wep)
+	return pricer.KillRewards.individual[wep] or pricer.KillRewards.default
+end
 
 function pricer.GetClipCount(wep, clip)
 	return pricer.ClipCount[wep] or (clip < 3 and 3) or 1

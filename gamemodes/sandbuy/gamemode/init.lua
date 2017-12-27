@@ -257,20 +257,29 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 		if !IsValid(weapon) then weapon = killer end
 	end
 	
+	local weaponname = ""
+	if IsValid(weapon) then
+		weaponname = weapon:GetClass()
+	end
+	if killer == weapon and killer != ply and IsValid(killer) and killer:IsPlayer() then
+		weaponname = "helicopter_gun_generic"
+	end
+	print(inflictor, attacker, weapon, killer, "[" .. weaponname .. "]")
+	
 	if killer:IsValid() && killer:IsPlayer() && killer != ply then
 		if ply:Team() != TEAM_UNASSIGNED and ply:Team() == killer:Team() then
 			killer:AddMoney(-pricer.TeamKillPenalty)
-			buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), -pricer.TeamKillPenalty)
+			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), -pricer.TeamKillPenalty)
 			ply:AddMoney(deltamoney)
 			deltamoney = 0
 		else
-			local killmoney = GetConVar("sbuy_killmoney"):GetInt() + deltamoney
+			local killmoney = GetConVar("sbuy_killmoney"):GetInt() * pricer.GetKillReward(weaponname) + deltamoney
 			killer:AddMoney(killmoney)
-			buylogger.LogKill(killer, ply, weapon, killer:GetMoney(), killmoney)
+			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney)
 			killer.TotalKillMoney = killer.TotalKillMoney + killmoney
 		end
 	end
-	buylogger.LogDeath(ply, killer, weapon, ply:GetMoney(), -deltamoney)
+	buylogger.LogDeath(ply, killer, weaponname, ply:GetMoney(), -deltamoney)
 	
 	ply.HasDied = true
 	

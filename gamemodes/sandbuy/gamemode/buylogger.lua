@@ -28,17 +28,17 @@ function buylogger.Close(isfreebuy)
 	buylogger.File:Close()
 end
 
-function buylogger.LogKill(ply, victim, wep, newmoney, delta)
+function buylogger.LogKill(ply, victim, wepname, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write("kill," .. ply:Nick() .. "," .. (victim:IsPlayer() and victim:Nick() or victim:GetClass()).. "," .. newmoney .. "," .. delta .. "," .. (IsValid(wep) and wep:GetClass() or "") .. "\n")
+		buylogger.File:Write("kill," .. ply:Nick() .. "," .. (victim:IsPlayer() and victim:Nick() or victim:GetClass()).. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
 		--buylogger.File:Flush()
 	end
 end
 
-function buylogger.LogDeath(ply, atk, wep, newmoney, delta)
+function buylogger.LogDeath(ply, atk, wepname, newmoney, delta)
 	if buylogger.Active then
 		--if ply == atk then atk = nil end
-		buylogger.File:Write("death," .. ply:Nick() .. "," .. (IsValid(atk) and atk:IsPlayer() and atk:Nick() or "") .. "," .. newmoney .. "," .. delta .. "," .. (IsValid(wep) and wep:GetClass() or "") .. "\n")
+		buylogger.File:Write("death," .. ply:Nick() .. "," .. (IsValid(atk) and atk:IsPlayer() and atk:Nick() or "") .. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
 		--buylogger.File:Flush()
 	end
 end

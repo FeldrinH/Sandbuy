@@ -63,7 +63,7 @@ net.Receive("weaponbought", function(len)
 end)
 
 net.Receive("newprices", function(len)
-	print("Prices received " .. len)
+	print("Prices received " .. len .. "/524264 " .. math.Round(len / 524264 * 100) .. "%")
 	
 	local reload = net.ReadBool()
 	
@@ -71,7 +71,7 @@ net.Receive("newprices", function(len)
 	pricer.EntPrices = net.ReadPriceTable()
 	pricer.VehiclePrices = net.ReadPriceTable()
 	pricer.AmmoPrices = net.ReadPriceTable()
-	pricer.AmmoData = net.ReadTable()
+	--pricer.AmmoData = net.ReadTable()
 	
 	if !GetConVar("sbuy_debug") or !GetConVar("sbuy_debug"):GetBool() then
 		local itemlist = list.GetForEdit("Weapon")
