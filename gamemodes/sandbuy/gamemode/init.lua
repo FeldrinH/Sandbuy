@@ -281,17 +281,24 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 	if ply:HasWeapon(class) then
 		return true
 	end
-	if GetConVar("freebuy"):GetBool() then
-		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-		
-		net.Start("weaponbought")
-		net.WriteString(class)
-		net.Send(ply)
-		
-		return true
-	end
 	
 	local price = pricer.GetPrice(class, pricer.WepPrices)
+	
+	if GetConVar("freebuy"):GetBool() then
+		if price >= 0 then
+			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+			
+			net.Start("weaponbought")
+			net.WriteString(class)
+			net.Send(ply)
+			
+			return true
+		else
+			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+			return false
+		end
+	end
+	
 	if pricer.CanBuy(ply:GetMoney(), price) then
 		ply:AddMoney(-price)
 		ply:PrintMessage(HUD_PRINTCENTER, "Weapon bought for $" .. price)
@@ -316,12 +323,18 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 end
 
 function GM:PlayerSpawnSWEP(ply, class, swep)
-	if GetConVar("freebuy"):GetBool() then
-		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-		return true
-	end
-
 	local price = pricer.GetPrice(class, pricer.WepPrices)
+	
+	if GetConVar("freebuy"):GetBool() then
+		if price >= 0 then
+			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+			return true
+		else
+			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+			return false
+		end
+	end
+	
 	if pricer.CanBuy(ply:GetMoney(), price) then
 		ply:AddMoney(-price)
 		ply:PrintMessage(HUD_PRINTCENTER, "Weapon bought for $" .. price)
@@ -343,13 +356,19 @@ end
 
 function GM:PlayerGiveAmmo(ply, ammo, amount)
 	if amount <= 0 then return false end
-	
-	if GetConVar("freebuy"):GetBool() then
-		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-		return true
-	end
 
 	local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * amount
+	
+	if GetConVar("freebuy"):GetBool() then
+		if price >= 0 then
+			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+			return true
+		else
+			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+			return false
+		end
+	end
+	
 	if pricer.CanBuy(ply:GetMoney(), price) then
 		ply:AddMoney(-price)
 		ply:PrintMessage(HUD_PRINTCENTER, "Ammo bought for $" .. price)
@@ -370,12 +389,18 @@ function GM:PlayerGiveAmmo(ply, ammo, amount)
 end
 
 function GM:PlayerSpawnSENT(ply, class)
-	if GetConVar("freebuy"):GetBool() then
-		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-		return true
-	end
-
 	local price = pricer.GetPrice(class, pricer.EntPrices)
+	
+	if GetConVar("freebuy"):GetBool() then
+		if price >= 0 then
+			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+			return true
+		else
+			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+			return false
+		end
+	end
+	
 	if pricer.CanBuy(ply:GetMoney(), price) then
 		ply:AddMoney(-price)
 		ply:PrintMessage(HUD_PRINTCENTER, "Entity bought for $" .. price)
@@ -396,12 +421,18 @@ function GM:PlayerSpawnSENT(ply, class)
 end
 
 function GM:PlayerSpawnVehicle(ply, model, class, vtable)
-	if GetConVar("freebuy"):GetBool() then
-		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-		return true
-	end
-
 	local price = pricer.GetPrice(class, pricer.VehiclePrices)
+	
+	if GetConVar("freebuy"):GetBool() then
+		if price >= 0 then
+			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+			return true
+		else
+			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+			return false
+		end
+	end
+	
 	if pricer.CanBuy(ply:GetMoney(), price) then
 		ply:AddMoney(-price)
 		ply:PrintMessage(HUD_PRINTCENTER, "Vehicle bought for $" .. price)
