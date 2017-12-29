@@ -20,6 +20,8 @@
 		"weapon_752_ssdagger": 2,
 		"m9k_thrown_m61": 2,
 		"npc_grenade_frag": 1.5,
-		"weapon_pistol": 1.5
+		"weapon_pistol": 1.5,
+		"sent_tank_smokegrenade": 10,
+		"sent_neuro_flashbang": 10
 	}
 }
