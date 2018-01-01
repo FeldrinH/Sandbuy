@@ -15,11 +15,6 @@ end
 local function UpdateVehiclePrice( icon, money )
 	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.VehiclePrices ) ) and buy_color ) or nobuy_color )
 end
-local function UpdateAmmoPrice( icon, money )
-	local iconcolor = ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.AmmoPrices ) * icon.AmmoAmount ) and buy_color ) or nobuy_color
-	icon:SetTextColor( iconcolor )
-	--icon.AmountLabel:SetTextColor( iconcolor )
-end
 local function UpdateAmmoOption( opt, money )
 	opt:SetTextColor( ( pricer.CanBuy( money, opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
 end
@@ -46,8 +41,6 @@ function spawnmenu.UpdateSpawnlistMoney(money)
 				UpdateEntPrice(v, money)
 			elseif v:GetContentType() == "vehicle" or v:GetContentType() == "simfphys_vehicles" then
 				UpdateVehiclePrice(v, money)
-			elseif v:GetContentType() == "ammo" then
-				UpdateAmmoPrice(v, money)
 			end
 		end
 	end
