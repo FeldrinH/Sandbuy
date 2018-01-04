@@ -25,7 +25,9 @@ local voffset = math.ceil(ScrW() * 25 / 1366)
 function GM:HUDPaint()
 	BaseClass.HUDPaint(self)
 	
-	if gamemode.Call("HUDShouldDraw", "CHudHealth") and LocalPlayer():GetObserverMode() == OBS_MODE_NONE and LocalPlayer():Alive() then
+	if GetConVarNumber("cl_drawhud") == 0 then return end
+	
+	if gamemode.Call("HUDShouldDraw", "CHudHealth") and LocalPlayer():Alive() and LocalPlayer():GetObserverMode() == OBS_MODE_NONE then
 		local curmoney = LocalPlayer():GetMoney()
 		
 		if curmoney != lastmoney then
