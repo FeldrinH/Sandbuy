@@ -100,57 +100,59 @@ hook.Add("PlayerSwitchWeapon", "ReportProxyLimit", function( ply, oldWpn, newWpn
 	end
 end)
 
-local mine_ent = scripted_ents.GetStored("sent_land_mine")
-function mine_ent.t:StartTouch( ent )
-	if( self.Destroyed ) then return end
-	if ( !IsValid( ent ) or ( !IsValid( self.Spawner ) ) ) then return end
+hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
+	local mine_ent = scripted_ents.GetStored("sent_land_mine")
+	function mine_ent.t:StartTouch( ent )
+		if( self.Destroyed ) then return end
+		if ( !IsValid( ent ) or ( !IsValid( self.Spawner ) ) ) then return end
 
-	if( ent:IsPlayer() && self.Spawner:IsPlayer() ) then
-		
-		for k,v in pairs( player.GetAll() ) do
+		if( ent:IsPlayer() && self.Spawner:IsPlayer() ) then
 			
-			if( self.Spawner == ent ) then
-				net.Start( "NeuroTec_MissileBase_Text" )
-					net.WriteInt( 3, 32 )
-					net.WriteString( ent:Name() )
-				net.Send( v )
-			else
-				net.Start( "NeuroTec_MissileBase_Text" )
-					net.WriteInt( 4, 32 )
-					net.WriteString( ent:Name() )
-					net.WriteString( self.Spawner:Name() )
-				net.Send( v )
+			for k,v in pairs( player.GetAll() ) do
+				
+				if( self.Spawner == ent ) then
+					net.Start( "NeuroTec_MissileBase_Text" )
+						net.WriteInt( 3, 32 )
+						net.WriteString( ent:Name() )
+					net.Send( v )
+				else
+					net.Start( "NeuroTec_MissileBase_Text" )
+						net.WriteInt( 4, 32 )
+						net.WriteString( ent:Name() )
+						net.WriteString( self.Spawner:Name() )
+					net.Send( v )
+				end
 			end
 		end
-	end
-	
-	self:EmitSound( "ambient/machines/catapult_throw.wav", 100, math.random(97,104) )
-	self:EmitSound("ambient/explosions/explode_1.wav",511,100)
-	
-	local spawner = self.Spawner
+		
+		self:EmitSound( "ambient/machines/catapult_throw.wav", 100, math.random(97,104) )
+		self:EmitSound("ambient/explosions/explode_1.wav",511,100)
+		
+		local spawner = self.Spawner
 
-	local p = self:GetPos() + Vector( 0,0,32 )
+		local p = self:GetPos() + Vector( 0,0,32 )
 
-	if( !spawner ) then self:Remove() return end
-	
-	local expl = ents.Create("env_explosion")
-	expl:SetKeyValue("spawnflags",128)
-	expl:SetPos( p )
-	expl:Spawn()
-	expl:Fire("explode","",0)
-	
-	ParticleEffect( "ap_impact_dirt", self:GetPos(), Angle(0,0,0), nil )
-	
-	if ( IsValid( spawner ) ) then
-		util.BlastDamage( self, spawner, p, 512, math.random( 500, 1512 ) )
+		if( !spawner ) then self:Remove() return end
+		
+		local expl = ents.Create("env_explosion")
+		expl:SetKeyValue("spawnflags",128)
+		expl:SetPos( p )
+		expl:Spawn()
+		expl:Fire("explode","",0)
+		
+		ParticleEffect( "ap_impact_dirt", self:GetPos(), Angle(0,0,0), nil )
+		
+		if ( IsValid( spawner ) ) then
+			util.BlastDamage( self, spawner, p, 512, math.random( 500, 1512 ) )
+		end
+		
+		self.Destroyed = true
+		
+		self:Remove()
+		
+		return
 	end
-	
-	self.Destroyed = true
-	
-	self:Remove()
-	
-	return
-end
+end)
 
 local meta = FindMetaTable( "Player" )
 
