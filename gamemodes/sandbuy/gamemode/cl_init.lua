@@ -13,6 +13,11 @@ surface.CreateFont("DollarSignFont", {
 	additive = true
 })
 
+surface.CreateFont("DeathMessageFont", {
+	font = "Roboto",
+	size = 64
+})
+
 local bg_color = Color(0, 0, 0, 76)
 local text_color = Color(255, 235, 20)
 
@@ -21,6 +26,11 @@ local lastwidth = 0
 
 local hoffset = math.floor(ScrH() * 696 / 768) - 56
 local voffset = math.ceil(ScrW() * 25 / 1366)
+
+local deathmessage_killer = nil
+local deathmessage_health = 0
+local deathmessage_armor = 0
+local deathmessage_text = ""
 
 function GM:HUDPaint()
 	BaseClass.HUDPaint(self)
@@ -35,10 +45,49 @@ function GM:HUDPaint()
 			lastwidth = surface.GetTextSize(curmoney) + 32
 			lastmoney = curmoney
 		end
-		--
+		
 		draw.RoundedBox(5, voffset, hoffset - 5, lastwidth, 44, bg_color)
 		draw.SimpleText(curmoney, "HudNumbers", voffset + 23, hoffset, text_color)
 		draw.SimpleText("$", "DollarSignFont", voffset + 7, hoffset, text_color)
+	end
+	
+	if !LocalPlayer():Alive() then
+		if IsValid(deathmessage_killer) then
+			if deathmessage_health > 0 then
+				if deathmessage_health != deathmessage_killer:Health() then
+					deathmessage_health = deathmessage_killer:Health()
+				end
+				if deathmessage_armor != deathmessage_killer:Armor() then
+					deathmessage_armor = deathmessage_killer:Armor()
+				end
+			end
+			
+			draw.SimpleTextOutlined(deathmessage_text, "DeathMessageFont", ScrW()/2, ScrH()/2 - 140, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
+			if deathmessage_health <= 0 then
+				draw.SimpleTextOutlined("who did not survive", "DeathMessageFont", ScrW()/2, ScrH()/2 - 80, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
+			else
+				draw.SimpleTextOutlined("who survived with " .. deathmessage_health " health" .. (deathmessage_armor > 0 and (" and " .. deathmessage_armor .. " armor") or ""), "DeathMessageFont", ScrW()/2, ScrH()/2 - 80, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
+			end
+		else
+			draw.SimpleTextOutlined(deathmessage_text, "DeathMessageFont", ScrW()/2, ScrH()/2 - 140, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
+		end
+	end
+end
+
+function GM:SetDeathMessage(killer)
+	if IsValid(killer) and killer:IsPlayer() then
+		if killer == LocalPlayer() then
+			deathmessage_killer = nil
+			deathmessage_text = "You committed suicide"
+		else
+			deathmessage_killer = killer
+			deathmessage_health = killer:Health()
+			deathmessage_armor = killer:Armor()
+			deathmessage_text = "You were killed by " .. killer:Nick()
+		end
+	else
+		deathmessage_killer = nil
+		deathmessage_text = "You died"
 	end
 end
 

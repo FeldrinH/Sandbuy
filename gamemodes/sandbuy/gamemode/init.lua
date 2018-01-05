@@ -239,7 +239,6 @@ end
 
 function GM:PlayerDeath(ply, inflictor, attacker)
 	local deltamoney = math.ceil(ply:GetMoney() * 0.2)
-	ply:AddMoney(-deltamoney)
 	
 	local weapon = inflictor
 	local killer = attacker
@@ -270,7 +269,6 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 		if ply:Team() != TEAM_UNASSIGNED and ply:Team() == killer:Team() then
 			killer:AddMoney(-pricer.TeamKillPenalty)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), -pricer.TeamKillPenalty)
-			ply:AddMoney(deltamoney)
 			deltamoney = 0
 		else
 			local killmoney = GetConVar("sbuy_killmoney"):GetInt() * pricer.GetKillReward(weaponname) + deltamoney
@@ -279,9 +277,12 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 			killer.TotalKillMoney = killer.TotalKillMoney + killmoney
 		end
 	end
+	ply:AddMoney(-deltamoney)
 	buylogger.LogDeath(ply, killer, weaponname, ply:GetMoney(), -deltamoney)
 	
 	ply.HasDied = true
+	
+	ply:SendLua("GAMEMODE:SetDeathMessage(Entity(" .. killer:EntIndex() .. "))")
 	
 	return BaseClass.PlayerDeath(self, ply, inflictor, attacker)
 end
