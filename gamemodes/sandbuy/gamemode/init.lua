@@ -288,6 +288,8 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 end
 
 function GM:PlayerGiveSWEP(ply, class, swep)
+	if !ply:Alive() then return false end
+	
 	if ply:HasWeapon(class) then
 		return true
 	end
@@ -333,6 +335,8 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 end
 
 function GM:PlayerSpawnSWEP(ply, class, swep)
+	if !ply:Alive() then return false end
+	
 	local price = pricer.GetPrice(class, pricer.WepPrices)
 	
 	if GetConVar("freebuy"):GetBool() then
@@ -365,6 +369,7 @@ function GM:PlayerSpawnSWEP(ply, class, swep)
 end
 
 function GM:PlayerGiveAmmo(ply, ammo, amount)
+	if !ply:Alive() then return false end
 	if amount <= 0 then return false end
 
 	local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * amount
@@ -399,6 +404,8 @@ function GM:PlayerGiveAmmo(ply, ammo, amount)
 end
 
 function GM:PlayerSpawnSENT(ply, class)
+	if !ply:Alive() then return false end
+	
 	local price = pricer.GetPrice(class, pricer.EntPrices)
 	
 	if GetConVar("freebuy"):GetBool() then
@@ -431,6 +438,8 @@ function GM:PlayerSpawnSENT(ply, class)
 end
 
 function GM:PlayerSpawnVehicle(ply, model, class, vtable)
+	if !ply:Alive() then return false end
+	
 	local price = pricer.GetPrice(class, pricer.VehiclePrices)
 	
 	if GetConVar("freebuy"):GetBool() then
