@@ -169,7 +169,7 @@
 		"weapon_neurowep_m249": 3000,
 		"weapon_np_flaregun": 100,
 		"targetdesignator": 1000,
-		"weapon_neurowep_bow": 200,
+		"weapon_neurowep_bow": -1,
 		"weapon_neurowep_shuriken": 100,
 		"weapon_neurowep_flashbang": 50,
 		"weapon_neurowep_hegrenade": 200,
@@ -236,14 +236,15 @@
 		"weapon_crowbar": 100,
 		"weapon_physcannon": 400,
 		"weapon_frag": 30,
-		"weapon_357": 200,
+		"weapon_357": 400,
 		"weapon_shotgun": 300,
 		"weapon_ar2": 1000,
 		"weapon_stunstick": 100,
 		"weapon_slam": 700,
 		"seal6-c4": -2,
-		"sbuy_armorkit": 0,
+		"sbuy_armorkit": -1,
 		"weapon_neurowep_m3": 3400,
-		"weapon_neurowep_winchester_1887": 3000
+		"weapon_neurowep_winchester_1887": 3000,
+		"sbuy_binoculars": 0
 	}
 }

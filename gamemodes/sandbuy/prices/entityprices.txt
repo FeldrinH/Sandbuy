@@ -44,7 +44,7 @@
 		"sent_ac-47_skytrain_p": 2900,
 		"sent_f-18harv_p": 4500,
 		"sent_dpv_p": 1000,
-		"sent_bulldozer_p": 1000,
+		"sent_bulldozer_p": 3000,
 		"sent_zsu-23-4_p": 2500,
 		"sent_chaparral_p": 2000,
 		"sent_hummer_p": 1000,
