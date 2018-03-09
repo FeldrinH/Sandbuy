@@ -1,0 +1,31 @@
+{
+	"default": -2,
+	"individual": {
+		"NerveGas": 900,
+		"Buckshot": 10,
+		"ProxMine": -1,
+		"ArmorkitBattery": 8,
+		"C4Explosive": -1,
+		"XBowBolt": 25,
+		"RPG_Round": 200,
+		"40mmGrenade": 50,
+		"nitroG": 500,
+		"SMG1": 6,
+		"Improvised_Explosive": 700,
+		"AirboatGun": 8,
+		"AR2": 6,
+		"MedkitHealth": 4,
+		"StickyGrenade": 100,
+		"AR2AltFire": 500,
+		"Nuclear_Warhead": 5000,
+		"SatCannon": 3000,
+		"SniperPenetratedRound": 20,
+		"Grenade": 30,
+		"Shuriken": 10,
+		"Harpoon": 100,
+		"SMG1_Grenade": 100,
+		"Pistol": 5,
+		"slam": 700,
+		"357": 7
+	}
+}

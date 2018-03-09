@@ -4,7 +4,6 @@ pricer = pricer or {
 	VehiclePrices={default=-2,individual={}},
 	EntPrices={default=-2,individual={}},
 	Categories={},
-	AmmoData={},
 	KillRewards={default=1,individual={}}
 }
 
@@ -78,6 +77,26 @@ function table.ListToLookupTable(vlist)
 	return ltable
 end
 
+function table.LookupTableToList(ltable)
+	local vlist = {}
+	for k,v in pairs(ltable) do
+		if v then
+			table.insert(vlist, k)
+		end
+	end
+	return vlist
+end
+
+function table.LookupTableNormalize(ltable)
+	for k,v in pairs(ltable) do
+		if v then
+			ltable[k] = true
+		else
+			ltable[k] = nil
+		end
+	end
+end
+
 local function LoadFile(filename)
 	local inclfile = file.Read("gamemodes/sandbuy/prices/" .. filename, "GAME")
 	if !inclfile then
@@ -108,39 +127,18 @@ local function LoadFile(filename)
 	return prices
 end
 
-local function LoadAmmoData()
-	local ammo = LoadFile("ammo.txt")
-	if !ammo then return end
-	
-	for k,v in pairs(ammo.individual) do
-		if !isstring(k) then
-			ammo.individual[tostring(k)] = v
-			ammo.individual[k] = nil
-		end
-	end
-	
-	pricer.AmmoData = ammo.individual
-	
-	local prices = {}
-	prices.default = ammo.default
-	prices.individual = {}
-	for k,v in pairs(ammo.individual) do
-		prices.individual[k] = v.Price
-		v.Price = nil
-	end
-	
-	pricer.AmmoPrices = prices
-end
-
 local function LoadCategories()
-	local cats = LoadFile("categories.txt")
-	if !cats then return end
+	local cats_lookup = LoadFile("categories.txt")
+	if !cats_lookup then return end
 	
-	for k,v in pairs(cats) do
-		cats[k] = table.ListToLookupTable(v)
+	local cats_list = {}
+	
+	for k,v in pairs(cats_lookup) do
+		table.LookupTableNormalize(v)
+		cats_list[k] = table.LookupTableToList(v)
 	end
 	
-	return cats
+	return cats_lookup, cats_list
 end
 
 function pricer.ApplyModifier(category, prices, modifier)	
@@ -163,9 +161,11 @@ function pricer.LoadPrices()
 	pricer.WepPrices = LoadFile("weaponprices.txt") or pricer.WepPrices
 	pricer.EntPrices = LoadFile("entityprices.txt") or pricer.EntPrices
 	pricer.VehiclePrices = LoadFile("vehicleprices.txt") or pricer.VehiclePrices
-	LoadAmmoData()
+	pricer.AmmoPrices = LoadFile("ammoprices.txt") or pricer.AmmoPrices
 	
-	pricer.Categories = LoadCategories() or pricer.Categories
+	local cats_lookup, cats_list = LoadCategories()
+	pricer.CategoriesLookup = cats_lookup or pricer.CategoriesLookup
+	pricer.CategoriesList = cats_list or pricer.CategoriesList
 	
 	pricer.KillRewards = LoadFile("killrewards.txt") or pricer.KillRewards
 	
@@ -192,7 +192,6 @@ function pricer.SendPrices(ply ,reload)
 	net.WritePriceTable(pricer.EntPrices)
 	net.WritePriceTable(pricer.VehiclePrices)
 	net.WritePriceTable(pricer.AmmoPrices)
-	--net.WriteTable(pricer.AmmoData)
 	if ply then
 		net.Send(ply)
 	else
