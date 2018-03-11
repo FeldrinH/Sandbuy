@@ -17,22 +17,14 @@
 		"sent_uh-60blackhawk_p": 1,
 		"sent_m8drone_p": 1
 	},
-	"badenclosed": {
-		"weapon_neurowep_javelin": 1,
-		"m9k_nerve_gas": 1,
-		"m9k_m202": 1,
-		"weapon_neurowep_knifelauncher": 1,
-		"weapon_neurowep_m79": 1,
-		"m9k_m79gl": 1,
-		"weapon_jericho": 1,
-		"m9k_ex41": 1,
-		"m9k_rpg7": 1,
-		"m9k_matador": 1,
-		"item_ammo_smg1_grenade": 1,
-		"item_ammo_ar2_altfire": 1,
-		"m9k_proxy_mine": 1,
-		"weapon_slam": 1,
-		"weapon_neurowep_rpg7": 1
+	"tooexplosives": {
+		"sent_flying_bomb": 1,
+		"sent_neuro_bouncingbetty": 1,
+		"sent_carbomb": 1,
+		"sent_improvbomb": 1,
+		"sent_mortar_p": 1,
+		"sent_cowbomb": 1,
+		"sent_land_mine": 1
 	},
 	"machines": {
 		"sent_f-15active_p": 1,
