@@ -37,10 +37,6 @@ pricer.ClipSize = {
 	weapon_physgun={}
 }]]--
 
-if SERVER then
-	include('modifiers.lua')
-end
-
 function net.WritePriceTable(prices)
 	net.WriteInt(prices.default, 32)
 	
@@ -89,7 +85,7 @@ end
 
 function table.LookupTableNormalize(ltable)
 	for k,v in pairs(ltable) do
-		if v then
+		if v and v != 0 then
 			ltable[k] = true
 		else
 			ltable[k] = nil
@@ -127,8 +123,43 @@ local function LoadFile(filename)
 	return prices
 end
 
+local function LoadCategoriesFile(filename)
+	local inclfile = file.Read("gamemodes/sandbuy/prices/" .. filename, "GAME")
+	if !inclfile then
+		ErrorNoHalt("ERROR: No included " .. filename .. "\n")
+		return
+	end
+	local prices = util.JSONToTable(inclfile)
+	if !prices then
+		ErrorNoHalt("ERROR: Included " .. filename .. " invalid\n")
+		return
+	end
+	
+	local localfile = file.Read(filename)
+	if localfile then
+		local localprices = util.JSONToTable(localfile)
+		if localprices then
+			print("Found valid local " .. filename .. ". Adding to included one")
+			
+			for kc,vc in pairs(localprices) do
+				if prices[kc] then
+					for k,v in pairs(vc) do
+						prices[kc][k] = v
+					end
+				else
+					prices[kc] = vc
+				end
+			end
+		else
+			ErrorNoHalt("WARNING: Local " .. filename .. " invalid. Ignoring")
+		end
+	end
+	
+	return prices
+end
+
 local function LoadCategories()
-	local cats_lookup = LoadFile("categories.txt")
+	local cats_lookup = LoadCategoriesFile("categories.txt")
 	if !cats_lookup then return end
 	
 	local cats_list = {}
@@ -141,18 +172,32 @@ local function LoadCategories()
 	return cats_lookup, cats_list
 end
 
+local function LoadAmmoPrices()
+	local prices = LoadFile("ammoprices.txt")
+	if !prices then return end
+	
+	for k,v in pairs(prices.individual) do
+		if !isstring(k) then
+			prices.individual[tostring(k)] = v
+			prices.individual[k] = nil
+		end
+	end
+	
+	return prices
+end
+
 function pricer.ApplyModifier(category, prices, modifier)	
-	for k,v in pairs(pricer.Categories[category]) do
-		if pricer.GetPrice(k, prices) >= 0 then
-			prices.individual[k] = modifier(pricer.GetPrice(k, prices), k)
+	for k,v in pairs(pricer.CategoriesList[category]) do
+		if pricer.GetPrice(v, prices) >= 0 then
+			prices.individual[v] = modifier(pricer.GetPrice(v, prices), v)
 		end
 	end
 end
 
 function pricer.PrintModifier(category, prices, modifier)
-	for k,v in pairs(pricer.Categories[category]) do
-		if pricer.GetPrice(k, prices) >= 0 then
-			print('"' .. k .. '": ' .. modifier(pricer.GetPrice(k, prices)) .. ',')
+	for k,v in pairs(pricer.CategoriesList[category]) do
+		if pricer.GetPrice(v, prices) >= 0 then
+			print('"' .. v .. '": ' .. modifier(pricer.GetPrice(k, prices)) .. ',')
 		end
 	end
 end
@@ -161,7 +206,7 @@ function pricer.LoadPrices()
 	pricer.WepPrices = LoadFile("weaponprices.txt") or pricer.WepPrices
 	pricer.EntPrices = LoadFile("entityprices.txt") or pricer.EntPrices
 	pricer.VehiclePrices = LoadFile("vehicleprices.txt") or pricer.VehiclePrices
-	pricer.AmmoPrices = LoadFile("ammoprices.txt") or pricer.AmmoPrices
+	pricer.AmmoPrices = LoadAmmoPrices() or pricer.AmmoPrices
 	
 	local cats_lookup, cats_list = LoadCategories()
 	pricer.CategoriesLookup = cats_lookup or pricer.CategoriesLookup
@@ -233,7 +278,7 @@ function pricer.GetClipCount(wep, clip)
 end
 
 function pricer.InCategory(class, category)
-	return (pricer.Categories[category] or {})[class]
+	return (pricer.CategoriesLookup[category] or {})[class]
 end
 
 function pricer.GetPrice(name, prices)

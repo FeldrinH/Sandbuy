@@ -57,11 +57,11 @@ concommand.Add("cleanprices", function(ply)
 	end
 end)
 
-concommand.Add("setcategoryprice", function(ply, cmd, args)
+concommand.Add("sbuy_setcategoryprice", function(ply, cmd, args)
 	if !ply:IsAdmin() then return end
 	
 	local category = args[1]
-	if !pricer.Categories[category] then
+	if !pricer.CategoriesList[category] then
 		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid category: " .. category)
 		return
 	end
