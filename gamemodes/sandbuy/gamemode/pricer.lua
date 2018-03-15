@@ -8,8 +8,8 @@ pricer = pricer or {
 }
 
 pricer.TeamKillPenalty = 200
-pricer.ArmorPrice = 8
-pricer.LadderPrice = 50
+--pricer.ArmorPrice = 8
+--pricer.LadderPrice = 50
 
 pricer.ClipCount = {
 }
@@ -18,6 +18,10 @@ pricer.ClipSize = {
 	sbuy_medkit = 20,
 	sbuy_armorkit = 10,
 	weapon_rpg = 1
+}
+
+pricer.WepEnts = {
+	--TODO: Add weapons
 }
 
 --[[local hl2wepammo = {

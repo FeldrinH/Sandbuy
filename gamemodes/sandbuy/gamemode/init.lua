@@ -19,6 +19,7 @@ local BaseBaseClass = baseclass.Get( "gamemode_base" )
 util.AddNetworkString("moneychanged")
 util.AddNetworkString("weaponbought")
 util.AddNetworkString("newprices")
+util.AddNetworkString("newseasonals")
 
 CreateConVar("freebuy", 0, FCVAR_NOTIFY)
 cvars.AddChangeCallback("freebuy", function(convar, old, new)
@@ -185,12 +186,68 @@ end
 concommand.Add("sbuy_giveheldammo", GiveHeldAmmo)
 concommand.Add("sbuy_giveprimaryammo", GiveHeldAmmo) --Deprecate later
 
+GM.SeasonalWeapons = {}
+
+local latestseasonals = {}
+local seasonalindex = 0
+local function GetUniqueSeasonal()
+	local seasonalslist = pricer.CategoriesList.seasonals or {}
+	seasonalindex = seasonalindex + 1
+	while true do
+		local new = seasonalslist[math.random(#seasonalslist)]
+		if !latestseasonals[new] or latestseasonals[new] < seasonalindex - 10 then
+			latestseasonals[new] = seasonalindex
+			return new
+		end
+	end
+end
+
+local function GetOptimalSeasonal(richest)
+	local new = nil
+	for i = 1,3 do
+		new = GetUniqueSeasonal()
+		if pricer.GetPrice(new, pricer.WepPrices) < richest then
+			return new
+		end
+	end
+	return new
+end
+
+local function UpdateSeasonals()
+	local richest = 0
+	for k,v in pairs(player.GetAll()) do
+		if v:GetMoney() > richest then
+			richest = v:GetMoney()
+		end
+	end
+	print("R: " .. richest)
+
+	table.Empty(GAMEMODE.SeasonalWeapons)
+	for i = 1,2 do
+		GAMEMODE.SeasonalWeapons[GetOptimalSeasonal(richest)] = 2
+	end
+	
+	PrintTable(GAMEMODE.SeasonalWeapons)
+	
+	net.Start("newseasonals")
+	net.WriteTable(GAMEMODE.SeasonalWeapons)
+	net.Broadcast()
+end
+
+concommand.Add("sbuy_updateseasonals", function(ply) 
+	if !ply:IsAdmin() then return end
+	UpdateSeasonals()
+end)
+
 function GM:Initialize()
 	pricer.LoadPrices()
 	
 	if GetConVar("sbuy_log"):GetBool() then
 		buylogger.Init()
 	end
+	
+	timer.Create("Sandbuy_UpdateSeasonalWeapons", 600, 0 , UpdateSeasonals)
+	timer.Simple(5, UpdateSeasonals)
 	
 	return BaseClass.Initialize(self)
 end
@@ -203,6 +260,10 @@ end
 
 function GM:PlayerAuthed(ply, steamid, uniqueid)
 	pricer.SendPrices(ply, false)
+	
+	net.Start("newseasonals")
+	net.WriteTable(GAMEMODE.SeasonalWeapons)
+	net.Broadcast()
 	
 	return BaseClass.PlayerAuthed(self, ply, steamid, uniqueid)
 end
@@ -271,7 +332,7 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), -pricer.TeamKillPenalty)
 			deltamoney = 0
 		else
-			local killmoney = GetConVar("sbuy_killmoney"):GetInt() * pricer.GetKillReward(weaponname) + deltamoney
+			local killmoney = GetConVar("sbuy_killmoney"):GetInt() * pricer.GetKillReward(weaponname) * (self.SeasonalWeapons[weaponname] or 1) + deltamoney
 			killer:AddMoney(killmoney)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney)
 			killer.TotalKillMoney = killer.TotalKillMoney + killmoney
@@ -318,6 +379,7 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 		
 		net.Start("weaponbought")
 		net.WriteString(class)
+		net.WriteBool(false)
 		net.Send(ply)
 		
 		buylogger.LogBuy(ply, class, "weapon", ply:GetMoney(), -price)

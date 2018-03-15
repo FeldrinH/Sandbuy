@@ -1,6 +1,5 @@
 include("shared.lua")
 include("cl_scoreboard.lua")
-include("spawnmenu_prices.lua")
 include("spawnmenu_content.lua")
 
 DEFINE_BASECLASS("gamemode_sandbox")
@@ -108,20 +107,6 @@ function GM:OnSpawnMenuOpen()
 
 	return BaseClass.OnSpawnMenuOpen(self)
 end
-
-net.Receive("moneychanged", function(len)
-	local money = net.ReadInt(32)
-	if IsValid(g_SpawnMenu) and g_SpawnMenu:IsVisible() then
-		spawnmenu.UpdateSpawnlistMoney(money)
-	end
-end)
-
-net.Receive("weaponbought", function(len)
-	local wep = net.ReadString()
-	if IsValid(g_SpawnMenu) and g_SpawnMenu:IsVisible() then
-		spawnmenu.UpdateSpawnlistHasWeapon(wep)
-	end
-end)
 
 net.Receive("newprices", function(len)
 	print("Prices received " .. len .. "/524264 " .. math.Round(len / 524264 * 100) .. "%")
