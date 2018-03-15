@@ -42,7 +42,7 @@ end)
 
 game.AddAmmoType({name = "Shuriken"})
 
-hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
+hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 	local wep = weapons.GetStored("weapon_neurowep_bow")
 	wep.Primary.Ammo = "XBowBolt"
 
