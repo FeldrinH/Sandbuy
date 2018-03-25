@@ -24,23 +24,6 @@ pricer.WepEnts = {
 	--TODO: Add weapons
 }
 
---[[local hl2wepammo = {
-	weapon_357={p="357"},
-	weapon_ar2={p="AR2", s="AR2AltFire"},
-	weapon_bugbait={},
-	weapon_crossbow={p="XBowBolt"},
-	weapon_crowbar={},
-	weapon_frag={p="Grenade"},
-	weapon_physcannon={},
-	weapon_pistol={p="Pistol"},
-	weapon_rpg={p="RPG_Round"},
-	weapon_shotgun={p="Buckshot"},
-	weapon_slam={s="slam"},
-	weapon_smg1={p="SMG1", s="SMG1_Grenade"},
-	weapon_stunstick={},
-	weapon_physgun={}
-}]]--
-
 function net.WritePriceTable(prices)
 	net.WriteInt(prices.default, 32)
 	
@@ -97,65 +80,84 @@ function table.LookupTableNormalize(ltable)
 	end
 end
 
-local function LoadFile(filename)
-	local inclfile = file.Read("gamemodes/sandbuy/prices/" .. filename, "GAME")
-	if !inclfile then
-		ErrorNoHalt("ERROR: No included " .. filename .. "\n")
-		return
-	end
-	local prices = util.JSONToTable(inclfile)
-	if !prices then
-		ErrorNoHalt("ERROR: Included " .. filename .. " invalid\n")
-		return
+local function ValidatePriceSetName(name)
+	if string.len(name) == 0 then
+		return false
+	elseif string.len(name) > 32 then
+		ErrorNoHalt("WARNING: Ignoring invalid priceset name '" .. name .. "'. Name must be 32 characters or shorter")
+		return false
+	elseif string.match(name, "[^%l%d_-]") then
+		ErrorNoHalt("WARNING: Ignoring invalid priceset name '" .. name .. "'. Name must contain only lowercase letters, numbers, '-' and '_'")
+		return false
 	end
 	
-	local localfile = file.Read(filename)
-	if localfile then
-		local localprices = util.JSONToTable(localfile)
-		if localprices then
-			print("Found valid local " .. filename .. ". Adding to included one")
-			
-			prices.default = localprices.default or prices.default
-			for k,v in pairs(localprices.individual) do
-				prices.individual[k] = v
-			end
-		else
-			ErrorNoHalt("WARNING: Local " .. filename .. " invalid. Ignoring")
+	return true
+end
+
+local function ParsePriceString()
+	local pricestring = GetConVar("sbuy_prices"):GetString()
+	local parse = string.Split(pricestring, " ")
+	for k,v in pairs(parse) do
+		if !ValidatePriceSetName(v) then
+			parse[k] = nil
 		end
 	end
 	
-	return prices
+	return parse
 end
 
-local function LoadCategoriesFile(filename)
-	local inclfile = file.Read("gamemodes/sandbuy/prices/" .. filename, "GAME")
-	if !inclfile then
-		ErrorNoHalt("ERROR: No included " .. filename .. "\n")
-		return
-	end
-	local prices = util.JSONToTable(inclfile)
-	if !prices then
-		ErrorNoHalt("ERROR: Included " .. filename .. " invalid\n")
-		return
+local function LoadFile(filename, categories)
+	local prices = categories and {} or {default=-2,individual={}}
+	local report = {}
+	
+	for k,v in pairs(pricer.PriceString) do
+		local isdefault = v == "default"
+		local loadname = isdefault and "gamemodes/sandbuy/prices/" .. filename or "prices/" .. v .. "/" .. filename
+	
+		local loadfile = file.Read(loadname, isdefault and "GAME" or "DATA")
+		if loadfile then
+			local loadprices = util.JSONToTable(loadfile)
+			if loadprices then
+				if categories then
+					for kc,vc in pairs(loadprices) do
+						if prices[kc] then
+							for k,v in pairs(vc) do
+								prices[kc][k] = v
+							end
+						else
+							prices[kc] = vc
+						end
+					end
+					
+					table.insert(report, v .. ": " .. table.concat(table.GetKeys(loadprices), ", "))
+				else
+					prices.default = loadprices.default or prices.default
+					for k,v in pairs(loadprices.individual) do
+						prices.individual[k] = v
+					end
+					
+					table.insert(report, v .. ": " .. table.Count(loadprices.individual))
+				end
+			else
+				table.insert(report, v .. ": <invalid>")
+				--if isdefault then
+				--	ErrorNoHalt("ERROR: Included " .. filename .. " invalid. Ignoring. Please report this to the mod author!\n")
+				--else
+				--	ErrorNoHalt("WARNING: " .. loadname .. " invalid. Ignoring\n")
+				--end
+			end
+		elseif isdefault then
+			table.insert(report, v .. ": <missing>")
+			--ErrorNoHalt("ERROR: Included " .. filename .. " missing. Please report this to the mod author!\n")
+		end
 	end
 	
-	local localfile = file.Read(filename)
-	if localfile then
-		local localprices = util.JSONToTable(localfile)
-		if localprices then
-			print("Found valid local " .. filename .. ". Adding to included one")
-			
-			for kc,vc in pairs(localprices) do
-				if prices[kc] then
-					for k,v in pairs(vc) do
-						prices[kc][k] = v
-					end
-				else
-					prices[kc] = vc
-				end
-			end
+	print(string.upper(string.StripExtension(filename)))
+	for k,v in pairs(report) do
+		if string.EndsWith(v, "<invalid>") or string.EndsWith(v, "<missing>") then
+			MsgC(Color(255,0,0), "  " .. v .. "\n")
 		else
-			ErrorNoHalt("WARNING: Local " .. filename .. " invalid. Ignoring")
+			print("  " .. v)
 		end
 	end
 	
@@ -163,7 +165,7 @@ local function LoadCategoriesFile(filename)
 end
 
 local function LoadCategories()
-	local cats_lookup = LoadCategoriesFile("categories.txt")
+	local cats_lookup = LoadFile("categories.txt", true)
 	if !cats_lookup then return end
 	
 	local cats_list = {}
@@ -206,7 +208,36 @@ function pricer.PrintModifier(category, prices, modifier)
 	end
 end
 
+function pricer.SetPrice(wep, price, filename, priceset)
+	if priceset == nil then
+		priceset = GetConVar("sbuy_overrides"):GetString()
+	end
+	
+	if !file.Exists("prices/" .. priceset, "DATA") then
+		file.CreateDir("prices/" .. priceset)
+	end
+	
+	local filepath = "prices/" .. priceset .. "/" .. filename
+	
+	local localfile = file.Read(filepath)
+	local pricetable = localfile and util.JSONToTable(localfile) or {individual={}}
+	
+	if price == -3 then
+		pricetable.individual[wep] = nil
+	else
+		pricetable.individual[wep] = price
+	end
+
+	file.Write(filepath, util.TableToJSON(pricetable, true))
+	
+	pricer.LoadPrices()
+end
+
 function pricer.LoadPrices()
+	print("------PRICES------")
+
+	pricer.PriceString = ParsePriceString()
+
 	pricer.WepPrices = LoadFile("weaponprices.txt") or pricer.WepPrices
 	pricer.EntPrices = LoadFile("entityprices.txt") or pricer.EntPrices
 	pricer.VehiclePrices = LoadFile("vehicleprices.txt") or pricer.VehiclePrices
@@ -232,9 +263,13 @@ function pricer.LoadPrices()
 			v.AdminOnly = false
 		end
 	end]]--
+	
+	print()
+	print("Reloaded prices")
+	print("------------------")
 end
 
-function pricer.SendPrices(ply ,reload)
+function pricer.SendPrices(ply, reload)
 	net.Start("newprices")
 	net.WriteBool(reload)
 	net.WritePriceTable(pricer.WepPrices)
@@ -290,7 +325,9 @@ function pricer.GetPrice(name, prices)
 end
 
 function pricer.GetPrintPrice(price)
-	if price < -1 then
+	if price == -3 then
+		return "RESET"
+	elseif price < -1 then
 		return "UNDEFINED"
 	elseif price == -1 then
 		return "NOT FOR SALE"
