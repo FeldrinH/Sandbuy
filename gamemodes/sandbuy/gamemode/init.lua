@@ -94,7 +94,7 @@ concommand.Add("sbuy_setoverrideprice", function(ply, cmd, args)
 	
 	if !wep or !price or !args[3] then return end
 	
-	pricer.SetPrice(wep, price, args[3])
+	pricer.SetPrice(wep, price, args[3] .. "prices.txt")
 	
 	print("New override price:", wep, "$" .. price)
 end)
