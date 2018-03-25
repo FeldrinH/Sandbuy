@@ -229,8 +229,6 @@ function pricer.SetPrice(wep, price, filename, priceset)
 	end
 
 	file.Write(filepath, util.TableToJSON(pricetable, true))
-	
-	pricer.LoadPrices()
 end
 
 function pricer.LoadPrices()
