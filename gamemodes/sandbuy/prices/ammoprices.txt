@@ -17,7 +17,7 @@
 		"MedkitHealth": 4,
 		"StickyGrenade": 100,
 		"AR2AltFire": 500,
-		"Nuclear_Warhead": 5000,
+		"Nuclear_Warhead": 10000,
 		"SatCannon": 3000,
 		"SniperPenetratedRound": 20,
 		"Grenade": 30,
