@@ -23,8 +23,8 @@ util.AddNetworkString("newseasonals")
 
 CreateConVar("freebuy", 0, FCVAR_NOTIFY)
 cvars.AddChangeCallback("freebuy", function(convar, old, new)
-	if tonumber(new) == 0 then
-		buylogger.Init(true)
+	if !tobool(new) then
+		buylogger.Init()
 	else
 		buylogger.Close(true)
 	end

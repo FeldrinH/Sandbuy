@@ -1,31 +1,34 @@
 buylogger = buylogger or {Active=false}
 
-function buylogger.Init(isfreebuy)
+function buylogger.Init()
 	if buylogger.Active then return end
 
 	if !file.Exists("buylog.txt", "DATA") then
 		file.Write("buylog.txt", "action,player,target,newmoney,killweapon\n")
 	end
 	
-	buylogger.File = file.Open("buylog.txt", "a", "DATA")
-	if isfreebuy then
+	if buylogger.Freebuy then
 		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --FREEBUY DISABLED--\n")
 	else
+		buylogger.File = file.Open("buylog.txt", "a", "DATA")
 		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " " .. game.GetMap() .. " --LOGGING STARTED--\n")
 	end
 	buylogger.Active = true
+	buylogger.Freebuy = false
 end
 
 function buylogger.Close(isfreebuy)
-	if !buylogger.Active then return end
+	if !buylogger.Active and !buylogger.Freebuy then return end
 	
 	buylogger.Active = false
 	if isfreebuy then
 		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --FREEBUY ENABLED--\n")
+		buylogger.File:Flush()
+		buylogger.Freebuy = true
 	else
 		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --LOGGING ENDED--\n")
+		buylogger.File:Close()
 	end
-	buylogger.File:Close()
 end
 
 function buylogger.LogKill(ply, victim, wepname, newmoney, delta)
@@ -74,13 +77,13 @@ function buylogger.LogReset(resettype, newmoney)
 end
 
 function buylogger.LogJoin(ply)
-	if buylogger.Active then
+	if buylogger.Active or buylogger.Freebuy then
 		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --" .. ply:Nick() .. " JOINED--\n")
 	end
 end
 
 function buylogger.LogLeave(ply)
-	if buylogger.Active then
+	if buylogger.Active or buylogger.Freebuy then
 		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --" .. ply:Nick() .. " LEFT--\n")
 	end
 end
