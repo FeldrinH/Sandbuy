@@ -17,15 +17,6 @@
 		"sent_uh-60blackhawk_p": 1,
 		"sent_m8drone_p": 1
 	},
-	"tooexplosives": {
-		"sent_flying_bomb": 1,
-		"sent_neuro_bouncingbetty": 1,
-		"sent_carbomb": 1,
-		"sent_improvbomb": 1,
-		"sent_mortar_p": 1,
-		"sent_cowbomb": 1,
-		"sent_land_mine": 1
-	},
 	"machines": {
 		"sent_f-15active_p": 1,
 		"sent_fv3805_p": 1,
