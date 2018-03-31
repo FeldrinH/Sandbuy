@@ -4,7 +4,6 @@ AddCSLuaFile('pricer.lua')
 AddCSLuaFile('player_class/player_sandbuy.lua')
 AddCSLuaFile('cl_init.lua')
 AddCSLuaFile('cl_scoreboard.lua')
-AddCSLuaFile('spawnmenu_prices.lua')
 AddCSLuaFile('spawnmenu_content.lua')
 AddCSLuaFile('patches_shared.lua')
 
@@ -231,6 +230,16 @@ concommand.Add("sbuy_updateseasonals", function(ply)
 	UpdateSeasonals()
 end)
 
+local function GiveEcoMoneyAll()
+	for k,v in pairs(player.GetAll()) do
+		GAMEMODE:GiveEcoMoney(v)
+	end
+end
+
+cvars.AddChangeCallback("sbuy_ecotime", function(cvar, old, new)
+	timer.Adjust("Sandbuy_Eco", tonumber(new), 0, GiveEcoMoneyAll)
+end, "Sbuy_EcoUpdate")
+
 function GM:Initialize()
 	pricer.LoadPrices()
 	
@@ -238,8 +247,10 @@ function GM:Initialize()
 		buylogger.Init()
 	end
 	
-	timer.Create("Sandbuy_UpdateSeasonalWeapons", 600, 0 , UpdateSeasonals)
-	timer.Simple(5, UpdateSeasonals)
+	--timer.Create("Sandbuy_UpdateSeasonalWeapons", 600, 0 , UpdateSeasonals)
+	--timer.Simple(5, UpdateSeasonals)
+	
+	timer.Create("Sandbuy_Eco", GetConVar("sbuy_ecotime"):GetInt(), 0, GiveEcoMoneyAll)
 	
 	return BaseClass.Initialize(self)
 end
@@ -277,13 +288,13 @@ end
 function GM:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
-	local bailoutamount = ply:GetBailout()
+	--local bailoutamount = ply:GetBailout()
 	
-	if ply.GetMoney and ply.HasDied and ply:GetMoney() < bailoutamount then
-		buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply:GetMoney())
-		ply:SetMoney(bailoutamount)
-		ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
-	end
+	--if ply.GetMoney and ply.HasDied and ply:GetMoney() < bailoutamount then
+	--	buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply:GetMoney())
+	--	ply:SetMoney(bailoutamount)
+	--	ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
+	--end
 	
 	BaseBaseClass.PlayerSpawn(self, ply)
 	
@@ -338,6 +349,15 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	ply:SendLua("GAMEMODE:SetDeathMessage(Entity(" .. killer:EntIndex() .. "))")
 	
 	return BaseClass.PlayerDeath(self, ply, inflictor, attacker)
+end
+
+function GM:GiveEcoMoney(ply)
+	local ecoamount = ply:GetBailout()
+
+	if ply.GetMoney then
+		ply:AddMoney(ecoamount)
+		buylogger.LogBailout(ply, ply:GetMoney(), ecoamount)
+	end
 end
 
 function GM:PlayerGiveSWEP(ply, class, swep)

@@ -17,7 +17,7 @@ concommand.Add("resetfull", function( ply, cmd, args, argString  )
 			v.NeuroPlanes_SavedWeapons = nil
 			v.NeuroPlanes_ActiveWeapon = nil
 			v.TotalKillMoney = 0
-			v:SetMoney(v:GetBailout())
+			v:SetMoney(1000)--v:GetBailout())
 			v:Spawn()
 			
 			if argString != "" then
