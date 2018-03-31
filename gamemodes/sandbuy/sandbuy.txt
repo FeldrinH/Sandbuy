@@ -317,15 +317,5 @@
 			"default"	""
 			"singleplayer" "1"
 		}
-		
-		35
-		{
-			"name"		"sbuy_ecotime"
-			"text"		"Eco Time"
-			"help"		"Time between eco"
-			"type"		"Numeric"
-			"default"	"120"
-			"singleplayer" "1"
-		}
 	}
 }
