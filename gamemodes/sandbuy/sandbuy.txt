@@ -65,7 +65,7 @@
 		{
 			"name"		"sbuy_defaultmoney"
 			"text"		"Base Money"
-			"help"		"Amount of mony given to players upon initial spawn and as bailout."
+			"help"		"Amount of mony given to players upon initial spawn and as bailout"
 			"type"		"Numeric"
 			"default"	"800"
 			"singleplayer" "1"
@@ -75,7 +75,7 @@
 		{
 			"name"		"sbuy_killmoney"
 			"text"		"Kill Money"
-			"help"		"Base money given per kill."
+			"help"		"Base money given per kill"
 			"type"		"Numeric"
 			"default"	"1000"
 			"singleplayer" "1"
@@ -85,7 +85,7 @@
 		{
 			"name"		"sbuy_levelsize"
 			"text"		"Money Required Per Level"
-			"help"		"Amount of money required per level of bailout bonus (Multiplied by level)."
+			"help"		"Amount of money required per level of bailout bonus (Multiplied by level)"
 			"type"		"Numeric"
 			"default"	"3"
 			"singleplayer" "1"
