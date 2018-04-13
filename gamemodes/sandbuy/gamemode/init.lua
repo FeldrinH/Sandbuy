@@ -4,7 +4,6 @@ AddCSLuaFile('pricer.lua')
 AddCSLuaFile('player_class/player_sandbuy.lua')
 AddCSLuaFile('cl_init.lua')
 AddCSLuaFile('cl_scoreboard.lua')
-AddCSLuaFile('spawnmenu_prices.lua')
 AddCSLuaFile('spawnmenu_content.lua')
 AddCSLuaFile('patches_shared.lua')
 
@@ -238,8 +237,8 @@ function GM:Initialize()
 		buylogger.Init()
 	end
 	
-	timer.Create("Sandbuy_UpdateSeasonalWeapons", 600, 0 , UpdateSeasonals)
-	timer.Simple(5, UpdateSeasonals)
+	--timer.Create("Sandbuy_UpdateSeasonalWeapons", 600, 0 , UpdateSeasonals)
+	--timer.Simple(5, UpdateSeasonals)
 	
 	return BaseClass.Initialize(self)
 end

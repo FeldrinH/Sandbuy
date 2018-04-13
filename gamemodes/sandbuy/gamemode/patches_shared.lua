@@ -11,6 +11,14 @@ if CLIENT then
 	end, "Sandbuy_BlockTranspColour")
 end
 
+hook.Remove("Think","NeuroHeadshotsClientDeathThink")
+hook.Remove("PlayerDeathThink", "NeuroWeapons_HeadlessRagdollGore")
+hook.Remove("PlayerDeath", "NeuroWeapons_RemoveBrokenHead")
+local name, chunks = debug.getupvalue(hook.GetTable()["ScalePlayerDamage"]["NeuroWeapons_HeadshotKlonk"], 1)
+if name == "Chunks" then
+	table.Empty(chunks)
+end
+
 local toolwhitelist = {
 	paint = true,
 	colour = true,
