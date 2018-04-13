@@ -18,6 +18,7 @@ function PLAYER:SetupDataTables()
 		end)
 		
 		self.Player:SetMoney(self.Player.DefaultMoneyOverride or GetConVar("sbuy_defaultmoney"):GetInt())
+		self.Player.DefaultMoneyOverride = nil
 	end
 
 	return BaseClass.SetupDataTables(self)

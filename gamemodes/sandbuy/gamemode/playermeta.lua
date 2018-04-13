@@ -12,10 +12,22 @@ end
 
 if SERVER then
 	function meta:GetBailoutBonus()
-		return math.floor(math.sqrt(0.25 + self.TotalKillMoney / (GetConVar("sbuy_killmoney"):GetInt() / 2 * GetConVar("sbuy_levelsize"):GetFloat())) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
+		return math.floor(math.sqrt(0.25 + self.TotalKillMoney * 2 / self:GetLevelSize()) - 0.5) * self:GetLevelBonus()
 	end
 	
 	function meta:GetBailout()
-		return GetConVar("sbuy_defaultmoney"):GetInt() + self:GetBailoutBonus()
+		return (self.OverrideDefaultMoney or GetConVar("sbuy_defaultmoney"):GetInt()) + self:GetBailoutBonus()
+	end
+	
+	function meta:GetKillMoney()
+		return self.OverrideKillMoney or GetConVar("sbuy_killmoney"):GetInt()
+	end
+	
+	function meta:GetLevelBonus()
+		return self.OverrideLevelBonus or GetConVar("sbuy_levelbonus"):GetInt()
+	end
+	
+	function meta:GetLevelSize()
+		return self.OverrideLevelSize or GetConVar("sbuy_levelsize"):GetFloat()
 	end
 end

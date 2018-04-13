@@ -276,12 +276,18 @@ end
 function GM:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
-	local bailoutamount = ply:GetBailout()
+	if ply.HasDied then
+		local bailoutamount = ply:GetBailout()
 	
-	if ply.GetMoney and ply.HasDied and ply:GetMoney() < bailoutamount then
-		buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply:GetMoney())
-		ply:SetMoney(bailoutamount)
-		ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
+		if ply.GetMoney and ply:GetMoney() < bailoutamount then
+			buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply:GetMoney())
+			ply:SetMoney(bailoutamount)
+			ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
+		elseif ply.DefaultMoneyOverride and ply.DefaultMoneyOverride < bailoutamount then
+			buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply.DefaultMoneyOverride)
+			ply.DefaultMoneyOverride = bailoutamount
+			ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
+		end
 	end
 	
 	BaseBaseClass.PlayerSpawn(self, ply)
@@ -323,10 +329,10 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), -pricer.TeamKillPenalty)
 			deltamoney = 0
 		else
-			local killmoney = GetConVar("sbuy_killmoney"):GetInt() * pricer.GetKillReward(weaponname) * (self.SeasonalWeapons[weaponname] or 1) + deltamoney
+			local killmoney = killer:GetKillMoney() * pricer.GetKillReward(weaponname) * (self.SeasonalWeapons[weaponname] or 1) + deltamoney
 			killer:AddMoney(killmoney)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney)
-			killer.TotalKillMoney = killer.TotalKillMoney + killmoney
+			killer.TotalKillMoney = killer.TotalKillMoney + killmoney / killer:GetKillMoney()
 		end
 	end
 	ply:AddMoney(-deltamoney)
