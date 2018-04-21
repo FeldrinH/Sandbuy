@@ -4,7 +4,7 @@ pricer = pricer or {
 	VehiclePrices={default=-2,individual={}},
 	EntPrices={default=-2,individual={}},
 	Categories={},
-	KillRewards={default=1,individual={}}
+	KillRewards={individual={}}
 }
 
 pricer.TeamKillPenalty = 200
@@ -307,7 +307,7 @@ end
 end]]--
 
 function pricer.GetKillReward(wep)
-	return pricer.KillRewards.individual[wep] or pricer.KillRewards.default
+	return pricer.KillRewards.individual[wep] or 1
 end
 
 function pricer.GetClipCount(wep, clip)
