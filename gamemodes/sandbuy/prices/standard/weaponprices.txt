@@ -1,8 +1,5 @@
 {
-	"default": -2,
 	"individual": {
-		"gmod_tool": 0,
-		"weapon_physgun": 0,
 		"m9k_f2000": 2800,
 		"m9k_m16a4_acog": 2500,
 		"m9k_val": 2700,
@@ -78,7 +75,6 @@
 		"m9k_m202": 5000,
 		"m9k_nitro": 500,
 		"m9k_rpg7": 3000,
-		"m9k_fists": 0,
 		"m9k_harpoon": 100,
 		"m9k_proxy_mine": 1000,
 		"m9k_matador": 4000,
@@ -227,14 +223,13 @@
 		"weapon_neurowep_50cal_ap": 2700,
 		"weapon_neurowep_acr10": 2400,
 		"weapon_neurowep_m24": 3000,
-		"sbuy_medkit": 0,
 		"weapon_pistol": 100,
 		"weapon_crossbow": 800,
 		"weapon_smg1": 800,
 		"weapon_bugbait": -2,
 		"weapon_rpg": 1600,
 		"weapon_crowbar": 100,
-		"weapon_physcannon": 400,
+		"weapon_physcannon": 0,
 		"weapon_frag": 30,
 		"weapon_357": 400,
 		"weapon_shotgun": 300,
@@ -242,9 +237,7 @@
 		"weapon_stunstick": 100,
 		"weapon_slam": 700,
 		"seal6-c4": -2,
-		"sbuy_armorkit": -1,
 		"weapon_neurowep_m3": 3400,
-		"weapon_neurowep_winchester_1887": 3000,
-		"sbuy_binoculars": 0
+		"weapon_neurowep_winchester_1887": 3000
 	}
 }

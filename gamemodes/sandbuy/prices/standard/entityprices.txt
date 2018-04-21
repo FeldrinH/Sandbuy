@@ -1,5 +1,4 @@
 {
-	"default": -2,
 	"individual": {
 		"basetotem": 0,
 		"damagedetector": 0,

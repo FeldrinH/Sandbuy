@@ -1,5 +1,4 @@
 {
-	"default": -2,
 	"individual": {
 		"sim_fphys_hedgehog": 2000,
 		"sim_fphys_chaos126p": 2000,

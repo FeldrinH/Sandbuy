@@ -111,10 +111,12 @@ local function LoadFile(filename, categories)
 	local report = {}
 	
 	for k,v in pairs(pricer.PriceString) do
-		local isdefault = v == "default"
-		local loadname = isdefault and "gamemodes/sandbuy/prices/" .. filename or "prices/" .. v .. "/" .. filename
+		local loadname = "data/prices/" .. v .. "/" .. filename
+		if !file.Exists("data/prices/" .. v, "GAME") then
+			loadname = "gamemodes/sandbuy/prices/" .. v .. "/" .. filename
+		end
 	
-		local loadfile = file.Read(loadname, isdefault and "GAME" or "DATA")
+		local loadfile = file.Read(loadname, "GAME")
 		if loadfile then
 			local loadprices = util.JSONToTable(loadfile)
 			if loadprices then
@@ -140,15 +142,7 @@ local function LoadFile(filename, categories)
 				end
 			else
 				table.insert(report, v .. ": <invalid>")
-				--if isdefault then
-				--	ErrorNoHalt("ERROR: Included " .. filename .. " invalid. Ignoring. Please report this to the mod author!\n")
-				--else
-				--	ErrorNoHalt("WARNING: " .. loadname .. " invalid. Ignoring\n")
-				--end
 			end
-		elseif isdefault then
-			table.insert(report, v .. ": <missing>")
-			--ErrorNoHalt("ERROR: Included " .. filename .. " missing. Please report this to the mod author!\n")
 		end
 	end
 	

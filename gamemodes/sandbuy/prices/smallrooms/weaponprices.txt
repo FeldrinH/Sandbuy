@@ -1,0 +1,5 @@
+{
+	"individual": {
+		"weapon_neurowep_m79": -1.0
+	}
+}

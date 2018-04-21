@@ -1,10 +1,8 @@
 {
-	"default": 1,
 	"individual": {
 		"m9k_proxy": 0.5,
 		"npc_tripmine": 0.5,
 		"m9k_released_poison": 0.5,
-		"m9k_fists": 2,
 		"m9k_machete": 2,
 		"m9k_thrown_knife": 2,
 		"m9k_damascus": 2,
