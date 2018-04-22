@@ -12,7 +12,7 @@
 			"text"		"Load Prices"
 			"help"		"List of prices to load. 'default' is included prices. Define custom prices under garrysmod/data/prices. Use 'reloadprices' to apply"
 			"type"		"Text"
-			"default"	"default overrides"
+			"default"	"base cso overrides"
 		}
 	
 		2
@@ -67,7 +67,7 @@
 			"text"		"Base Money"
 			"help"		"Amount of mony given to players upon initial spawn and as bailout"
 			"type"		"Numeric"
-			"default"	"800"
+			"default"	"1000"
 			"singleplayer" "1"
 		}
 		
@@ -87,7 +87,7 @@
 			"text"		"Money Required Per Level"
 			"help"		"Amount of money required per level of bailout bonus (Multiplied by level)"
 			"type"		"Numeric"
-			"default"	"3"
+			"default"	"2"
 			"singleplayer" "1"
 		}
 		
@@ -97,7 +97,7 @@
 			"text"		"Bonus Per Level"
 			"help"		"Bailout bonus added per level."
 			"type"		"Numeric"
-			"default"	"50"
+			"default"	"100"
 			"singleplayer" "1"
 		}
 		
