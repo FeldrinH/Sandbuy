@@ -111,9 +111,9 @@ local function LoadFile(filename, categories)
 	local report = {}
 	
 	for k,v in pairs(pricer.PriceString) do
-		local loadname = "data/prices/" .. v .. "/" .. filename
-		if !file.Exists("data/prices/" .. v, "GAME") then
-			loadname = "gamemodes/sandbuy/prices/" .. v .. "/" .. filename
+		local loadname = "gamemodes/sandbuy/prices/" .. v .. "/" .. filename
+		if !file.Exists("gamemodes/sandbuy/prices/" .. v, "GAME") then
+			loadname = "data/prices/" .. v .. "/" .. filename
 		end
 	
 		local loadfile = file.Read(loadname, "GAME")
