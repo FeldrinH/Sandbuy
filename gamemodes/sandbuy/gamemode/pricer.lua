@@ -95,6 +95,8 @@ local function ValidatePriceSetName(name)
 end
 
 local function ParsePriceString()
+	print("PRICESETS")
+	
 	local pricestring = GetConVar("sbuy_prices"):GetString()
 	local parse = string.Split(pricestring, " ")
 	for k,v in pairs(parse) do
@@ -103,19 +105,37 @@ local function ParsePriceString()
 		end
 	end
 	
+	for k,v in pairs(parse) do
+		local path = nil
+		if #file.Find("gamemodes/sandbuy/prices/" .. v .. "/*", "GAME") > 0 then
+			path = "gamemodes/sandbuy/prices/" .. v .. "/"
+			if file.Exists("data/prices/" .. v, "GAME") then
+				MsgC(Color(255,255,0), "  " .. v .. ": built-in, ignoring custom\n")
+			else
+				print("  " .. v .. ": built-in")
+			end
+		elseif file.Exists("data/prices/" .. v , "GAME") then
+			path = "data/prices/" .. v .. "/"
+			print("  " .. v .. ": custom")
+		else
+			MsgC(Color(255,0,0), "  " .. v .. ": missing\n")
+		end
+		
+		parse[k] = {name = v, path = path}
+	end
+	
 	return parse
 end
 
 local function LoadFile(filename, categories)
+	print(string.upper(string.StripExtension(filename)))
+	
 	local prices = categories and {} or {default=-2,individual={}}
-	local report = {}
 	
-	for k,v in pairs(pricer.PriceString) do
-		local loadname = "gamemodes/sandbuy/prices/" .. v .. "/" .. filename
-		if !file.Exists("gamemodes/sandbuy/prices/" .. v, "GAME") then
-			loadname = "data/prices/" .. v .. "/" .. filename
-		end
-	
+	for num,set in pairs(pricer.PriceString) do
+		if !set.path then continue end
+		
+		local loadname = set.path .. filename
 		local loadfile = file.Read(loadname, "GAME")
 		if loadfile then
 			local loadprices = util.JSONToTable(loadfile)
@@ -131,27 +151,18 @@ local function LoadFile(filename, categories)
 						end
 					end
 					
-					table.insert(report, v .. ": " .. table.concat(table.GetKeys(loadprices), ", "))
+					print("  " .. set.name .. ": " .. table.concat(table.GetKeys(loadprices), ", "))
 				else
 					prices.default = loadprices.default or prices.default
 					for k,v in pairs(loadprices.individual) do
 						prices.individual[k] = v
 					end
 					
-					table.insert(report, v .. ": " .. table.Count(loadprices.individual))
+					print("  " .. set.name .. ": " .. table.Count(loadprices.individual))
 				end
 			else
-				table.insert(report, v .. ": <invalid>")
+				MsgC(Color(255,0,0), "  " .. set.name .. ": <invalid>\n")
 			end
-		end
-	end
-	
-	print(string.upper(string.StripExtension(filename)))
-	for k,v in pairs(report) do
-		if string.EndsWith(v, "<invalid>") or string.EndsWith(v, "<missing>") then
-			MsgC(Color(255,0,0), "  " .. v .. "\n")
-		else
-			print("  " .. v)
 		end
 	end
 	
