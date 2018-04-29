@@ -160,7 +160,7 @@ concommand.Add("buyheldammo", function(ply, cmd, args)
 	
 	local amountarg = args[1] or "smart"
 	local typearg = args[2] or "primary"
-	local limitarg = args[3] or 500
+	local limitarg = args[3] or 1000
 	
 	local limit = tonumber(limitarg)
 	if !limit then
