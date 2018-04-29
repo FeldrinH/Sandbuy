@@ -154,6 +154,22 @@ hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 	end
 end)
 
+hook.Add("DoPlayerDeath", "KillCountingFix", function(ply, atk, dmginfo)
+	if IsValid( atk ) && atk:IsVehicle() && IsValid( atk:GetDriver() ) then
+		atk = atk:GetDriver()
+		
+		if atk == ply then
+			atk:AddFrags( -1 )
+		else
+			atk:AddFrags( 1 )
+		end
+	end
+	
+	if atk:IsPlayer() and ply:Team() != TEAM_UNASSIGNED and ply:Team() == atk:Team() and ply != atk then
+		atk:AddFrags(-2)
+	end
+end)
+
 local meta = FindMetaTable( "Player" )
 
 if !meta.StripWeaponsRaw then
