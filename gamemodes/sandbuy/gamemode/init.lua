@@ -41,7 +41,7 @@ concommand.Add("cleanprices", function(ply)
 	local count = 0
 
 	local items = list.GetForEdit("Weapon")
-	for k,v in pairs(pricer.WepPrices.individual) do
+	for k,v in pairs(pricer.WepPrices) do
 		if !items[k] or !items[k].Spawnable then
 			print("Weapon not spawnable: " .. k)
 			count = count + 1

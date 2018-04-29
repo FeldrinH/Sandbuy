@@ -1,10 +1,10 @@
 pricer = pricer or {
-	WepPrices={default=-2,individual={}},
-	AmmoPrices={default=-2,individual={}},
-	VehiclePrices={default=-2,individual={}},
-	EntPrices={default=-2,individual={}},
+	WepPrices={},
+	AmmoPrices={},
+	VehiclePrices={},
+	EntPrices={},
 	Categories={},
-	KillRewards={individual={}}
+	KillRewards={}
 }
 
 pricer.TeamKillPenalty = 200
@@ -25,9 +25,7 @@ pricer.WepEnts = {
 }
 
 function net.WritePriceTable(prices)
-	net.WriteInt(prices.default, 32)
-	
-	for k,v in pairs(prices.individual) do
+	for k,v in pairs(prices) do
 		net.WriteString(k)
 		net.WriteInt(v, 32)
 	end
@@ -38,15 +36,12 @@ end
 function net.ReadPriceTable()
 	local prices = {}
 	
-	prices.default = net.ReadInt(32)
-	prices.individual = {}
-	
 	while true do
 		local k = net.ReadString()
 		if k == "" then break end
 		local v = net.ReadInt(32)
 		
-		prices.individual[k] = v
+		prices[k] = v
 	end
 
 	return prices
@@ -130,7 +125,7 @@ end
 local function LoadFile(filename, categories)
 	print(string.upper(string.StripExtension(filename)))
 	
-	local prices = categories and {} or {default=-2,individual={}}
+	local prices = {}
 	
 	for num,set in pairs(pricer.PriceString) do
 		if !set.path then continue end
@@ -153,18 +148,18 @@ local function LoadFile(filename, categories)
 					
 					print("  " .. set.name .. ": " .. table.concat(table.GetKeys(loadprices), ", "))
 				else
-					for k,v in pairs(loadprices.individual) do
+					for k,v in pairs(loadprices) do
 						if v == -4 then
-							if (prices.individual[k] or -2) >= -1 then
+							if (prices[k] or -2) >= -1 then
 								v = -1
 							else
 								v = -2
 							end
 						end
-						prices.individual[k] = v
+						prices[k] = v
 					end
 					
-					print("  " .. set.name .. ": " .. table.Count(loadprices.individual))
+					print("  " .. set.name .. ": " .. table.Count(loadprices))
 				end
 			else
 				MsgC(Color(255,0,0), "  " .. set.name .. ": <invalid>\n")
@@ -193,10 +188,10 @@ local function LoadAmmoPrices()
 	local prices = LoadFile("ammoprices.txt")
 	if !prices then return end
 	
-	for k,v in pairs(prices.individual) do
+	for k,v in pairs(prices) do
 		if !isstring(k) then
-			prices.individual[tostring(k)] = v
-			prices.individual[k] = nil
+			prices[tostring(k)] = v
+			prices[k] = nil
 		end
 	end
 	
@@ -206,7 +201,7 @@ end
 function pricer.ApplyModifier(category, prices, modifier)	
 	for k,v in pairs(pricer.CategoriesList[category]) do
 		if pricer.GetPrice(v, prices) >= 0 then
-			prices.individual[v] = modifier(pricer.GetPrice(v, prices), v)
+			prices[v] = modifier(pricer.GetPrice(v, prices), v)
 		end
 	end
 end
@@ -231,12 +226,12 @@ function pricer.SetPrice(wep, price, filename, priceset)
 	local filepath = "prices/" .. priceset .. "/" .. filename
 	
 	local localfile = file.Read(filepath)
-	local pricetable = localfile and util.JSONToTable(localfile) or {individual={}}
+	local pricetable = localfile and util.JSONToTable(localfile) or {}
 	
 	if price == -3 then
-		pricetable.individual[wep] = nil
+		pricetable[wep] = nil
 	else
-		pricetable.individual[wep] = price
+		pricetable[wep] = price
 	end
 
 	file.Write(filepath, util.TableToJSON(pricetable, true))
@@ -318,7 +313,7 @@ end
 end]]--
 
 function pricer.GetKillReward(wep)
-	return pricer.KillRewards.individual[wep] or 1
+	return pricer.KillRewards[wep] or 1
 end
 
 function pricer.GetClipCount(wep, clip)
@@ -330,7 +325,7 @@ function pricer.InCategory(class, category)
 end
 
 function pricer.GetPrice(name, prices)
-	return prices.individual[name] or prices.default
+	return prices[name] or -2
 end
 
 function pricer.GetPrintPrice(price)
