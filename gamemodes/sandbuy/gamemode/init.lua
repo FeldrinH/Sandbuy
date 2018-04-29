@@ -29,6 +29,12 @@ cvars.AddChangeCallback("freebuy", function(convar, old, new)
 	end
 end, "Sandbuy_Freebuy")
 
+local function GetDeprecatedMessage(cmdname)
+	return function(ply)
+		ply:PrintMessage(HUD_PRINTTALK, "This command is deprecated. Please use '" .. cmdname .. "'")
+	end
+end
+
 concommand.Add("reloadprices", function(ply)
 	if !ply:IsAdmin() then return end
 
@@ -37,6 +43,7 @@ concommand.Add("reloadprices", function(ply)
 	pricer.SendPrices(nil, true)
 end)
 
+-- DEPRECATED
 concommand.Add("cleanprices", function(ply)
 	local count = 0
 
@@ -53,6 +60,15 @@ concommand.Add("cleanprices", function(ply)
 	else
 		print(count .. " items not spawnable")
 	end
+end)
+
+-- TODO
+concommand.Add("listprices", function(ply)
+	print("TODO")
+end)
+
+concommand.Add("normalizeprices", function(ply)
+	print("TODO")
 end)
 
 concommand.Add("setcategoryprice", function(ply, cmd, args)
@@ -85,7 +101,7 @@ concommand.Add("setcategoryprice", function(ply, cmd, args)
 	end
 end)
 
-concommand.Add("sbuy_setoverrideprice", function(ply, cmd, args)
+concommand.Add("setoverrideprice", function(ply, cmd, args)
 	if !ply:IsAdmin() then return end
 
 	local wep = args[1]
@@ -134,48 +150,81 @@ end)
 	end
 end)]]--
 
-local function GiveHeldAmmo(ply, cmd, args)
-	local wep = ply:GetActiveWeapon()
+local function PrintHeldAmmoUsage(ply)
+	--TODO
+end
+
+concommand.Add("buyheldammo", function(ply, cmd, args)
+		local wep = ply:GetActiveWeapon()
 	if !IsValid(wep) then return end
 	
+	local amountarg = args[1] or "smart"
+	local typearg = args[2] or "primary"
+	local limitarg = args[3] or 500
+	
+	local limit = tonumber(limitarg)
+	if !limit then
+		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid price limit: '" .. limitarg .. "'")
+		return
+	end
+	if limit == 0 or limit > ply:GetMoney() then
+		limit = ply:GetMoney()
+	end
+	
 	local isprimary = true
-	local ammo = wep:GetPrimaryAmmoType()
-	if ammo == -1 or args[2] == "secondary" then
+	local ammo = -1
+	if typearg == "primary" then
+		ammo = wep:GetPrimaryAmmoType()
+		if ammo == -1 then
+			ammo = wep:GetSecondaryAmmoType()
+			isprimary = false
+		end
+	elseif typearg == "secondary" then
 		ammo = wep:GetSecondaryAmmoType()
 		isprimary = false
-		if ammo == -1 then return end
+	else
+		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid ammo type: '" .. typearg .. "'")
+		return
+	end
+	if ammo == -1 then 
+		--ply:PrintMessage(HUD_PRINTCONSOLE, "No suitable ammo found for weapon")
+		return
 	end
 	ammo = game.GetAmmoName(ammo)
 	
 	local amount = 1
 	if pricer.GetPrice(ammo, pricer.AmmoPrices) < 0 then
 		--Ammo not for sale
-	elseif args[1] == nil or args[1] == "smart" then
+	elseif amountarg == "smart" then
 		amount = pricer.ClipSize[wep:GetClass()] or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
-		if (amount > 0) and (pricer.GetPrice(ammo, pricer.AmmoPrices) * amount > ply:GetMoney()) and !GetConVar("freebuy"):GetBool() then
-			amount = math.floor(ply:GetMoney() / pricer.GetPrice(ammo, pricer.AmmoPrices))
+		if (amount > 0) and (pricer.GetPrice(ammo, pricer.AmmoPrices) * amount > limit) and !GetConVar("freebuy"):GetBool() then
+			amount = math.floor(limit / pricer.GetPrice(ammo, pricer.AmmoPrices))
 		end
 		if amount < 1 then
 			amount = 1
 		end
-	elseif args[1] == "clip" then
+	elseif amountarg == "clip" then
 		amount = pricer.ClipSize[wep:GetClass()] or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
-	elseif args[1] == "max" then
-		amount = math.floor(ply:GetMoney() / pricer.GetPrice(ammo, pricer.AmmoPrices))
+	elseif amountarg == "max" then
+		amount = math.floor(limit / pricer.GetPrice(ammo, pricer.AmmoPrices))
 		if amount < 1 then
 			amount = 1
 		end
 	elseif tonumber(args[1]) != nil then
 		amount = tonumber(args[1])
+	else
+		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid amount: '" .. amountarg .. "'")
+		return
 	end
 	
 	if !gamemode.Call("PlayerGiveAmmo", ply, ammo, amount) then return end
 	
 	ply:GiveAmmo(amount, ammo, false)
-end
+end)
 
-concommand.Add("sbuy_giveheldammo", GiveHeldAmmo)
-concommand.Add("sbuy_giveprimaryammo", GiveHeldAmmo) --Deprecate later
+-- DEPRECATED
+concommand.Add("sbuy_giveprimaryammo", GetDeprecatedMessage("buyheldammo"))
+concommand.Add("sbuy_giveheldammo", GetDeprecatedMessage("buyheldammo")) 
 
 GM.SeasonalWeapons = {}
 

@@ -454,7 +454,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
-						RunConsoleCommand("sbuy_setoverrideprice", obj.spawnname, newprice, "weapon")
+						RunConsoleCommand("setoverrideprice", obj.spawnname, newprice, "weapon")
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
@@ -535,7 +535,7 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
-						RunConsoleCommand("sbuy_setoverrideprice", obj.spawnname, newprice, "entity")
+						RunConsoleCommand("setoverrideprice", obj.spawnname, newprice, "entity")
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
@@ -617,7 +617,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
-						RunConsoleCommand("sbuy_setoverrideprice", obj.spawnname, newprice, "vehicle")
+						RunConsoleCommand("setoverrideprice", obj.spawnname, newprice, "vehicle")
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
@@ -697,7 +697,7 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
-						RunConsoleCommand("sbuy_setoverrideprice", obj.spawnname, newprice, "vehicle")
+						RunConsoleCommand("setoverrideprice", obj.spawnname, newprice, "vehicle")
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
