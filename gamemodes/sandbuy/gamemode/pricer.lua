@@ -153,8 +153,14 @@ local function LoadFile(filename, categories)
 					
 					print("  " .. set.name .. ": " .. table.concat(table.GetKeys(loadprices), ", "))
 				else
-					prices.default = loadprices.default or prices.default
 					for k,v in pairs(loadprices.individual) do
+						if v == -4 then
+							if (prices.individual[k] or -2) >= -1 then
+								v = -1
+							else
+								v = -2
+							end
+						end
 						prices.individual[k] = v
 					end
 					
@@ -328,7 +334,9 @@ function pricer.GetPrice(name, prices)
 end
 
 function pricer.GetPrintPrice(price)
-	if price == -3 then
+	if price == -4 then
+		return "BLOCK"
+	elseif price == -3 then
 		return "RESET"
 	elseif price < -1 then
 		return "UNDEFINED"
