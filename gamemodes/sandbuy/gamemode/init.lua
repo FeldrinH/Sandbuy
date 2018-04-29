@@ -68,7 +68,14 @@ concommand.Add("listprices", function(ply)
 end)
 
 concommand.Add("normalizeprices", function(ply)
-	print("TODO")
+	local fs,dr = file.Find("prices/*", "DATA")
+	for k,v in pairs(dr) do
+		local pfs,pdr = file.Find("prices/" .. v .. "/*", "DATA")
+		for i,j in pairs(pfs) do
+			if j == "categories.txt" then continue end
+			pricer.SetPrice("!!!normalizeprices!!!", -3, j, v)
+		end
+	end
 end)
 
 concommand.Add("setcategoryprice", function(ply, cmd, args)

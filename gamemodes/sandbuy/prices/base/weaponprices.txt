@@ -1,8 +1,8 @@
 {
 	"gmod_tool": -1,
-	"weapon_physgun": 0,
-	"sbuy_medkit": 0,
 	"sbuy_armorkit": -1,
 	"sbuy_binoculars": 0,
-	"weapon_fists": 0
+	"sbuy_medkit": 0,
+	"weapon_fists": 0,
+	"weapon_physgun": 0
 }

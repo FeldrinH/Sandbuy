@@ -214,6 +214,28 @@ function pricer.PrintModifier(category, prices, modifier)
 	end
 end
 
+function pricer.SavePriceTable(filename, prices)
+	local sortedprices = {}
+	for k,v in pairs(prices) do
+		table.insert(sortedprices, {wep = k, price = v})
+	end
+	table.sort(sortedprices, function(a, b) return tostring(a.wep) < tostring(b.wep) end)
+	
+	local wfile = file.Open(filename, "w", "DATA")
+	
+	wfile:Write("{\n")
+	for k,v in ipairs(sortedprices) do
+		if next(sortedprices, k) == nil then
+			wfile:Write("\t\"" .. v.wep .. "\": " .. v.price .. "\n")
+		else
+			wfile:Write("\t\"" .. v.wep .. "\": " .. v.price .. ",\n")
+		end
+	end
+	wfile:Write("}")
+	
+	wfile:Close()
+end
+
 function pricer.SetPrice(wep, price, filename, priceset)
 	if priceset == nil then
 		priceset = GetConVar("sbuy_overrides"):GetString()
@@ -234,7 +256,7 @@ function pricer.SetPrice(wep, price, filename, priceset)
 		pricetable[wep] = price
 	end
 
-	file.Write(filepath, util.TableToJSON(pricetable, true))
+	pricer.SavePriceTable(filepath, pricetable)
 end
 
 function pricer.LoadPrices()
