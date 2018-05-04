@@ -394,6 +394,9 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 		end
 	end
 	ply:AddMoney(-deltamoney)
+	--if killer == ply then
+	--	ply.TotalKillMoney = math.max(ply.TotalKillMoney - 1 - deltamoney / ply:GetKillMoney(), 0)
+	--end
 	buylogger.LogDeath(ply, killer, weaponname, ply:GetMoney(), -deltamoney)
 	
 	ply.HasDied = true
