@@ -162,7 +162,7 @@
 	"weapon_752_winchester": 1200,
 	"weapon_ar2": 1000,
 	"weapon_bugbait": -2,
-	"weapon_crossbow": 800,
+	"weapon_crossbow": 1000,
 	"weapon_crowbar": 100,
 	"weapon_frag": 30,
 	"weapon_jericho": 5000,

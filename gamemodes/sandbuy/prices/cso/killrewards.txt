@@ -1,0 +1,3 @@
+{
+	"tfa_cso_dualsword": 1.5
+}
