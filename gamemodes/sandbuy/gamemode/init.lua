@@ -161,8 +161,8 @@ local function PrintHeldAmmoUsage(ply)
 	--TODO
 end
 
-concommand.Add("buyheldammo", function(ply, cmd, args)
-		local wep = ply:GetActiveWeapon()
+local function GiveHeldAmmo(ply, cmd, args)
+	local wep = ply:GetActiveWeapon()
 	if !IsValid(wep) then return end
 	
 	local amountarg = args[1] or "smart"
@@ -227,10 +227,12 @@ concommand.Add("buyheldammo", function(ply, cmd, args)
 	if !gamemode.Call("PlayerGiveAmmo", ply, ammo, amount) then return end
 	
 	ply:GiveAmmo(amount, ammo, false)
-end)
+end
+
+concommand.Add("buyheldammo", GiveHeldAmmo)
 
 -- DEPRECATED
-concommand.Add("sbuy_giveprimaryammo", GetDeprecatedMessage("buyheldammo"))
+concommand.Add("sbuy_giveprimaryammo", GiveHeldAmmo)--GetDeprecatedMessage("buyheldammo"))
 concommand.Add("sbuy_giveheldammo", GetDeprecatedMessage("buyheldammo")) 
 
 GM.SeasonalWeapons = {}
