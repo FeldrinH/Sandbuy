@@ -100,6 +100,8 @@ local function ParsePriceString()
 		end
 	end
 	
+	local overrideloaded = table.HasValue(parse, GetConVar("sbuy_overrides"):GetString())
+	
 	for k,v in pairs(parse) do
 		local path = nil
 		if #file.Find("gamemodes/sandbuy/prices/" .. v .. "/*", "GAME") > 0 then
@@ -117,6 +119,10 @@ local function ParsePriceString()
 		end
 		
 		parse[k] = {name = v, path = path}
+	end
+	
+	if !overrideloaded then
+		MsgC(Color(255,255,0), "  Override prices '" .. GetConVar("sbuy_overrides"):GetString() .. "' not set to load\n")
 	end
 	
 	return parse
