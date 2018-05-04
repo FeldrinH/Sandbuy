@@ -102,6 +102,7 @@ end)
 
 hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 	local mine_ent = scripted_ents.GetStored("sent_land_mine")
+	if !mine_ent then return end
 	function mine_ent.t:StartTouch( ent )
 		if( self.Destroyed ) then return end
 		if ( !IsValid( ent ) or ( !IsValid( self.Spawner ) ) ) then return end
