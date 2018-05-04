@@ -14,9 +14,12 @@ end
 hook.Remove("Think","NeuroHeadshotsClientDeathThink")
 hook.Remove("PlayerDeathThink", "NeuroWeapons_HeadlessRagdollGore")
 hook.Remove("PlayerDeath", "NeuroWeapons_RemoveBrokenHead")
-local name, chunks = debug.getupvalue(hook.GetTable()["ScalePlayerDamage"]["NeuroWeapons_HeadshotKlonk"], 1)
-if name == "Chunks" then
-	table.Empty(chunks)
+local scaledamage = hook.GetTable()["ScalePlayerDamage"]
+if scaledamage and scaledamage["NeuroWeapons_HeadshotKlonk"] then
+	local name, chunks = debug.getupvalue(scaledamage["NeuroWeapons_HeadshotKlonk"], 1)
+	if name == "Chunks" then
+		table.Empty(chunks)
+	end
 end
 
 local weaponoverrides = {
@@ -106,35 +109,43 @@ hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
 	end
 end)
 
+local function ModifyWeapon(wepclass, modfunc)
+	local wep = weapons.GetStored(wepclass)
+	if wep then
+		modfunc(wep)
+	end
+end
+
 game.AddAmmoType({name = "Shuriken"})
 
 hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
-	local wep = weapons.GetStored("weapon_neurowep_bow")
-	wep.Primary.Ammo = "XBowBolt"
-
-	wep = weapons.GetStored("weapon_neurowep_shuriken")
-	wep.Primary.Ammo = "Shuriken"
-
-	wep = weapons.GetStored("weapon_neurowep_stickynade")
-	wep.Primary.Ammo = "StickyGrenade"
-	
-	wep = weapons.GetStored("weapon_neurowep_50cal")
-	wep.Primary.Ammo = "SniperPenetratedRound"
-	
-	wep = weapons.GetStored("weapon_neurowep_50cal_ap")
-	wep.Primary.Ammo = "SniperPenetratedRound"
-	
-	wep = weapons.GetStored("weapon_neurowep_acr10")
-	wep.Primary.Ammo = "SniperPenetratedRound"
-	
-	wep = weapons.GetStored("weapon_neurowep_m24")
-	wep.Primary.Ammo = "SniperPenetratedRound"
-	
-	wep = weapons.GetStored("weapon_neurowep_ptrs41")
-	wep.Primary.Ammo = "SniperPenetratedRound"
-	
-	wep = weapons.GetStored("weapon_neurowep_he44")
-	wep.Primary.Ammo = "SMG1_Grenade"
+	ModifyWeapon("weapon_neurowep_bow", function(wep)
+		wep.Primary.Ammo = "XBowBolt"
+	end)
+	ModifyWeapon("weapon_neurowep_shuriken", function(wep)
+		wep.Primary.Ammo = "Shuriken"
+	end)
+	ModifyWeapon("weapon_neurowep_stickynade", function(wep)
+		wep.Primary.Ammo = "StickyGrenade"
+	end)
+	ModifyWeapon("weapon_neurowep_50cal", function(wep)
+		wep.Primary.Ammo = "SniperPenetratedRound"
+	end)
+	ModifyWeapon("weapon_neurowep_50cal_ap", function(wep)
+		wep.Primary.Ammo = "SniperPenetratedRound"
+	end)
+	ModifyWeapon("weapon_neurowep_acr10", function(wep)
+		wep.Primary.Ammo = "SniperPenetratedRound"
+	end)
+	ModifyWeapon("weapon_neurowep_m24", function(wep)
+		wep.Primary.Ammo = "SniperPenetratedRound"
+	end)
+	ModifyWeapon("weapon_neurowep_ptrs41", function(wep)
+		wep.Primary.Ammo = "SniperPenetratedRound"
+	end)
+	ModifyWeapon("weapon_neurowep_he44", function(wep)
+		wep.Primary.Ammo = "SMG1_Grenade"
+	end)
 	
 	for k,v in pairs(list.GetForEdit("Weapon")) do
 		if v.Category == "TFA CS:O" then
