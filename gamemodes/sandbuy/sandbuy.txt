@@ -18,8 +18,8 @@
 		2
 		{
 			"name"		"sbuy_overrides"
-			"text"		"Override prices"
-			"help"		"Name of prices to write to. 'default' won't work"
+			"text"		"Override Prices"
+			"help"		"Name of prices to write to when using 'Set price' in spawnmenu"
 			"type"		"Text"
 			"default"	"overrides"
 		}
@@ -84,8 +84,8 @@
 		9
 		{
 			"name"		"sbuy_levelsize"
-			"text"		"Money Required Per Level"
-			"help"		"Amount of money required per level of bailout bonus (Multiplied by level)"
+			"text"		"Kills Required Per Level"
+			"help"		"Amount of kills required per level of bailout bonus (Scales with level)"
 			"type"		"Numeric"
 			"default"	"2"
 			"singleplayer" "1"
