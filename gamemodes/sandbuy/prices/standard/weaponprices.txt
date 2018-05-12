@@ -190,7 +190,7 @@
 	"weapon_neurowep_galil": 3000,
 	"weapon_neurowep_gau8": 9000,
 	"weapon_neurowep_glock18": 1000,
-	"weapon_neurowep_handmortar": 1800,
+	"weapon_neurowep_handmortar": 1000,
 	"weapon_neurowep_he44": 1000,
 	"weapon_neurowep_hegrenade": 200,
 	"weapon_neurowep_javelin": 4500,
