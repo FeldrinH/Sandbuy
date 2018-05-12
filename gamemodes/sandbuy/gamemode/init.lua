@@ -6,6 +6,7 @@ AddCSLuaFile('cl_init.lua')
 AddCSLuaFile('cl_scoreboard.lua')
 AddCSLuaFile('spawnmenu_content.lua')
 AddCSLuaFile('patches_shared.lua')
+AddCSLuaFile('configmenu.lua')
 
 include('buylogger.lua')
 include('shared.lua')

@@ -1,6 +1,7 @@
 include("shared.lua")
 include("cl_scoreboard.lua")
 include("spawnmenu_content.lua")
+include("configmenu.lua")
 
 DEFINE_BASECLASS("gamemode_sandbox")
 
