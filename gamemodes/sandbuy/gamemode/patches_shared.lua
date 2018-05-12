@@ -90,14 +90,13 @@ local toolwhitelist = {
 local allowed_pickup = {
 	sent_flying_bomb = true,
 	sent_oldcannon_p = true,
-	sent_mortar_p = true,
-	prop_physics = true
+	sent_mortar_p = true
 }
 
 hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
-	if ent:IsVehicle() and !IsValid(ent:GetDriver()) then
-		return
-	elseif !allowed_pickup[ent:GetClass()] then
+	--if ent:IsVehicle() and !IsValid(ent:GetDriver()) then
+	--	return
+	if !allowed_pickup[ent:GetClass()] then
 		return false
 	end
 end)
