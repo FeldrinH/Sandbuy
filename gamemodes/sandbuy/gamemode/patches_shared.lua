@@ -96,7 +96,7 @@ local allowed_pickup = {
 hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
 	if ent:IsVehicle() and !IsValid(ent:GetDriver()) then
 		return
-	if !allowed_pickup[ent:GetClass()] then
+	elseif !allowed_pickup[ent:GetClass()] then
 		return false
 	end
 end)
