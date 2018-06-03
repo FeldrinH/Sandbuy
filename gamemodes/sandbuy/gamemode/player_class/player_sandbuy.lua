@@ -28,4 +28,8 @@ function PLAYER:Loadout()
 	self.Player:RemoveAllAmmo()
 end
 
+function PLAYER:Spawn()
+	self.Player:SetCanZoom(false)
+end
+
 player_manager.RegisterClass( "player_sandbuy", PLAYER, "player_sandbox" )
