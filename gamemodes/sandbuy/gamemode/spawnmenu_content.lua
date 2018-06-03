@@ -217,6 +217,18 @@ local function AddMoneyLabel(ctrl)
 	table.insert(g_SpawnMenu.MoneyLables, label)
 end
 
+local function AddAmmoButton(ctrl)
+	local button = vgui.Create( "DButton", ctrl.ContentNavBar )
+	button:Dock(TOP)
+	button:SetHeight(60)
+	button:SetContentAlignment(5)
+	button:SetFont("BigMoney")
+	button:SetTextColor(Color(255,255,255))
+	button:SetText("Buy Ammo")
+	
+	g_SpawnMenu.AmmoButton = button
+end
+
 local function MouseReleased( self, mousecode )
 	DButton.OnMouseReleased( self, mousecode )
 	if ( self.m_MenuClicking && mousecode == MOUSE_LEFT ) then
@@ -478,6 +490,7 @@ spawnmenu.AddCreationTab( "#spawnmenu.category.weapons", function()
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	
 	AddMoneyLabel(ctrl)
+	--AddAmmoButton(ctrl)
 	
 	ctrl:EnableSearch( "weapons", "PopulateWeapons" )
 	ctrl:CallPopulateHook( "PopulateWeapons" )
