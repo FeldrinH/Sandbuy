@@ -97,7 +97,7 @@
 	"m9k_ump45": 1400,
 	"m9k_usas": 4500,
 	"m9k_usc": 1200,
-	"m9k_usp": 600,
+	"m9k_usp": 800,
 	"m9k_uzi": 1000,
 	"m9k_val": 2700,
 	"m9k_vector": 1500,
