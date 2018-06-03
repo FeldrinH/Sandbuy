@@ -39,7 +39,7 @@ local deathmessage_text = ""
 
 local deathmessage_overrides = {
 	["76561198076382343"] = "You were claimed by ",
-	["76561198315916037"] = "You and your family were killed by "
+	["76561198315916037"] = "You were deported by "
 }
 
 function GM:HUDPaint()
