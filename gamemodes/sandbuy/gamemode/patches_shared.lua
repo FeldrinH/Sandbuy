@@ -11,7 +11,7 @@ if CLIENT then
 	end, "Sandbuy_BlockTranspColour")
 end
 
-hook.Remove("Think","NeuroHeadshotsClientDeathThink")
+hook.Remove("Think", "NeuroHeadshotsClientDeathThink")
 hook.Remove("PlayerDeathThink", "NeuroWeapons_HeadlessRagdollGore")
 hook.Remove("PlayerDeath", "NeuroWeapons_RemoveBrokenHead")
 local scaledamage = hook.GetTable()["ScalePlayerDamage"]
@@ -118,6 +118,67 @@ end
 game.AddAmmoType({name = "Shuriken"})
 
 hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
+	ModifyWeapon("bobs_gun_base", function(wep)
+		--print(wep, "BOB'S GOING DOWN")
+		function wep:Reload()
+				if not IsValid(self) then return end if not IsValid(self.Owner) then return end
+			   
+				if self.Owner:IsNPC() then
+						self.Weapon:DefaultReload(ACT_VM_RELOAD)
+				return end
+			   
+				if self.Owner:KeyDown(IN_USE) then return end
+			   
+				if self.Silenced then
+						self.Weapon:DefaultReload(ACT_VM_RELOAD_SILENCED)
+				else
+						self.Weapon:DefaultReload(ACT_VM_RELOAD)
+				end
+			   
+				if !self.Owner:IsNPC() then
+						if self.Owner:GetViewModel() == nil then self.ResetSights = CurTime() + 3 else
+						self.ResetSights = CurTime() + self.Owner:GetViewModel():SequenceDuration()
+						end
+				end
+			   
+				if SERVER and self.Weapon != nil then
+				if ( self.Weapon:Clip1() < self.Primary.ClipSize ) and !self.Owner:IsNPC() then
+				-- //When the current clip < full clip and the rest of your ammo > 0, then
+						self.Owner:SetFOV( 0, 0.3 )
+						-- //Zoom = 0
+						self:SetIronsights(false)
+						-- //Set the ironsight to false
+						self.Weapon:SetNWBool("Reloading", true)
+				end
+				local waitdammit = (self.Owner:GetViewModel():SequenceDuration())
+				timer.Simple(waitdammit + .1,
+						function()
+						if self.Weapon == nil then return end
+						if not IsValid(self.Owner) then return end
+						self.Weapon:SetNWBool("Reloading", false)
+						if self.Owner:KeyDown(IN_ATTACK2) and self.Weapon:GetClass() == self.Gun then
+								if CLIENT then return end
+								if self.Scoped == false then
+										self.Owner:SetFOV( self.Secondary.IronFOV, 0.3 )
+										self.IronSightsPos = self.SightsPos                                     -- Bring it up
+										self.IronSightsAng = self.SightsAng                                     -- Bring it up
+										self:SetIronsights(true, self.Owner)
+										self.DrawCrosshair = false
+								else return end
+						elseif self.Owner:KeyDown(IN_SPEED) and self.Weapon:GetClass() == self.Gun then
+								if self.Weapon:GetNextPrimaryFire() <= (CurTime() + .03) then
+										self.Weapon:SetNextPrimaryFire(CurTime()+0.3)                   -- Make it so you can't shoot for another quarter second
+								end
+								self.IronSightsPos = self.RunSightsPos                                  -- Hold it down
+								self.IronSightsAng = self.RunSightsAng                                  -- Hold it down
+								self:SetIronsights(true, self.Owner)                                    -- Set the ironsight true
+								self.Owner:SetFOV( 0, 0.3 )
+						else return end
+						end)
+				end
+		end
+	end)
+
 	ModifyWeapon("weapon_neurowep_bow", function(wep)
 		wep.Primary.Ammo = "XBowBolt"
 	end)
