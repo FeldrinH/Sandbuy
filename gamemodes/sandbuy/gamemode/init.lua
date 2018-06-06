@@ -456,7 +456,7 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 end
 
 function GM:PlayerSpawnSWEP(ply, class, swep)
-	if !ply:Alive() then return false end
+	if !ply:Alive() or !BaseClass.PlayerSpawnSWEP(self, ply, class, swep) then return false end
 	
 	local price = pricer.GetPrice(class, pricer.WepPrices)
 	
@@ -525,7 +525,7 @@ function GM:PlayerGiveAmmo(ply, ammo, amount)
 end
 
 function GM:PlayerSpawnSENT(ply, class)
-	if !ply:Alive() then return false end
+	if !ply:Alive() or !BaseClass.PlayerSpawnSENT(self, ply, class) then return false end
 	
 	local price = pricer.GetPrice(class, pricer.EntPrices)
 	
@@ -559,7 +559,7 @@ function GM:PlayerSpawnSENT(ply, class)
 end
 
 function GM:PlayerSpawnVehicle(ply, model, class, vtable)
-	if !ply:Alive() then return false end
+	if !ply:Alive() or !BaseClass.PlayerSpawnVehicle(self, ply, model, class, vtable) then return false end
 	
 	local price = pricer.GetPrice(class, pricer.VehiclePrices)
 	
@@ -593,7 +593,7 @@ function GM:PlayerSpawnVehicle(ply, model, class, vtable)
 end
 
 function GM:PlayerSpawnProp(ply, model)
-	return false--BaseClass.PlayerSpawnProp(self, ply, model)
+	return GetConVar("sbuy_debug"):GetBool() and BaseClass.PlayerSpawnProp(self, ply, model)
 end
 
 function GM:PlayerSpawnNPC(ply, class, weapon)
