@@ -93,7 +93,7 @@ local allowed_pickup = {
 	sent_mortar_p = true
 }
 
-hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
+--[[hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
 	if ent:IsVehicle() and !IsValid(ent:GetDriver()) then
 		return
 	elseif !allowed_pickup[ent:GetClass()] then
@@ -106,7 +106,7 @@ hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
 	if !toolwhitelist[tool] then
 		return false
 	end
-end)
+end)]]
 
 local function ModifyWeapon(wepclass, modfunc)
 	local wep = weapons.GetStored(wepclass)

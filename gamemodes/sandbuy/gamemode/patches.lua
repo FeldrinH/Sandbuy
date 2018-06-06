@@ -55,11 +55,11 @@ local allowed_freeze = {
 	sent_mortar_p = true
 }
 
-hook.Add("OnPhysgunFreeze", "Sandbuy_NerfPhysgun", function(wep, physobj, ent, ply)
+--[[hook.Add("OnPhysgunFreeze", "Sandbuy_NerfPhysgun", function(wep, physobj, ent, ply)
 	if !allowed_freeze[ent:GetClass()] then
 		return false
 	end
-end)
+end)]]
 
 hook.Add("PlayerLoadout","NeuroPlanes_LoadWeapons", function(ply)
 	return ply:NeuroPlanes_LoadWeapons()
