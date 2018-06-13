@@ -1,3 +1,9 @@
+local function TranslateValuesRound(self, x, y)
+	self:SetValue( math.Round( self.Scratch:GetMin() + ( x * self.Scratch:GetRange() ), self.RoundDecimals ) )
+
+	return self.Scratch:GetFraction(), y
+end
+
 local function SandbuySettings(pnl)
 	pnl:AddControl( "Header", { Description = "#utilities.sandboxsettings" } )
 
@@ -40,17 +46,25 @@ local function SandbuySettings(pnl)
 	pnl:AddControl( "TextBox", { Label = "Override Prices", Command = "sbuy_overrides", WaitForEnter = "1" } )
 	--pnl:ControlHelp( "#persistent_mode.help" ):DockMargin( 16, 4, 16, 8 )
 	
-	pnl:AddControl( "Slider", { Label = "Base Money", Command = "sbuy_defaultmoney", Min = 0, Max = 2000 } )
-	pnl:AddControl( "Slider", { Label = "Kill Money", Command = "sbuy_killmoney", Min = 1, Max = 2000 } )
-	pnl:AddControl( "Slider", { Label = "Bonus Per Level", Command = "sbuy_levelbonus", Min = 0, Max = 200 } )
-	pnl:AddControl( "Slider", { Type = "float", Label = "Kills Required Per Level", Command = "sbuy_levelsize", Min = 1, Max = 5 } )
+	local slider = pnl:AddControl( "Slider", { Label = "Base Money", Command = "sbuy_defaultmoney", Min = 0, Max = 2000 } )
+	slider.TranslateSliderValues = TranslateValuesRound
+	slider.RoundDecimals = -2
+	slider = pnl:AddControl( "Slider", { Label = "Kill Money", Command = "sbuy_killmoney", Min = 1, Max = 2000 } )
+	slider.TranslateSliderValues = TranslateValuesRound
+	slider.RoundDecimals = -2
+	slider = pnl:AddControl( "Slider", { Label = "Bonus Per Level", Command = "sbuy_levelbonus", Min = 0, Max = 200 } )
+	slider.TranslateSliderValues = TranslateValuesRound
+	slider.RoundDecimals = -1
+	slider = pnl:AddControl( "Slider", { Type = "float", Label = "Kills Required Per Level", Command = "sbuy_levelsize", Min = 1, Max = 5 } )
+	slider.TranslateSliderValues = TranslateValuesRound
+	slider.RoundDecimals = 1
 	
 	pnl:AddControl( "CheckBox", { Label = "Free Weapons", Command = "freebuy" } )
 	
 	pnl:AddControl( "CheckBox", { Label = "Logging (requires restart)", Command = "sbuy_log" } )
 	pnl:AddControl( "CheckBox", { Label = "Stat Saver (requires restart)", Command = "sbuy_statsaver" } )
 	pnl:AddControl( "CheckBox", { Label = "Disable Undo (requires restart)", Command = "sbuy_noundo" } )
-	pnl:AddControl( "CheckBox", { Label = "Debug Mode (requires restart)", Command = "sbuy_debug" } )
+	pnl:AddControl( "CheckBox", { Label = "Debug Mode", Command = "sbuy_debug" } )
 end
 
 local function ResetMenu(pnl)
