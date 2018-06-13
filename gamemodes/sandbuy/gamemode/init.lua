@@ -115,11 +115,14 @@ concommand.Add("setoverrideprice", function(ply, cmd, args)
 	local wep = args[1]
 	local price = tonumber(args[2])
 	
-	if !wep or !price or !args[3] then return end
+	if !wep or !price or !args[3] then 
+		print("Usage:  setoverrideprice [weapon] [price] [type]")
+		return
+	end
 	
 	pricer.SetPrice(wep, price, args[3] .. "prices.txt")
 	
-	print("New override price:", wep, "$" .. price)
+	print("New override price:", wep, "$" .. price, GetConVar("sbuy_overrides"):GetString())
 end)
 
 concommand.Add("sbuy_giveammo", function(ply, cmd, args)
