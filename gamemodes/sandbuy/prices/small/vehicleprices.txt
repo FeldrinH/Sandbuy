@@ -1,0 +1,11 @@
+{
+	"sim_fphys_chaos126p": 3000,
+	"sim_fphys_combineapc_armed": 3300,
+	"sim_fphys_conscriptapc_armed": 3500,
+	"sim_fphys_hedgehog": 3000,
+	"sim_fphys_jeep_armed": 1700,
+	"sim_fphys_jeep_armed2": 1700,
+	"sim_fphys_ratmobile": 3000,
+	"sim_fphys_v8elite_armed": 1700,
+	"sim_fphys_v8elite_armed2": 1700
+}

@@ -1,3 +1,0 @@
-{
-	"weapon_neurowep_m79": -4
-}

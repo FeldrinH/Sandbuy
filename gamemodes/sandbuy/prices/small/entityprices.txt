@@ -1,0 +1,9 @@
+{
+	"sent_carbomb": -4,
+	"sent_cowbomb": -4,
+	"sent_flying_bomb": -4,
+	"sent_improvbomb": -4,
+	"sent_land_mine": -4,
+	"sent_mortar_p": -4,
+	"sent_neuro_bouncingbetty": -4
+}
