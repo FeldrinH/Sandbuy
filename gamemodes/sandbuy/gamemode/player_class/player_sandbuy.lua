@@ -29,6 +29,8 @@ function PLAYER:Loadout()
 end
 
 function PLAYER:Spawn()
+	BaseClass.Spawn(self)
+	
 	self.Player:SetCanZoom(false)
 end
 
