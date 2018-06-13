@@ -55,7 +55,7 @@
 		{
 			"name"		"sbuy_debug"
 			"text"		"Debug"
-			"help"		"If enabled, all weapons and tabs will be visible in spawnmenu. Requires restart"
+			"help"		"If enabled, all weapons, entities and vehicles will be visible in spawnmenu. NPCs and props will be spawnable"
 			"type"		"CheckBox"
 			"default"	"0"
 			"singleplayer" "1"

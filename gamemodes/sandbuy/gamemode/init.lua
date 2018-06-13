@@ -44,25 +44,6 @@ concommand.Add("reloadprices", function(ply)
 	pricer.SendPrices(nil, true)
 end)
 
--- DEPRECATED
-concommand.Add("cleanprices", function(ply)
-	local count = 0
-
-	local items = list.GetForEdit("Weapon")
-	for k,v in pairs(pricer.WepPrices) do
-		if !items[k] or !items[k].Spawnable then
-			print("Weapon not spawnable: " .. k)
-			count = count + 1
-		end
-	end
-	
-	if count == 0 then
-		print("Prices clean")
-	else
-		print(count .. " items not spawnable")
-	end
-end)
-
 -- TODO
 concommand.Add("listprices", function(ply)
 	print("TODO")
@@ -420,7 +401,7 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 	local price = pricer.GetPrice(class, pricer.WepPrices)
 	
 	if GetConVar("freebuy"):GetBool() then
-		if price >= 0 then
+		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 			
 			net.Start("weaponbought")
@@ -464,7 +445,7 @@ function GM:PlayerSpawnSWEP(ply, class, swep)
 	local price = pricer.GetPrice(class, pricer.WepPrices)
 	
 	if GetConVar("freebuy"):GetBool() then
-		if price >= 0 then
+		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 			return true
 		else
@@ -499,7 +480,7 @@ function GM:PlayerGiveAmmo(ply, ammo, amount)
 	local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * amount
 	
 	if GetConVar("freebuy"):GetBool() then
-		if price >= 0 then
+		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 			return true
 		else
@@ -533,7 +514,7 @@ function GM:PlayerSpawnSENT(ply, class)
 	local price = pricer.GetPrice(class, pricer.EntPrices)
 	
 	if GetConVar("freebuy"):GetBool() then
-		if price >= 0 then
+		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 			return true
 		else
@@ -567,7 +548,7 @@ function GM:PlayerSpawnVehicle(ply, model, class, vtable)
 	local price = pricer.GetPrice(class, pricer.VehiclePrices)
 	
 	if GetConVar("freebuy"):GetBool() then
-		if price >= 0 then
+		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 			return true
 		else
