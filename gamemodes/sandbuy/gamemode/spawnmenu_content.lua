@@ -222,8 +222,8 @@ local function AddAmmoButton(ctrl)
 	button:Dock(TOP)
 	button:SetHeight(60)
 	button:SetContentAlignment(5)
-	button:SetFont("BigMoney")
-	button:SetTextColor(Color(255,255,255))
+	--button:SetFont("BigMoney")
+	--button:SetTextColor(Color(0,0,0))
 	button:SetText("Buy Ammo")
 	
 	g_SpawnMenu.AmmoButton = button
