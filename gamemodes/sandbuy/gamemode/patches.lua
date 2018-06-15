@@ -65,22 +65,44 @@ hook.Add("PlayerLoadout","NeuroPlanes_LoadWeapons", function(ply)
 	return ply:NeuroPlanes_LoadWeapons()
 end)
 
+local function FindPredictedOwner(wep, pos)
+	local closest = nil
+	local dist = 40000
+	for k,v in pairs(player.GetAll()) do
+		if pos:DistToSqr(v:GetPos()) < dist and v:GetActiveWeapon():GetClass() == wep then
+			closest = v
+			dist = pos:DistToSqr(v:GetPos())
+		end
+	end
+	return closest
+end
+
+local function FindOldMine(ply, class)
+	for k,v in pairs(ents.FindByClass(class)) do
+		if v.PredictedOwner == ply then return v end
+	end
+end
+
 hook.Add("OnEntityCreated", "LimitProxySpam", function(ent)
 	if ent:GetClass() == "m9k_proxy" then
-		local entcount = #ents.FindByClass("m9k_proxy")
-		if entcount == 3 then
-			PrintMessage(HUD_PRINTTALK, "[GLOBAL] Proxy Mine limit has been reached. Placing more mines is inadvisable.")
-		elseif entcount > 3 then
-			timer.Simple(0, function() 
-				ent:Explosion()
-			end)
-		end
+		timer.Simple(0, function()
+			local predictedowner = FindPredictedOwner("m9k_proxy_mine", ent:GetPos())
+			if !IsValid(predictedowner) then ErrorNoHalt("WARNING: No owner found for proxy " .. ent .. "\n") return end
+			
+			local oldproxy = FindOldMine(predictedowner, "m9k_proxy")
+			ent.PredictedOwner = predictedowner
+			if IsValid(oldproxy) then
+				oldproxy:Explosion()
+			end
+		end)
 	elseif ent:GetClass() == "npc_tripmine" then
-		local entcount = #ents.FindByClass("npc_tripmine")
-		if entcount == 4 then
-			PrintMessage(HUD_PRINTTALK, "SLAM limit has been reached. Placing more tripmines is inadvisable.")
-		elseif entcount > 4 then
-			ent:TakeDamage(1000, ent, ent)
+		local predictedowner = FindPredictedOwner("weapon_slam", ent:GetPos())
+		if !IsValid(predictedowner) then ErrorNoHalt("WARNING: No owner found for SLAM " .. ent .. "\n") return end
+		
+		local oldproxy = FindOldMine(predictedowner, "npc_tripmine")
+		ent.PredictedOwner = predictedowner
+		if IsValid(oldproxy) then
+			oldproxy:TakeDamage(1000, oldproxy, oldproxy)
 		end
 	end
 end)
@@ -88,16 +110,12 @@ end)
 hook.Add("PlayerSwitchWeapon", "ReportProxyLimit", function( ply, oldWpn, newWpn )
 	if !ply:Alive() then return end
 	if newWpn:GetClass() == "m9k_proxy_mine" then
-		if #ents.FindByClass("m9k_proxy") >= 3 then
-			ply:PrintMessage(HUD_PRINTTALK, "Proxy Mine limit has been reached. Placing more mines is inadvisable.")
-		else
-			ply:PrintMessage(HUD_PRINTTALK, "Proxy Mine limit has not been reached. It is safe to place mines.")
+		if IsValid(FindOldMine(ply, "m9k_proxy")) then
+			ply:PrintMessage(HUD_PRINTTALK, "You have a proxy deployed. Placing another one will destroy the previous proxy.")
 		end
 	elseif newWpn:GetClass() == "weapon_slam" then
-		if #ents.FindByClass("npc_tripmine") >= 4 then
-			ply:PrintMessage(HUD_PRINTTALK, "SLAM limit has been reached. Placing more tripmines is inadvisable.")
-		else
-			ply:PrintMessage(HUD_PRINTTALK, "SLAM limit has not been reached. It is safe to place tripmines.")
+		if IsValid(FindOldMine(ply, "npc_tripmine"))then
+			ply:PrintMessage(HUD_PRINTTALK, "You have a SLAM deployed. Placing another one will destroy the previous SLAM.")
 		end
 	end
 end)
