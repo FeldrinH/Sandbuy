@@ -7,6 +7,7 @@
 	"m9k_milkormgl": 5800,
 	"m9k_nerve_gas": 1600,
 	"m9k_orbital_strike": 5000,
+	"m9k_proxy_mine": 2000,
 	"m9k_rpg7": 6000,
 	"m9k_suicide_bomb": 1500,
 	"weapon_752_panzerfaust": 4200,

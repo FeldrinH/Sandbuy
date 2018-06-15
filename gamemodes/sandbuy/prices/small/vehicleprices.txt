@@ -1,5 +1,7 @@
 {
+	"sim_fphys_ben-turret": 3000,
 	"sim_fphys_chaos126p": 3000,
+	"sim_fphys_chrys": 1000,
 	"sim_fphys_combineapc_armed": 3300,
 	"sim_fphys_conscriptapc_armed": 3500,
 	"sim_fphys_hedgehog": 3000,

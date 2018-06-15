@@ -2,7 +2,7 @@
 	"357": 7,
 	"40mmGrenade": 50,
 	"AR2": 6,
-	"AR2AltFire": 500,
+	"AR2AltFire": 300,
 	"AirboatGun": 8,
 	"ArmorkitBattery": 8,
 	"Buckshot": 10,
