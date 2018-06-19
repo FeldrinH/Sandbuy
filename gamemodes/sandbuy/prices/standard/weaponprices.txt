@@ -201,7 +201,7 @@
 	"weapon_neurowep_m3": 3400,
 	"weapon_neurowep_m4a1": 2500,
 	"weapon_neurowep_m60": 3000,
-	"weapon_neurowep_m79": 4000,
+	"weapon_neurowep_m79": 7000,
 	"weapon_neurowep_mac10": 1000,
 	"weapon_neurowep_minigun": 4500,
 	"weapon_neurowep_molotov": 700,
