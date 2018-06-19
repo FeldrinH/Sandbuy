@@ -584,6 +584,14 @@ function GM:PlayerSpawnNPC(ply, class, weapon)
 	return GetConVar("sbuy_debug"):GetBool() and BaseClass.PlayerSpawnNPC(self, ply, class, weapon)
 end
 
+function GM:PlayerSpawnRagdoll(ply, model)
+	return GetConVar("sbuy_debug"):GetBool() and BaseClass.PlayerSpawnRagdoll(self, ply, model)
+end
+
+function GM:PlayerSpawnObject(ply, model, skin)
+	return GetConVar("sbuy_debug"):GetBool() and BaseClass.PlayerSpawnObject(self, ply, model, skin)
+end
+
 function GM:PlayerSpawnedSENT(ply, ent)
 	local price = pricer.GetPrice(ent:GetClass(), pricer.EntPrices)
 	if price > 0 and pricer.InCategory(ent:GetClass(), "machines") then
