@@ -22,6 +22,9 @@ if scaledamage and scaledamage["NeuroWeapons_HeadshotKlonk"] then
 	end
 end
 
+hook.Remove( "PostDrawEffects", "RenderWidgets" )
+hook.Remove( "PlayerTick", "TickWidgets" )
+
 local weaponoverrides = {
 	tfa_cso_dragoncannon = "Explosives",
 	tfa_cso_m79 = "Explosives",
@@ -213,4 +216,7 @@ hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 			v.Category = "CS:O " .. (weaponoverrides[v.ClassName] or categoryoverrides[weptype] or (weptype .. "s"))
 		end
 	end
+	
+	hook.Remove( "PostDrawEffects", "RenderWidgets" )
+	hook.Remove( "PlayerTick", "TickWidgets" )
 end)
