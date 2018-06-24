@@ -285,16 +285,16 @@ function pricer.LoadPrices()
 	
 	local itemlist = list.GetForEdit("Weapon")
 	for k,v in pairs(itemlist) do
-		if v.AdminOnly and pricer.GetPrice(k, pricer.WepPrices) >= 0 then
-			v.AdminOnly = false
+		if v.AdminOnly and pricer.GetPrice(k, pricer.WepPrices) > 0 then
+			v.AdminOnly = nil
 		end
 	end
-	--[[itemlist = list.GetForEdit("SpawnableEntities")
+	itemlist = list.GetForEdit("SpawnableEntities")
 	for k,v in pairs(itemlist) do
-		if v.AdminOnly and v.Category != "Base Totem" and pricer.GetPrice(k, pricer.WepPrices) >= 0 then
-			v.AdminOnly = false
+		if v.AdminOnly and pricer.GetPrice(k, pricer.EntPrices) > 0 then
+			v.AdminOnly = nil
 		end
-	end]]--
+	end
 	
 	print()
 	print("Reloaded prices")
