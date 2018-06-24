@@ -96,7 +96,11 @@ function SWEP:SecondaryAttack()
 	if ( CLIENT ) then return end
 
 	local ent = self.Owner
-
+	
+	if IsValid(ent) and ent:IsPlayer() then
+		ent:SetFOV(0, 0.3)
+	end
+	
 	local need = self.HealAmount
 	if ( IsValid( ent ) ) then need = math.min( ent:GetMaxHealth() - ent:Health(), self.HealAmount, self:Ammo1() ) end
 
