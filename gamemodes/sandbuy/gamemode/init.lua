@@ -287,11 +287,15 @@ function GM:Initialize()
 end
 
 function GM:ShutDown()
+	local t1 = SysTime()
 	buylogger.Close()
+	local t2 = SysTime()
+	
 	print("--")
 	print("--")
 	print("--")
 	print("Flushed buylog")
+	print("Time:", t2 - t1)
 	print("--")
 	print("--")
 	print("--")
