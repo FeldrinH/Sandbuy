@@ -153,6 +153,14 @@ local function LoadFile(filename, categories)
 					end
 					
 					print("  " .. set.name .. ": " .. table.concat(table.GetKeys(loadprices), ", "))
+				elseif loadprices["<FILTER>"] then
+					for k,v in pairs(prices) do
+						if !loadprices[k] then
+							prices[k] = nil
+						end
+					end
+					
+					print("  " .. set.name .. " (filter): " .. table.Count(loadprices))
 				else
 					for k,v in pairs(loadprices) do
 						if v == -4 then
