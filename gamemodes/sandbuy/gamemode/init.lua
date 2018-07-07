@@ -288,6 +288,13 @@ end
 
 function GM:ShutDown()
 	buylogger.Close()
+	print("--")
+	print("--")
+	print("--")
+	print("Flushed buylog")
+	print("--")
+	print("--")
+	print("--")
 	
 	return BaseClass.ShutDown(self)
 end
