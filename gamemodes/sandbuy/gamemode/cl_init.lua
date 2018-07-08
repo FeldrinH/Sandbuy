@@ -42,6 +42,21 @@ local deathmessage_overrides = {
 	["76561198315916037"] = "You were deported by "
 }
 
+hook.Add("HUDPaint", "Sandbuy_ShowHelp", function()
+	if LocalPlayer():IsValid() then
+		hook.Remove("HUDPaint", "Sandbuy_ShowHelp")
+		
+		for i = 1,BUTTON_CODE_LAST do
+			local kb = input.LookupKeyBinding(i) or ""
+			if string.find(kb, "buyheldammo") or string.find(kb, "sbuy_giveprimaryammo") then return end
+		end
+		
+		chat.AddText(Color(0,255,0), "----- Welcome to Sandbuy! -----")
+		chat.AddText(Color(100,255,100), "Type ", Color(130,130,255), "bind g buyheldammo", Color(100,255,100), " in console to bind buying ammo for your weapon to G (or another key of your choosing)")
+		chat.AddText(Color(100,255,100), "See https://github.com/FeldrinH/Sandbuy/wiki for more info")
+	end
+end)
+
 function GM:HUDPaint()
 	BaseClass.HUDPaint(self)
 	
