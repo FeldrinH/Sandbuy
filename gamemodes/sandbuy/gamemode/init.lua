@@ -37,7 +37,7 @@ local function GetDeprecatedMessage(cmdname)
 end
 
 concommand.Add("reloadprices", function(ply)
-	if !ply:IsAdmin() then return end
+	if IsValid(ply) and !ply:IsAdmin() then return end
 
 	pricer.LoadPrices()
 
@@ -50,6 +50,8 @@ concommand.Add("listprices", function(ply)
 end)
 
 concommand.Add("normalizeprices", function(ply)
+	if IsValid(ply) and !ply:IsAdmin() then return end
+	
 	local fs,dr = file.Find("prices/*", "DATA")
 	for k,v in pairs(dr) do
 		local pfs,pdr = file.Find("prices/" .. v .. "/*", "DATA")
@@ -61,7 +63,7 @@ concommand.Add("normalizeprices", function(ply)
 end)
 
 concommand.Add("setcategoryprice", function(ply, cmd, args)
-	if !ply:IsAdmin() then return end
+	if IsValid(ply) and !ply:IsAdmin() then return end
 	
 	local category = args[1]
 	if !pricer.CategoriesList[category] then
@@ -91,7 +93,7 @@ concommand.Add("setcategoryprice", function(ply, cmd, args)
 end)
 
 concommand.Add("setoverrideprice", function(ply, cmd, args)
-	if !ply:IsAdmin() then return end
+	if IsValid(ply) and !ply:IsAdmin() then return end
 
 	local wep = args[1]
 	local price = tonumber(args[2])
@@ -269,7 +271,7 @@ local function UpdateSeasonals()
 end
 
 concommand.Add("sbuy_updateseasonals", function(ply) 
-	if !ply:IsAdmin() then return end
+	if IsValid(ply) and !ply:IsAdmin() then return end
 	UpdateSeasonals()
 end)
 
