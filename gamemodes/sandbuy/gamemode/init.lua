@@ -330,6 +330,8 @@ function GM:PlayerDisconnected(ply)
 end
 
 function GM:PlayerSpawn(ply)
+	print("Spawn")
+	
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
 	if ply.HasDied then
@@ -349,6 +351,8 @@ function GM:PlayerSpawn(ply)
 	BaseBaseClass.PlayerSpawn(self, ply)
 	
 	ply.HasDied = false
+	
+	print("End Spawn")
 end
 
 function GM:PlayerDeath(ply, inflictor, attacker)

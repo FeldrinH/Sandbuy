@@ -99,6 +99,8 @@ end)
 if !GetConVar("sbuy_statsaver"):GetBool() then return end
 
 hook.Add("PlayerInitialSpawn", "LoadStats", function(ply)
+	print("Initial Spawn")
+	
 	local plystats = stats[ply:SteamID()]
 	if plystats then
 		ply:SetFrags(plystats.frags)
@@ -111,6 +113,8 @@ hook.Add("PlayerInitialSpawn", "LoadStats", function(ply)
 		ply.DefaultMoneyOverride = plystats.money
 		ply.TotalKillMoney = plystats.killmoney
 	end
+	
+	print("End Initial Spawn")
 end)
 
 hook.Add("PlayerLoadout", "LoadSandbuyWeapons", function(ply)
@@ -118,7 +122,9 @@ hook.Add("PlayerLoadout", "LoadSandbuyWeapons", function(ply)
 		ply.StatSaver_RestoreWeapons = nil
 		
 		local plystats = stats[ply:SteamID()]
+		print("Restoring weapons")
 		if plystats then
+			PrintTabel(plystats.weps)
 			for k,v in pairs(plystats.weps) do
 				ply:Give(v.wep, true)
 				local wep = ply:GetWeapon(v.wep)
