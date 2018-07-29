@@ -124,7 +124,7 @@ hook.Add("PlayerLoadout", "LoadSandbuyWeapons", function(ply)
 		local plystats = stats[ply:SteamID()]
 		print("Restoring weapons")
 		if plystats then
-			PrintTabel(plystats.weps)
+			PrintTable(plystats.weps)
 			for k,v in pairs(plystats.weps) do
 				ply:Give(v.wep, true)
 				local wep = ply:GetWeapon(v.wep)
