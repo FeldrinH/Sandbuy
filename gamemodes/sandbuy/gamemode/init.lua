@@ -433,7 +433,7 @@ end
 function GM:GiveEcoMoney(ply)
 	local ecoamount = ply:GetBailout()
 
-	if ply.GetMoney then
+	if ply.GetMoney and !ply.IsAFK then
 		ply:AddMoney(ecoamount)
 		buylogger.LogBailout(ply, ply:GetMoney(), ecoamount)
 	end

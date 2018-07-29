@@ -17,7 +17,7 @@ function PLAYER:SetupDataTables()
 			net.Send(ply)
 		end)
 		
-		self.Player:SetMoney(self.Player.DefaultMoneyOverride or GetConVar("sbuy_defaultmoney"):GetInt())
+		self.Player:SetMoney(self.Player.DefaultMoneyOverride or GetConVar("sbuy_startmoney"):GetInt())
 		self.Player.DefaultMoneyOverride = nil
 	end
 
