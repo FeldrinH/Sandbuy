@@ -275,11 +275,33 @@ concommand.Add("sbuy_updateseasonals", function(ply)
 	UpdateSeasonals()
 end)
 
+local function GiveEcoMoneyAll()
+	for k,v in pairs(player.GetAll()) do
+		GAMEMODE:GiveEcoMoney(v)
+	end
+end
+
+cvars.AddChangeCallback("sbuy_ecotime", function(cvar, old, new)
+	if tonumber(new) <= 0 then
+		timer.Remove("Sandbuy_Eco")
+	else
+		if timer.Exists("Sandbuy_Eco") then
+			timer.Adjust("Sandbuy_Eco", tonumber(new), 0, GiveEcoMoneyAll)
+		else
+			timer.Create("Sandbuy_Eco", tonumber(new), 0, GiveEcoMoneyAll)
+		end
+	end
+end, "Sbuy_EcoUpdate")
+
 function GM:Initialize()
 	pricer.LoadPrices()
 	
 	if GetConVar("sbuy_log"):GetBool() then
 		buylogger.Init()
+	end
+	
+	if GetConVar("sbuy_ecotime"):GetFloat() > 0 then
+		timer.Create("Sandbuy_Eco", GetConVar("sbuy_ecotime"):GetFloat(), 0, GiveEcoMoneyAll)
 	end
 	
 	--timer.Create("Sandbuy_UpdateSeasonalWeapons", 600, 0 , UpdateSeasonals)
@@ -334,7 +356,7 @@ function GM:PlayerSpawn(ply)
 	
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
-	if ply.HasDied then
+	if ply.HasDied and GetConVar("sbuy_ecotime"):GetFloat() > 0 then
 		local bailoutamount = ply:GetBailout()
 	
 		if ply.GetMoney and ply:GetMoney() < bailoutamount then
@@ -406,6 +428,15 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	ply:SendLua("GAMEMODE:SetDeathMessage(Entity(" .. killer:EntIndex() .. "))")
 	
 	return BaseClass.PlayerDeath(self, ply, inflictor, attacker)
+end
+
+function GM:GiveEcoMoney(ply)
+	local ecoamount = ply:GetBailout()
+
+	if ply.GetMoney then
+		ply:AddMoney(ecoamount)
+		buylogger.LogBailout(ply, ply:GetMoney(), ecoamount)
+	end
 end
 
 function GM:PlayerGiveSWEP(ply, class, swep)

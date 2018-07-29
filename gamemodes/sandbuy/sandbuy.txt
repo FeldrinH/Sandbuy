@@ -63,6 +63,16 @@
 		
 		7
 		{
+			"name"		"sbuy_ecotime"
+			"text"		"Eco Time"
+			"help"		"Time between eco boosts. Set to 0 to disable"
+			"type"		"Numeric"
+			"default"	"0"
+			"singleplayer" "1"
+		}
+		
+		8
+		{
 			"name"		"sbuy_defaultmoney"
 			"text"		"Base Money"
 			"help"		"Amount of mony given to players upon initial spawn and as bailout"
@@ -71,7 +81,7 @@
 			"singleplayer" "1"
 		}
 		
-		8
+		9
 		{
 			"name"		"sbuy_killmoney"
 			"text"		"Kill Money"
@@ -81,7 +91,7 @@
 			"singleplayer" "1"
 		}
 		
-		9
+		10
 		{
 			"name"		"sbuy_levelsize"
 			"text"		"Kills Required Per Level"
@@ -91,7 +101,7 @@
 			"singleplayer" "1"
 		}
 		
-		10
+		11
 		{
 			"name"		"sbuy_levelbonus"
 			"text"		"Bonus Per Level"
@@ -101,7 +111,7 @@
 			"singleplayer" "1"
 		}
 		
-		11
+		12
 		{
 			"name"		"physgun_limited"
 			"text"		"limit_physgun"
@@ -110,7 +120,7 @@
 			"default"	"0"
 		}
 
-		12
+		13
 		{
 			"name"		"sbox_noclip"
 			"text"		"noclip"
@@ -119,7 +129,7 @@
 			"default"	"0"
 		}
 
-		13
+		14
 		{
 			"name"		"sbox_godmode"
 			"text"		"god_mode"
@@ -128,7 +138,7 @@
 			"default"	"0"
 		}
 
-		14
+		15
 		{
 			"name"		"sbox_playershurtplayers"
 			"text"		"players_damage_players"
@@ -137,7 +147,7 @@
 			"default"	"1"
 		}
 
-		15
+		16
 		{
 			"name"		"sbox_maxprops"
 			"text"		"max_props"
@@ -146,7 +156,7 @@
 			"default"	"200"
 		}
 
-		16
+		17
 		{
 			"name"		"sbox_maxragdolls"
 			"text"		"max_ragdolls"
@@ -155,7 +165,7 @@
 			"default"	"10"
 		}
 
-		17
+		18
 		{
 			"name"		"sbox_maxvehicles"
 			"text"		"max_vehicles"
@@ -164,7 +174,7 @@
 			"default"	"4"
 		}
 
-		18
+		19
 		{
 			"name"		"sbox_maxeffects"
 			"text"		"max_effects"
@@ -173,7 +183,7 @@
 			"default"	"200"
 		}
 
-		19
+		20
 		{
 			"name"		"sbox_maxballoons"
 			"text"		"max_balloons"
@@ -182,7 +192,7 @@
 			"default"	"100"
 		}
 
-		20
+		21
 		{
 			"name"		"sbox_maxcameras"
 			"text"		"max_cameras"
@@ -191,7 +201,7 @@
 			"default"	"10"
 		}
 
-		21
+		22
 		{
 			"name"		"sbox_maxnpcs"
 			"text"		"max_npcs"
@@ -200,7 +210,7 @@
 			"default"	"10"
 		}
 
-		22
+		23
 		{
 			"name"		"sbox_maxsents"
 			"text"		"max_entities"
@@ -209,7 +219,7 @@
 			"default"	"100"
 		}
 
-		23
+		24
 		{
 			"name"		"sbox_maxdynamite"
 			"text"		"max_dynamite"
@@ -218,7 +228,7 @@
 			"default"	"10"
 		}
 
-		24
+		25
 		{
 			"name"		"sbox_maxlamps"
 			"text"		"max_lamps"
@@ -227,7 +237,7 @@
 			"default"	"3"
 		}
 
-		25
+		26
 		{
 			"name"		"sbox_maxlights"
 			"text"		"max_lights"
@@ -236,7 +246,7 @@
 			"default"	"5"
 		}
 
-		26
+		27
 		{
 			"name"		"sbox_maxwheels"
 			"text"		"max_wheels"
@@ -245,7 +255,7 @@
 			"default"	"50"
 		}
 
-		27
+		28
 		{
 			"name"		"sbox_maxthrusters"
 			"text"		"max_thrusters"
@@ -254,7 +264,7 @@
 			"default"	"50"
 		}
 
-		28
+		29
 		{
 			"name"		"sbox_maxhoverballs"
 			"text"		"max_hoverballs"
@@ -263,7 +273,7 @@
 			"default"	"50"
 		}
 
-		29
+		30
 		{
 			"name"		"sbox_maxbuttons"
 			"text"		"max_buttons"
@@ -272,7 +282,7 @@
 			"default"	"50"
 		}
 
-		30
+		31
 		{
 			"name"		"sbox_maxemitters"
 			"text"		"max_emitters"
@@ -281,7 +291,7 @@
 			"default"	"20"
 		}
 
-		31
+		32
 		{
 			"name"		"sbox_bonemanip_npc"
 			"text"		"bone_manipulate_npcs"
@@ -290,7 +300,7 @@
 			"default"	"1"
 		}
 
-		32
+		33
 		{
 			"name"		"sbox_bonemanip_player"
 			"text"		"bone_manipulate_players"
@@ -299,7 +309,7 @@
 			"default"	"0"
 		}
 
-		33
+		34
 		{
 			"name"		"sbox_bonemanip_misc"
 			"text"		"bone_manipulate_others"
@@ -308,7 +318,7 @@
 			"default"	"0"
 		}
 
-		34
+		35
 		{
 			"name"		"sbox_persist"
 			"text"		"persistent_mode"
