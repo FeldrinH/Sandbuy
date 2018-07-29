@@ -222,6 +222,33 @@ concommand.Add("buyheldammo", GiveHeldAmmo)
 concommand.Add("sbuy_giveprimaryammo", GiveHeldAmmo)--GetDeprecatedMessage("buyheldammo"))
 concommand.Add("sbuy_giveheldammo", GetDeprecatedMessage("buyheldammo")) 
 
+concommand.Add("givemoney", function(ply, cmd, args)
+	local target = nil
+	if args[2] then
+		for k,v in pairs(player.GetAll()) do 
+			if v:Nick() == args[2] then
+				target = v
+				break
+			end
+		end
+	else
+		target = ply:GetEyeTrace().HitEntity
+	end
+	if !IsValid(target) or !target:IsPlayer() then return end
+	if ply:GetPos():Distance(target:GetPos()) > 500 then ply:PrintMessage(HUD_PRINTCONSOLE, "Player too far") return end
+	
+	local amount = tonumber(args[1])
+	if !amount or amount < 0 then ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid amount") return end
+	if ply:GetMoney() < amount then
+		amount = ply:GetMoney()
+	end
+	
+	ply:AddMoney(-amount)
+	target:AddMoney(amount)
+	
+	ply:PrintMessage(HUD_PRINTCONSOLE, "Given " .. target:Nick() .. " $" .. amount)
+end)
+
 GM.SeasonalWeapons = {}
 
 local latestseasonals = {}
