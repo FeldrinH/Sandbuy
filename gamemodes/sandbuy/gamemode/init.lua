@@ -282,7 +282,7 @@ local function GiveEcoMoneyAll()
 end
 
 cvars.AddChangeCallback("sbuy_ecotime", function(cvar, old, new)
-	if tonumber(new) <= 0 then
+	if tonumber(new) == 0 then
 		timer.Remove("Sandbuy_Eco")
 	else
 		if timer.Exists("Sandbuy_Eco") then
@@ -300,7 +300,7 @@ function GM:Initialize()
 		buylogger.Init()
 	end
 	
-	if GetConVar("sbuy_ecotime"):GetFloat() > 0 then
+	if GetConVar("sbuy_ecotime"):GetBool() then
 		timer.Create("Sandbuy_Eco", GetConVar("sbuy_ecotime"):GetFloat(), 0, GiveEcoMoneyAll)
 	end
 	
@@ -356,7 +356,7 @@ function GM:PlayerSpawn(ply)
 	
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
-	if ply.HasDied and GetConVar("sbuy_ecotime"):GetFloat() > 0 then
+	if ply.HasDied and !GetConVar("sbuy_ecotime"):GetBool() then
 		local bailoutamount = ply:GetBailout()
 	
 		if ply.GetMoney and ply:GetMoney() < bailoutamount then
@@ -411,7 +411,10 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), -pricer.TeamKillPenalty)
 			deltamoney = 0
 		else
-			local killmoney = killer:GetKillMoney() * pricer.GetKillReward(weaponname) * (self.SeasonalWeapons[weaponname] or 1) + deltamoney
+			local killmoney = deltamoney
+			if !GetConVar("sbuy_ecotime"):GetBool() then
+				killmoney = killer:GetKillMoney() * pricer.GetKillReward(weaponname) * (self.SeasonalWeapons[weaponname] or 1) + deltamoney
+			end
 			killer:AddMoney(killmoney)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney)
 			killer.TotalKillMoney = killer.TotalKillMoney + killmoney / killer:GetKillMoney()
