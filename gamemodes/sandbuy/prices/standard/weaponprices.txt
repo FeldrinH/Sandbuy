@@ -190,7 +190,7 @@
 	"weapon_neurowep_galil": 3000,
 	"weapon_neurowep_gau8": 9000,
 	"weapon_neurowep_glock18": 1000,
-	"weapon_neurowep_handmortar": 1000,
+	"weapon_neurowep_handmortar": 1500,
 	"weapon_neurowep_he44": 1000,
 	"weapon_neurowep_hegrenade": 200,
 	"weapon_neurowep_javelin": 4500,
@@ -213,7 +213,7 @@
 	"weapon_neurowep_planethrower": -2,
 	"weapon_neurowep_ptrs41": 2800,
 	"weapon_neurowep_rorsch": 3600,
-	"weapon_neurowep_rpc": 2600,
+	"weapon_neurowep_rpc": 2800,
 	"weapon_neurowep_rpg7": 3400,
 	"weapon_neurowep_scout": 2600,
 	"weapon_neurowep_sg550": 2500,
@@ -237,6 +237,6 @@
 	"weapon_simrepair": 0,
 	"weapon_slam": 700,
 	"weapon_smg1": 800,
-	"weapon_stinger": 2000,
+	"weapon_stinger": 2600,
 	"weapon_stunstick": 100
 }
