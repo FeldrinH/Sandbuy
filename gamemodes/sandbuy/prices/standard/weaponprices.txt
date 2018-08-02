@@ -210,7 +210,7 @@
 	"weapon_neurowep_p90": 2000,
 	"weapon_neurowep_pipe": 100,
 	"weapon_neurowep_pkm": 3000,
-	"weapon_neurowep_planethrower": -2,
+	"weapon_neurowep_planethrower": 1500,
 	"weapon_neurowep_ptrs41": 2800,
 	"weapon_neurowep_rorsch": 3600,
 	"weapon_neurowep_rpc": 2800,

@@ -44,6 +44,8 @@ local function SandbuySettings(pnl)
 	lbl:InvalidateLayout( true )
 
 	
+	pnl:Button( "Reload prices (causes lag)", "reloadprices" )
+	
 	pnl:AddControl( "TextBox", { Label = "Load Prices", Command = "sbuy_prices", WaitForEnter = "1" } )
 	pnl:AddControl( "TextBox", { Label = "Override Prices", Command = "sbuy_overrides", WaitForEnter = "1" } )
 	--pnl:ControlHelp( "#persistent_mode.help" ):DockMargin( 16, 4, 16, 8 )
