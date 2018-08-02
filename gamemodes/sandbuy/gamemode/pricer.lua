@@ -104,16 +104,16 @@ local function ParsePriceString()
 	
 	for k,v in pairs(parse) do
 		local path = nil
-		if #file.Find("gamemodes/sandbuy/prices/" .. v .. "/*", "GAME") > 0 then
-			path = "gamemodes/sandbuy/prices/" .. v .. "/"
-			if file.Exists("data/prices/" .. v, "GAME") then
-				MsgC(Color(255,255,0), "  " .. v .. ": built-in, ignoring custom\n")
-			else
-				print("  " .. v .. ": built-in")
-			end
-		elseif file.Exists("data/prices/" .. v , "GAME") then
+		if file.Exists("data/prices/" .. v , "GAME") then
 			path = "data/prices/" .. v .. "/"
-			print("  " .. v .. ": custom")
+			if file.Exists("data/prices/" .. v, "GAME") then
+				print("  " .. v .. ": custom, ignoring built-in")
+			else
+				print("  " .. v .. ": custom")
+			end
+		elseif #file.Find("gamemodes/sandbuy/prices/" .. v .. "/*", "GAME") > 0 then
+			path = "gamemodes/sandbuy/prices/" .. v .. "/"
+			print("  " .. v .. ": built-in")
 		else
 			MsgC(Color(255,0,0), "  " .. v .. ": missing\n")
 		end
