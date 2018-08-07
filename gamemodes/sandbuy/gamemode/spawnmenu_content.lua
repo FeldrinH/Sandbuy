@@ -73,6 +73,15 @@ local function UpdateAmmoOption( opt, money )
 	opt:SetTextColor( ( pricer.CanBuy( money, opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
 end
 
+local function UpdatePriceLabel(icon, pricetable)
+	local price = pricer.GetPrice(icon:GetSpawnName(), pricetable)
+	local printprice = pricer.GetPrintPrice(price)
+	if icon:GetText() != printprice then
+		icon:SetText(printprice)
+		icon:SetFont((price >= 0 and "TrebuchetPrice24" ) or "Trebuchet18")
+	end
+end
+
 function spawnmenu.UpdateSpawnlistMoney(money)
 	if g_SpawnMenu.AmmoOptions then
 		for k,v in pairs(g_SpawnMenu.AmmoOptions) do
@@ -95,6 +104,21 @@ function spawnmenu.UpdateSpawnlistMoney(money)
 				UpdateEntPrice(v, money)
 			elseif v:GetContentType() == "vehicle" or v:GetContentType() == "simfphys_vehicles" then
 				UpdateVehiclePrice(v, money)
+			end
+		end
+	end
+end
+
+function spawnmenu.UpdateSpawnlistPrices()
+	if g_SpawnMenu.PriceIcons then
+		for k,v in pairs(g_SpawnMenu.PriceIcons) do
+			if !IsValid(v) then continue end
+			if v:GetContentType() == "weapon" then
+				UpdatePriceLabel(v, pricer.WepPrices)
+			elseif v:GetContentType() == "entity" then
+				UpdatePriceLabel(v, pricer.EntPrices)
+			elseif v:GetContentType() == "vehicle" or v:GetContentType() == "simfphys_vehicles" then
+				UpdatePriceLabel(v, pricer.VehiclePrices)
 			end
 		end
 	end

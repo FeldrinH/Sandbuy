@@ -311,7 +311,7 @@ end
 
 function pricer.SendPrices(ply, reload)
 	net.Start("newprices")
-	net.WriteBool(reload)
+	net.WriteUInt(reload, 2)
 	net.WritePriceTable(pricer.WepPrices)
 	net.WritePriceTable(pricer.EntPrices)
 	net.WritePriceTable(pricer.VehiclePrices)

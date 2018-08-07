@@ -240,32 +240,43 @@ end
 net.Receive("newprices", function(len)
 	print("Prices received " .. len .. "/524264 " .. math.Round(len / 524264 * 100) .. "%")
 	
-	local reload = net.ReadBool()
+	local reload = net.ReadUInt(2)
+	if reload == 1 then
+		print("Full reload")
+	elseif reload == 2 then
+		print("Quickload")
+	else
+		print("Initial load")
+	end
 	
 	pricer.WepPrices = net.ReadPriceTable()
 	pricer.EntPrices = net.ReadPriceTable()
 	pricer.VehiclePrices = net.ReadPriceTable()
 	pricer.AmmoPrices = net.ReadPriceTable()
 	
-	CopyItems("SpawnableEntities")
-	CopyItems("Vehicles")
-	CopyItems("simfphys_vehicles")
-	
-	local isdebug = GetConVar("sbuy_debug") and GetConVar("sbuy_debug"):GetBool()
-	
-	local itemlist = list.GetForEdit("Weapon")
-	for k,v in pairs(itemlist) do
-		if v.SpawnableBackup == nil then
-			v.SpawnableBackup = v.Spawnable or false
+	if reload == 2 then
+		spawnmenu.UpdateSpawnlistPrices()
+	else
+		CopyItems("SpawnableEntities")
+		CopyItems("Vehicles")
+		CopyItems("simfphys_vehicles")
+		
+		local isdebug = GetConVar("sbuy_debug") and GetConVar("sbuy_debug"):GetBool()
+		
+		local itemlist = list.GetForEdit("Weapon")
+		for k,v in pairs(itemlist) do
+			if v.SpawnableBackup == nil then
+				v.SpawnableBackup = v.Spawnable or false
+			end
+			v.Spawnable = v.SpawnableBackup and (pricer.GetPrice(k, pricer.WepPrices) > -2 or isdebug)
 		end
-		v.Spawnable = v.SpawnableBackup and (pricer.GetPrice(k, pricer.WepPrices) > -2 or isdebug)
+		
+		FilterItems("SpawnableEntities", pricer.EntPrices, isdebug)
+		FilterItems("Vehicles", pricer.VehiclePrices, isdebug)
+		FilterItems("simfphys_vehicles", pricer.VehiclePrices, isdebug)
 	end
-	
-	FilterItems("SpawnableEntities", pricer.EntPrices, isdebug)
-	FilterItems("Vehicles", pricer.VehiclePrices, isdebug)
-	FilterItems("simfphys_vehicles", pricer.VehiclePrices, isdebug)
 
-	if reload then
+	if reload == 1 then
 		RunConsoleCommand("spawnmenu_reload")
 	end
 end)

@@ -41,7 +41,15 @@ concommand.Add("reloadprices", function(ply)
 
 	pricer.LoadPrices()
 
-	pricer.SendPrices(nil, true)
+	pricer.SendPrices(nil, 1)
+end)
+
+concommand.Add("quickloadprices", function(ply)
+	if IsValid(ply) and !ply:IsAdmin() then return end
+
+	pricer.LoadPrices()
+
+	pricer.SendPrices(nil, 2)
 end)
 
 -- TODO
@@ -358,7 +366,7 @@ function GM:ShutDown()
 end
 
 function GM:PlayerAuthed(ply, steamid, uniqueid)
-	pricer.SendPrices(ply, false)
+	pricer.SendPrices(ply, 0)
 	
 	net.Start("newseasonals")
 	net.WriteTable(GAMEMODE.SeasonalWeapons)

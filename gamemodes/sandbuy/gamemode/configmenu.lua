@@ -45,6 +45,7 @@ local function SandbuySettings(pnl)
 
 	
 	pnl:Button( "Reload prices (causes lag)", "reloadprices" )
+	pnl:Button( "Quickload prices", "quickloadprices" )
 	
 	pnl:AddControl( "TextBox", { Label = "Load Prices", Command = "sbuy_prices", WaitForEnter = "1" } )
 	pnl:AddControl( "TextBox", { Label = "Override Prices", Command = "sbuy_overrides", WaitForEnter = "1" } )
