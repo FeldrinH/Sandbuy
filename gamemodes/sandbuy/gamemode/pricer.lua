@@ -299,8 +299,11 @@ function pricer.LoadPrices()
 	end
 	itemlist = list.GetForEdit("SpawnableEntities")
 	for k,v in pairs(itemlist) do
-		if v.AdminOnly and pricer.GetPrice(k, pricer.EntPrices) > 0 then
+		if pricer.GetPrice(k, pricer.EntPrices) > 0 then
 			v.AdminOnly = nil
+			if scripted_ents.GetStored(k) then
+				scripted_ents.GetStored(k).t.AdminOnly = nil
+			end
 		end
 	end
 	
