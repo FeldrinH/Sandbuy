@@ -171,6 +171,9 @@ local function AssembleTooltip(class, nicename)
 	local damage = nil
 	if firedata.Damage and firedata.Damage > 0 then
 		damage = firedata.Damage * (firedata.NumShots or 1)
+		if swep.Base == "bobs_gun_base" or swep.Base == "bobs_scoped_base" then
+			damage = damage * 1.075
+		end
 	end
 	
 	local rpm = nil

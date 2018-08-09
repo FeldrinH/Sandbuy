@@ -15,7 +15,7 @@ local function SandbuySettings(pnl)
 		sbuy_noundo = "1",
 		sbuy_debug = "0",
 		sbuy_ecotime = "0",
-		sbuy_starttmoney = "1000",
+		sbuy_startmoney = "1000",
 		sbuy_defaultmoney = "1000",
 		sbuy_killmoney = "1000",
 		sbuy_levelsize = "2",
@@ -55,7 +55,7 @@ local function SandbuySettings(pnl)
 	--slider.TranslateSliderValues = TranslateValuesRound
 	--slider.RoundDecimals = 0
 	
-	local slider = pnl:AddControl( "Slider", { Label = "Base Money", Command = "sbuy_startmoney", Min = 0, Max = 2000 } )
+	local slider = pnl:AddControl( "Slider", { Label = "Start Money", Command = "sbuy_startmoney", Min = 0, Max = 2000 } )
 	slider.TranslateSliderValues = TranslateValuesRound
 	slider.RoundDecimals = -2
 	slider = pnl:AddControl( "Slider", { Label = "Base Money", Command = "sbuy_defaultmoney", Min = 0, Max = 2000 } )
