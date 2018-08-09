@@ -244,7 +244,7 @@ net.Receive("newprices", function(len)
 	if reload == 1 then
 		print("Full reload")
 	elseif reload == 2 then
-		print("Quickload")
+		print("Quick reload")
 	else
 		print("Initial load")
 	end

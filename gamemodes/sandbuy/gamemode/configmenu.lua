@@ -44,8 +44,8 @@ local function SandbuySettings(pnl)
 	lbl:InvalidateLayout( true )
 
 	
-	pnl:Button( "Reload prices (causes lag)", "reloadprices" )
-	pnl:Button( "Quickload prices", "quickloadprices" )
+	pnl:Button( "Full reload prices (causes lag)", "reloadprices" )
+	pnl:Button( "Quick reload prices", "quickloadprices" )
 	
 	pnl:AddControl( "TextBox", { Label = "Load Prices", Command = "sbuy_prices", WaitForEnter = "1" } )
 	pnl:AddControl( "TextBox", { Label = "Override Prices", Command = "sbuy_overrides", WaitForEnter = "1" } )
@@ -82,12 +82,12 @@ end
 local function ResetMenu(pnl)
 	pnl:AddControl( "Header", { Description = "Reset various parts of a Sandbuy game" } )
 	
-	pnl:Button( "Reset stats & respawn players", "resetfull" )
-	pnl:Button( "Reset stats & weapons", "resetplayers" )
+	pnl:Button( "Reset stats & money & respawn players", "resetfull" )
+	pnl:Button( "Reset stats & money & weapons", "resetplayers" )
 	pnl:Button( "Reset stats", "resetstats" )
 end
 
 hook.Add( "PopulateToolMenu", "PopulateSandbuyConfigmenu", function()
-	spawnmenu.AddToolMenuOption("Utilities", "Admin", "SandbuySettings", "Sandbuy Settings", "", "", SandbuySettings)
-	spawnmenu.AddToolMenuOption( "Utilities", "Admin", "SandbuyReset", "Sandbuy Reset", "", "", ResetMenu )
+	spawnmenu.AddToolMenuOption("Utilities", "Sandbuy Admin", "SandbuySettings", "Sandbuy Settings", "", "", SandbuySettings)
+	spawnmenu.AddToolMenuOption( "Utilities", "Sandbuy Admin", "SandbuyReset", "Sandbuy Reset", "", "", ResetMenu )
 end)
