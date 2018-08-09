@@ -106,7 +106,7 @@ local function ParsePriceString()
 		local path = nil
 		if file.Exists("data/prices/" .. v , "GAME") then
 			path = "data/prices/" .. v .. "/"
-			if file.Exists("data/prices/" .. v, "GAME") then
+			if #file.Find("gamemodes/sandbuy/prices/" .. v .. "/*", "GAME") > 0 then
 				print("  " .. v .. ": custom, ignoring built-in")
 			else
 				print("  " .. v .. ": custom")
