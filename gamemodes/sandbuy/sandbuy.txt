@@ -12,7 +12,7 @@
 			"text"		"Load Prices"
 			"help"		"List of prices to load. 'default' is included prices. Define custom prices under garrysmod/data/prices. Use 'reloadprices' to apply"
 			"type"		"Text"
-			"default"	"base standard overrides"
+			"default"	"base weapons vehicles overrides"
 		}
 	
 		2

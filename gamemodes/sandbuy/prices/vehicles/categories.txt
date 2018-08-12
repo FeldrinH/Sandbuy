@@ -225,7 +225,5 @@
 		"sent_p51mustang_p": 1,
 		"sent_su-35_p": 1,
 		"sent_at-1_p": 1
-	},
-	"seasonals": {
 	}
 }

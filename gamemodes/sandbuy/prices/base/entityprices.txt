@@ -1,0 +1,12 @@
+{
+	"basetotem": 0,
+	"checkpointbox": 0,
+	"damagedetector": 0,
+	"edit_fog": 0,
+	"finishbox": 0,
+	"flagtotem": 0,
+	"functiontotem": 0,
+	"item_battery": -1,
+	"item_healthcharger": -2,
+	"item_suitcharger": -2
+}
