@@ -68,6 +68,8 @@ concommand.Add("normalizeprices", function(ply)
 			pricer.SetPrice("!!!normalizeprices!!!", -3, j, v)
 		end
 	end
+	
+	print("Normalized prices")
 end)
 
 concommand.Add("setcategoryprice", function(ply, cmd, args)
