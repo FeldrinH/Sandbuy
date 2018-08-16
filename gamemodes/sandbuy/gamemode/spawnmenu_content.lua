@@ -529,12 +529,10 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 
 	end
 	
-	if price >= 0 then
-		if !g_SpawnMenu.PriceIcons then
-			g_SpawnMenu.PriceIcons = {}
-		end
-		table.insert(g_SpawnMenu.PriceIcons, icon)
+	if !g_SpawnMenu.PriceIcons then
+		g_SpawnMenu.PriceIcons = {}
 	end
+	table.insert(g_SpawnMenu.PriceIcons, icon)
 	
 	if ( IsValid( container ) ) then
 		container:Add( icon )
@@ -612,12 +610,10 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 
 	end
 
-	if price >= 0 then
-		if !g_SpawnMenu.PriceIcons then
-			g_SpawnMenu.PriceIcons = {}
-		end
-		table.insert(g_SpawnMenu.PriceIcons, icon)
+	if !g_SpawnMenu.PriceIcons then
+		g_SpawnMenu.PriceIcons = {}
 	end
+	table.insert(g_SpawnMenu.PriceIcons, icon)
 	
 	if ( IsValid( container ) ) then
 		container:Add( icon )
@@ -694,12 +690,10 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 
 	end
 
-	if price >= 0 then
-		if !g_SpawnMenu.PriceIcons then
-			g_SpawnMenu.PriceIcons = {}
-		end
-		table.insert(g_SpawnMenu.PriceIcons, icon)
+	if !g_SpawnMenu.PriceIcons then
+		g_SpawnMenu.PriceIcons = {}
 	end
+	table.insert(g_SpawnMenu.PriceIcons, icon)
 	
 	if ( IsValid( container ) ) then
 		container:Add( icon )
@@ -774,12 +768,10 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 
 	end
 	
-	if price >= 0 then
-		if !g_SpawnMenu.PriceIcons then
-			g_SpawnMenu.PriceIcons = {}
-		end
-		table.insert(g_SpawnMenu.PriceIcons, icon)
+	if !g_SpawnMenu.PriceIcons then
+		g_SpawnMenu.PriceIcons = {}
 	end
+	table.insert(g_SpawnMenu.PriceIcons, icon)
 	
 	if IsValid( container ) then
 		container:Add( icon )
