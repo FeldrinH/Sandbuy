@@ -369,6 +369,34 @@ vgui.GetControlTable("DLabel").OnMousePressed = function( self, mousecode )
 
 end
 
+hook.Add( "SpawnlistOpenGenericMenu", "SpawnlistOpenGenericMenu", function( canvas )
+	local selected = canvas:GetSelectedChildren()
+
+	local menu = DermaMenu()
+	menu:AddOption( "Delete", function()
+		for k, v in pairs( selected ) do
+			v:Remove()
+		end
+
+		hook.Run( "SpawnlistContentChanged" )
+	end )
+	menu:AddSpacer()
+	menu:AddOption( "Set price", function()
+		Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_overrides"):GetString() .. ")", "New price:", "", function(text)
+			local newprice = tonumber(text)
+			if newprice == nil then return end
+			
+			for k,v in pairs( selected ) do
+				RunConsoleCommand("setoverrideprice", v:GetSpawnName(), newprice, v:GetContentType())
+				v:SetText(string.Split(v:GetText(), " ")[1] .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
+				v:SetFont("Trebuchet18")
+			end
+		end, nil, "Set", "Cancel")
+	end )
+
+	menu:Open()
+end )
+
 spawnmenu.AddCreationTab( "#spawnmenu.content_tab", function()
 
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
@@ -439,13 +467,15 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 					local clipcount = pricer.GetClipCount(obj.spawnname, pricer.ClipSize[obj.spawnname] or wep:GetMaxClip1())
 					local amount = (pricer.ClipSize[obj.spawnname] or wep:GetMaxClip1()) * clipcount
 					local price = pricer.GetPrice(ammo, pricer.AmmoPrices)
-					local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Primary Ammo (" .. pricer.GetPrintPrice(price * amount) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
-					opt.AmmoPrice = price * amount
-					opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
-					opt:SetDoubleClickingEnabled(false)
-					opt.OnMouseReleased = MouseReleased
-					table.insert(g_SpawnMenu.AmmoOptions, opt)
-					opt = menu:AddOption( "Buy 1 Primary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, 1) end )
+					if amount > 0 then
+						local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Primary Ammo (" .. pricer.GetPrintPrice(price * amount) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
+						opt.AmmoPrice = price * amount
+						opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
+						opt:SetDoubleClickingEnabled(false)
+						opt.OnMouseReleased = MouseReleased
+						table.insert(g_SpawnMenu.AmmoOptions, opt)
+					end
+					local opt = menu:AddOption( "Buy 1 Primary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, 1) end )
 					opt.AmmoPrice = price
 					opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
 					opt:SetDoubleClickingEnabled(false)
@@ -457,12 +487,14 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 					local clipcount = pricer.GetClipCount(obj.spawnname, pricer.ClipSize[obj.spawnname] or wep:GetMaxClip2())
 					local amount = (pricer.ClipSize[obj.spawnname] or wep:GetMaxClip2()) * clipcount
 					local price = pricer.GetPrice(ammo, pricer.AmmoPrices)
-					local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Secondary Ammo (" .. pricer.GetPrintPrice(price * amount) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
-					opt.AmmoPrice = price * amount
-					opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
-					opt:SetDoubleClickingEnabled(false)
-					opt.OnMouseReleased = MouseReleased
-					table.insert(g_SpawnMenu.AmmoOptions, opt)
+					if amount > 0 then
+						local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Secondary Ammo (" .. pricer.GetPrintPrice(price * amount) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
+						opt.AmmoPrice = price * amount
+						opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
+						opt:SetDoubleClickingEnabled(false)
+						opt.OnMouseReleased = MouseReleased
+						table.insert(g_SpawnMenu.AmmoOptions, opt)
+					end
 					opt = menu:AddOption( "Buy 1 Secondary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, 1) end )
 					opt.AmmoPrice = price
 					opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
