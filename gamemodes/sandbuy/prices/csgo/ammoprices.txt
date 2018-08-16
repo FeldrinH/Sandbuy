@@ -1,0 +1,7 @@
+{
+	"csgo_flash": 30,
+	"csgo_frag": 50,
+	"csgo_incend": 100,
+	"csgo_molly": 100,
+	"csgo_smoke": 30
+}

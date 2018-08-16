@@ -24,11 +24,6 @@
 	"SniperRound": 20,
 	"StickyGrenade": 100,
 	"XBowBolt": 25,
-	"csgo_flash": 30,
-	"csgo_frag": 50,
-	"csgo_incend": 100,
-	"csgo_molly": 100,
-	"csgo_smoke": 30,
 	"nitroG": 500,
 	"slam": 700
 }
