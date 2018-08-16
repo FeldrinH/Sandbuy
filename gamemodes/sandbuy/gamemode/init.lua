@@ -54,7 +54,17 @@ end)
 
 -- TODO
 concommand.Add("listprices", function(ply)
-	print("TODO")
+	print("CUSTOM:")
+	local fsc,drc = file.Find("prices/*", "DATA")
+	for k,v in pairs(drc) do
+		print("  " .. v)
+	end
+	
+	print("BUILT-IN:")
+	local fs,dr = file.Find("gamemodes/sandbuy/prices/*", "GAME")
+	for k,v in pairs(dr) do
+		print("  " .. v)
+	end
 end)
 
 concommand.Add("normalizeprices", function(ply)
