@@ -7,7 +7,7 @@
 	"ArmorkitBattery": 8,
 	"Buckshot": 10,
 	"C4Explosive": -1,
-	"Grenade": 30,
+	"Grenade": 50,
 	"Harpoon": 100,
 	"Improvised_Explosive": 700,
 	"MedkitHealth": 4,
@@ -21,8 +21,14 @@
 	"SatCannon": 2000,
 	"Shuriken": 10,
 	"SniperPenetratedRound": 20,
+	"SniperRound": 20,
 	"StickyGrenade": 100,
 	"XBowBolt": 25,
+	"csgo_flash": 30,
+	"csgo_frag": 50,
+	"csgo_incend": 100,
+	"csgo_molly": 100,
+	"csgo_smoke": 30,
 	"nitroG": 500,
 	"slam": 700
 }

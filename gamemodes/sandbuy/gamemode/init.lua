@@ -109,7 +109,7 @@ concommand.Add("setoverrideprice", function(ply, cmd, args)
 	local price = tonumber(args[2])
 	
 	if !wep or !price or !args[3] then 
-		print("Usage:  setoverrideprice [weapon] [price] [type]")
+		print("Usage:  setoverrideprice [classname] [price] [type]")
 		return
 	end
 	
@@ -494,6 +494,12 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 	
 	local price = pricer.GetPrice(class, pricer.WepPrices)
 	
+	if price == -5 then
+		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	end
+	
 	if GetConVar("freebuy"):GetBool() then
 		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
@@ -537,6 +543,12 @@ function GM:PlayerSpawnSWEP(ply, class, swep)
 	if !ply:Alive() or !BaseClass.PlayerSpawnSWEP(self, ply, class, swep) then return false end
 	
 	local price = pricer.GetPrice(class, pricer.WepPrices)
+	
+	if price == -5 then
+		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	end
 	
 	if GetConVar("freebuy"):GetBool() then
 		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
@@ -607,6 +619,12 @@ function GM:PlayerSpawnSENT(ply, class)
 	
 	local price = pricer.GetPrice(class, pricer.EntPrices)
 	
+	if price == -5 then
+		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	end
+	
 	if GetConVar("freebuy"):GetBool() then
 		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
@@ -640,6 +658,12 @@ function GM:PlayerSpawnVehicle(ply, model, class, vtable)
 	if !ply:Alive() or !BaseClass.PlayerSpawnVehicle(self, ply, model, class, vtable) then return false end
 	
 	local price = pricer.GetPrice(class, pricer.VehiclePrices)
+	
+	if price == -5 then
+		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	end
 	
 	if GetConVar("freebuy"):GetBool() then
 		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then

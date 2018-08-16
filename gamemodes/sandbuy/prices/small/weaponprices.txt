@@ -1,4 +1,5 @@
 {
+	"<OVERLAY>": 1,
 	"m9k_ex41": 5000,
 	"m9k_ied_detonator": 3000,
 	"m9k_m202": 7000,

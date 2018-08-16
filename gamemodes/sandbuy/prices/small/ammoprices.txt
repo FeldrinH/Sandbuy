@@ -1,3 +1,4 @@
 {
+	"<OVERLAY>": 1,
 	"AR2AltFire": 1000
 }

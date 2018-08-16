@@ -17,7 +17,28 @@ pricer.ClipCount = {
 pricer.ClipSize = {
 	sbuy_medkit = 20,
 	sbuy_armorkit = 10,
-	weapon_rpg = 1
+	weapon_rpg = 1,
+	weapon_ss_singleshotgun = 2,
+	weapon_ss2_doubleshotgun = 2,
+	weapon_ss_doubleshotgun = 2,
+	weapon_ss_tommygun = 20,
+	weapon_ss_flamer = 30,
+	weapon_ss_laser = 20,
+	weapon_ss_ghostbuster = 40,
+	weapon_ss_cannon = 1,
+	weapon_ss2_cannon = 1,
+	weapon_ss_minigun = 50,
+	weapon_ss2_minigun = 50,
+	weapon_ss_rocketlauncher = 1,
+	weapon_ss_sniper = 4,
+	weapon_ss2_sniper = 4,
+	weapon_ss2_autoshotgun = 8,
+	weapon_ss2_klodovik = 1,
+	weapon_ss2_grenadelauncher = 2,
+	weapon_ss2_uzi = 30,
+	weapon_ss2_plasmarifle = 20,
+	weapon_ss2_rocketlauncher = 1,
+	weapon_ss2_seriousbomb = 1
 }
 
 pricer.WepEnts = {
@@ -161,15 +182,16 @@ local function LoadFile(filename, categories)
 					end
 					
 					print("  " .. set.name .. " (filter): " .. table.Count(loadprices))
+				elseif loadprices["<OVERLAY>"] then
+					for k,v in pairs(loadprices) do
+						if (prices[k] or -2) >= -1 then
+							prices[k] = v
+						end
+					end
+					
+					print("  " .. set.name .. " (overlay): " .. table.Count(loadprices))
 				else
 					for k,v in pairs(loadprices) do
-						if v == -4 then
-							if (prices[k] or -2) >= -1 then
-								v = -1
-							else
-								v = -2
-							end
-						end
 						prices[k] = v
 					end
 					
@@ -368,8 +390,8 @@ function pricer.GetPrice(name, prices)
 end
 
 function pricer.GetPrintPrice(price)
-	if price == -4 then
-		return "BLOCK"
+	if price == -5 then
+		return "BAD"
 	elseif price == -3 then
 		return "RESET"
 	elseif price < -1 then
