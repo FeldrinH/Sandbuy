@@ -1,6 +1,6 @@
 {
 	"cannonball": 100,
-	"klodovik": 300,
+	"klodovik": 400,
 	"napalm": 1,
 	"seriousbomb": 4000
 }
