@@ -83,7 +83,7 @@
 	"m9k_scoped_taurus": 800,
 	"m9k_sig_p229r": 800,
 	"m9k_sl8": 2800,
-	"m9k_smgp90": 1200,
+	"m9k_smgp90": 1400,
 	"m9k_spas12": 5000,
 	"m9k_sten": 1000,
 	"m9k_sticky_grenade": 100,
