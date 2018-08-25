@@ -19,7 +19,7 @@
 	"weapon_ss_colt_dual": 500,
 	"weapon_ss_doubleshotgun": 1800,
 	"weapon_ss_flamer": 1600,
-	"weapon_ss_ghostbuster": 6666,
+	"weapon_ss_ghostbuster": 6600,
 	"weapon_ss_grenadelauncher": 2100,
 	"weapon_ss_knife": 150,
 	"weapon_ss_laser": 2100,
