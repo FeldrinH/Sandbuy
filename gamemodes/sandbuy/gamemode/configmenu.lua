@@ -8,7 +8,7 @@ local function SandbuySettings(pnl)
 	pnl:AddControl( "Header", { Description = "#utilities.sandboxsettings" } )
 
 	local ConVarsDefault = {
-		sbuy_prices = "base standard overrides",
+		sbuy_prices = "base weapons vehicles overrides",
 		sbuy_overrides = "overrides",
 		sbuy_log = "1",
 		sbuy_statsaver = "1",
