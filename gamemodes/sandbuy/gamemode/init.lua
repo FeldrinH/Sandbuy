@@ -428,7 +428,7 @@ function GM:PlayerSpawn(ply)
 end
 
 function GM:PlayerDeath(ply, inflictor, attacker)
-	local deltamoney = math.ceil(ply:GetMoney() * 0.2)
+	local deltamoney = math.ceil(ply:GetMoney() * GetConVar("sbuy_bonusratio"):GetFloat())
 	
 	local weapon = inflictor
 	local killer = attacker
