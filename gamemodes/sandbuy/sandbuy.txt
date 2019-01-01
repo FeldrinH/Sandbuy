@@ -75,9 +75,9 @@
 		{
 			"name"		"sbuy_bonusratio"
 			"text"		"Bonus Ratio"
-			"help"		"Part of money transferred to killer upon death"
+			"help"		"Percentage of money transferred to killer upon death"
 			"type"		"Numeric"
-			"default"	"0.2"
+			"default"	"20"
 			"singleplayer" "1"
 		}
 		
