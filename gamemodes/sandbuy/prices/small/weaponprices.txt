@@ -8,6 +8,7 @@
 	"m9k_matador": 6000,
 	"m9k_milkormgl": 5800,
 	"m9k_nerve_gas": 1800,
+	"m9k_nitro": 800,
 	"m9k_orbital_strike": 5000,
 	"m9k_proxy_mine": 2000,
 	"m9k_rpg7": 6000,
