@@ -243,7 +243,7 @@ concommand.Add("sbuy_giveprimaryammo", GiveHeldAmmo)--GetDeprecatedMessage("buyh
 concommand.Add("sbuy_giveheldammo", GetDeprecatedMessage("buyheldammo")) 
 
 concommand.Add("givemoney", function(ply, cmd, args)
-	if !GetConVar("sbuy_ecotime"):GetBool() then ply:PrintMessage(HUD_PRINTTALK, "Money sharing disabled") return end
+	if true then ply:PrintMessage(HUD_PRINTTALK, "Money sharing disabled") return end
 	
 	local target = nil
 	if args[2] then
@@ -331,7 +331,7 @@ local function GiveEcoMoneyAll()
 	end
 end
 
-cvars.AddChangeCallback("sbuy_ecotime", function(cvar, old, new)
+--[[cvars.AddChangeCallback("sbuy_ecotime", function(cvar, old, new)
 	if tonumber(new) == 0 then
 		timer.Remove("Sandbuy_Eco")
 	else
@@ -341,17 +341,13 @@ cvars.AddChangeCallback("sbuy_ecotime", function(cvar, old, new)
 			timer.Create("Sandbuy_Eco", tonumber(new), 0, GiveEcoMoneyAll)
 		end
 	end
-end, "Sbuy_EcoUpdate")
+end, "Sbuy_EcoUpdate")]]--
 
 function GM:Initialize()
 	pricer.LoadPrices()
 	
 	if GetConVar("sbuy_log"):GetBool() then
 		buylogger.Init()
-	end
-	
-	if GetConVar("sbuy_ecotime"):GetBool() then
-		timer.Create("Sandbuy_Eco", GetConVar("sbuy_ecotime"):GetFloat(), 0, GiveEcoMoneyAll)
 	end
 	
 	--timer.Create("Sandbuy_UpdateSeasonalWeapons", 600, 0 , UpdateSeasonals)
@@ -406,7 +402,7 @@ function GM:PlayerSpawn(ply)
 	
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
-	if ply.HasDied and !GetConVar("sbuy_ecotime"):GetBool() then
+	if ply.HasDied then
 		local bailoutamount = ply:GetBailout()
 	
 		if ply.GetMoney and ply:GetMoney() < bailoutamount then
@@ -462,15 +458,10 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 			deltamoney = 0
 		else
 			local killmoney = deltamoney
-			if !GetConVar("sbuy_ecotime"):GetBool() then
-				killmoney = killer:GetKillMoney() * pricer.GetKillReward(weaponname) * (self.SeasonalWeapons[weaponname] or 1) + deltamoney
-			end
+			killmoney = killer:GetKillMoney() * pricer.GetKillReward(weaponname) * (self.SeasonalWeapons[weaponname] or 1) + deltamoney
 			killer:AddMoney(killmoney)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney)
 			killer.TotalKillMoney = killer.TotalKillMoney + killmoney / killer:GetKillMoney()
-			if GetConVar("sbuy_ecotime"):GetBool() then
-				killer.TotalKillMoney = killer.TotalKillMoney + pricer.GetKillReward(weaponname)
-			end
 		end
 	end
 	ply:AddMoney(-deltamoney)

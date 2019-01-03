@@ -14,7 +14,6 @@ local function SandbuySettings(pnl)
 		sbuy_statsaver = "1",
 		sbuy_noundo = "1",
 		sbuy_debug = "0",
-		sbuy_ecotime = "0",
 		sbuy_bonusratio = "20",
 		sbuy_startmoney = "1000",
 		sbuy_defaultmoney = "1000",
@@ -52,11 +51,11 @@ local function SandbuySettings(pnl)
 	pnl:AddControl( "TextBox", { Label = "Override Prices", Command = "sbuy_overrides", WaitForEnter = "1" } )
 	--pnl:ControlHelp( "#persistent_mode.help" ):DockMargin( 16, 4, 16, 8 )
 	
-	local slider = pnl:AddControl( "Slider", { Label = "Eco Time", Command = "sbuy_ecotime", Min = 0, Max = 20 } )
+	--local slider = pnl:AddControl( "Slider", { Label = "Eco Time", Command = "sbuy_ecotime", Min = 0, Max = 20 } )
 	--slider.TranslateSliderValues = TranslateValuesRound
 	--slider.RoundDecimals = 0
 	
-	slider = pnl:AddControl( "Slider", { Label = "Bonus Ratio", Command = "sbuy_bonusratio", Min = 0, Max = 100 } )
+	local slider = pnl:AddControl( "Slider", { Label = "Bonus Ratio", Command = "sbuy_bonusratio", Min = 0, Max = 100 } )
 	
 	slider = pnl:AddControl( "Slider", { Label = "Start Money", Command = "sbuy_startmoney", Min = 0, Max = 2000 } )
 	slider.TranslateSliderValues = TranslateValuesRound
