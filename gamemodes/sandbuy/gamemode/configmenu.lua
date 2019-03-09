@@ -77,7 +77,7 @@ local function SandbuySettings(pnl)
 	
 	pnl:AddControl( "CheckBox", { Label = "Logging (requires restart)", Command = "sbuy_log" } )
 	pnl:AddControl( "CheckBox", { Label = "Stat Saver (requires restart)", Command = "sbuy_statsaver" } )
-	pnl:AddControl( "CheckBox", { Label = "Disable Undo (requires restart)", Command = "sbuy_noundo" } )
+	pnl:AddControl( "CheckBox", { Label = "Disable Undo", Command = "sbuy_noundo" } )
 	pnl:AddControl( "CheckBox", { Label = "Debug Mode", Command = "sbuy_debug" } )
 end
 

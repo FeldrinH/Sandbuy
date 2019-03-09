@@ -28,9 +28,13 @@ local text_color = Color(255, 235, 20)
 
 local lastmoney = -1
 local lastwidth = 0
+--local laststreak = 0
+--local streaktext = ""
 
 local hoffset = math.floor(ScrH() * 696 / 768) - 56
 local voffset = math.ceil(ScrW() * 25 / 1366)
+--local hoffsetstreak = math.floor(ScrH() * 696 / 768) - 56
+--local voffsetstreak = math.ceil(ScrW() * 25 / 1366)
 
 local deathmessage_killer = nil
 local deathmessage_health = 0
@@ -38,8 +42,9 @@ local deathmessage_armor = 0
 local deathmessage_text = ""
 
 local deathmessage_overrides = {
-	["76561198076382343"] = "You were claimed by ",
-	["76561198315916037"] = "You were deported by "
+	["76561198076382343"] = "You were claimed by ", --Martin
+	["76561198315916037"] = "You were deported by ", --TRUMP
+	["76561198033567884"] = "You were dead by " --Egert
 }
 
 hook.Add("HUDPaint", "Sandbuy_ShowHelp", function()
@@ -97,6 +102,16 @@ function GM:HUDPaint()
 			draw.SimpleTextOutlined(deathmessage_text, "DeathMessageFont", ScrW()/2, ScrH()/2 - 140, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
 		end
 	end
+	
+	--[[local curstreak = LocalPlayer():GetKillstreak()
+	if curstreak > 0 then
+		if curstreak != laststreak then
+			streaktext = curstreak + "x Streak"
+			laststreak = curstreak
+		end
+	
+		draw.SimpleText(curmoney, "HudNumbers", voffset + 23, hoffset, text_color)
+	end]]
 end
 
 function GM:SetDeathMessage(killer)

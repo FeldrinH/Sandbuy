@@ -46,7 +46,7 @@
 		{
 			"name"		"sbuy_noundo"
 			"text"		"Disable Undo"
-			"help"		"If enabled, undo will be disabled. Requires restart"
+			"help"		"If enabled, undo will be disabled"
 			"type"		"CheckBox"
 			"default"	"1"
 		}

@@ -1,22 +1,28 @@
 --local blocked_ammo = {[10]=true, [30]=true, [32]=true, [33]=true, [35]=true, [37]=true}
 
-if GetConVar("sbuy_noundo"):GetBool() then
-	local allowed_undo = {
-		--["Ladder"] = true,
-		--["Ladder Dismount"] = true
-	}
-	
-	if !undo.CreateRaw then
-		undo.CreateRaw = undo.Create
-	end
-	
-	undo.Create = function(uname)
-		--print(uname)
-		if allowed_undo[uname] then
-			return undo.CreateRaw(uname)
+local function UpdateUndo(cvarname, old, new)
+	if tobool(new) then
+		local allowed_undo = {
+			--["Ladder"] = true,
+			--["Ladder Dismount"] = true
+		}
+		
+		undo.Create = function(uname)
+			--print(uname)
+			if allowed_undo[uname] then
+				return undo.CreateRaw(uname)
+			end
 		end
+	else
+		undo.Create = undo.CreateRaw
 	end
 end
+
+if !undo.CreateRaw then
+	undo.CreateRaw = undo.Create
+end
+UpdateUndo(nil, nil, GetConVar("sbuy_noundo"):GetString())
+cvars.AddChangeCallback("sbuy_noundo", UpdateUndo, "undodisable")
 
 hook.Remove("PlayerSwitchWeapon","TFABashFixZoom")
 
