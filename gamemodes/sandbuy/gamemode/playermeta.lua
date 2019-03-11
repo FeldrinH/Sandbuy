@@ -11,6 +11,13 @@ function meta:AddMoney(delta)
 end
 
 if SERVER then
+	function meta:AddKillStreak(killcount)
+		self.KillStreak = self.KillStreak + killcount
+		if !self:Alive() then
+			self:SendLua("GAMEMODE:SetDeathMessage(nil," .. self.KillStreak .. ")")
+		end
+	end
+
 	function meta:GetBailoutBonus()
 		return math.floor(math.sqrt(0.25 + self.TotalKillMoney * 2 / self:GetLevelSize()) - 0.5) * self:GetLevelBonus()
 	end

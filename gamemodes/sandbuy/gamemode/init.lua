@@ -387,6 +387,7 @@ function GM:PlayerInitialSpawn(ply)
 	buylogger.LogJoin(ply)
 	
 	ply.TotalKillMoney = ply.TotalKillMoney or 0
+	ply.KillStreak = ply.KillStreak or 0
 	
 	BaseClass.PlayerInitialSpawn(self, ply)
 end
@@ -403,6 +404,8 @@ function GM:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
 	if ply.HasDied then
+		ply.KillStreak = 0
+	
 		local bailoutamount = ply:GetBailout()
 	
 		if ply.GetMoney and ply:GetMoney() < bailoutamount then
@@ -462,6 +465,7 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 			killer:AddMoney(killmoney)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney)
 			killer.TotalKillMoney = killer.TotalKillMoney + killmoney / killer:GetKillMoney()
+			killer:AddKillStreak(1)
 		end
 	end
 	ply:AddMoney(-deltamoney)
@@ -472,7 +476,7 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	
 	ply.HasDied = true
 	
-	ply:SendLua("GAMEMODE:SetDeathMessage(Entity(" .. killer:EntIndex() .. "))")
+	ply:SendLua("GAMEMODE:SetDeathMessage(Entity(" .. killer:EntIndex() .. ")," .. ply.KillStreak .. ")")
 	
 	return BaseClass.PlayerDeath(self, ply, inflictor, attacker)
 end

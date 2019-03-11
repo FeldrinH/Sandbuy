@@ -40,6 +40,7 @@ local deathmessage_killer = nil
 local deathmessage_health = 0
 local deathmessage_armor = 0
 local deathmessage_text = ""
+local deathmessage_killstreak = ""
 
 local deathmessage_overrides = {
 	["76561198076382343"] = "You were claimed by ", --Martin
@@ -101,6 +102,7 @@ function GM:HUDPaint()
 		else
 			draw.SimpleTextOutlined(deathmessage_text, "DeathMessageFont", ScrW()/2, ScrH()/2 - 140, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
 		end
+		draw.SimpleTextOutlined(deathmessage_killstreak, "DeathMessageFont", ScrW()/2, ScrH()/2 - 20, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
 	end
 	
 	--[[local curstreak = LocalPlayer():GetKillstreak()
@@ -114,7 +116,9 @@ function GM:HUDPaint()
 	end]]
 end
 
-function GM:SetDeathMessage(killer)
+function GM:SetDeathMessage(killer, killstreak)
+	deathmessage_killstreak = killstreak .. "x killstreak"
+	if killer == nil then return end
 	if IsValid(killer) and killer:IsPlayer() then
 		if killer == LocalPlayer() then
 			deathmessage_killer = nil
