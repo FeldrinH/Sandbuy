@@ -87,7 +87,8 @@ local toolwhitelist = {
 	paint = true,
 	colour = true,
 	--ladder = true,
-	material = true
+	material = true,
+	simfphyswheeleditor = true
 }
 
 local allowed_pickup = {
@@ -96,7 +97,7 @@ local allowed_pickup = {
 	sent_mortar_p = true
 }
 
---[[hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
+hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
 	if ent:IsVehicle() and !IsValid(ent:GetDriver()) then
 		return
 	elseif !allowed_pickup[ent:GetClass()] then
@@ -105,11 +106,16 @@ local allowed_pickup = {
 end)
 
 hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
-	--print(tool)
+	if ply:IsSuperAdmin() then return end
+	
+	print(tool)
+	if IsValid(trace.Entity) and trace.Entity:IsPlayer() then
+		return false
+	end
 	if !toolwhitelist[tool] then
 		return false
 	end
-end)]]
+end)
 
 local function ModifyWeapon(wepclass, modfunc)
 	local wep = weapons.GetStored(wepclass)
