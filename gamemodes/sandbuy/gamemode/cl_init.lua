@@ -99,10 +99,12 @@ function GM:HUDPaint()
 			else
 				draw.SimpleTextOutlined("who survived with " .. deathmessage_health .. " health" .. (deathmessage_armor > 0 and (" and " .. deathmessage_armor .. " armor") or ""), "DeathMessageFontSmall", ScrW()/2, ScrH()/2 - 80, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
 			end
+			draw.SimpleTextOutlined(deathmessage_killstreak, "DeathMessageFont", ScrW()/2, ScrH()/2 + 20, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
 		else
 			draw.SimpleTextOutlined(deathmessage_text, "DeathMessageFont", ScrW()/2, ScrH()/2 - 140, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
+			draw.SimpleTextOutlined(deathmessage_killstreak, "DeathMessageFont", ScrW()/2, ScrH()/2 - 20, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
 		end
-		draw.SimpleTextOutlined(deathmessage_killstreak, "DeathMessageFont", ScrW()/2, ScrH()/2 - 20, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
+		
 	end
 	
 	--[[local curstreak = LocalPlayer():GetKillstreak()
