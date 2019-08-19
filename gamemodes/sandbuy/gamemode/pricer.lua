@@ -1,20 +1,24 @@
 pricer = pricer or {
-	WepPrices={},
-	AmmoPrices={},
-	VehiclePrices={},
-	EntPrices={},
-	Categories={},
-	KillRewards={}
+	PriceTable = {
+		weapon = {},
+		ammo = {},
+		vehicle = {},
+		entity = {},
+		killreward = {}
+	}
 }
 
 pricer.TeamKillPenalty = 200
 --pricer.ArmorPrice = 8
 --pricer.LadderPrice = 50
 
-pricer.ClipCount = {
+-- Local variable for faster and more convenient access
+local pricetable = pricer.PriceTable
+
+pricetable.clipcount = {
 }
 
-pricer.ClipSize = {
+pricetable.clipsize = {
 	sbuy_medkit = 20,
 	sbuy_armorkit = 10,
 	weapon_rpg = 1,
@@ -39,10 +43,6 @@ pricer.ClipSize = {
 	weapon_ss2_plasmarifle = 20,
 	weapon_ss2_rocketlauncher = 1,
 	weapon_ss2_seriousbomb = 1
-}
-
-pricer.WepEnts = {
-	--TODO: Add weapons
 }
 
 function net.WritePriceTable(prices)
@@ -234,10 +234,12 @@ local function LoadAmmoPrices()
 	return prices
 end
 
-function pricer.ApplyModifier(category, prices, modifier)	
-	for k,v in pairs(pricer.CategoriesList[category]) do
-		if pricer.GetPrice(v, prices) >= 0 then
-			prices[v] = modifier(pricer.GetPrice(v, prices), v)
+function pricer.ApplyModifier(items, pricesets, modifier)
+	for i,j in pairs(pricesets) do
+		for k,v in pairs(items) do
+			if pricer.GetPrice(v, j) >= 0 then
+				pricer.PriceTable[j][v] = modifier(pricer.GetPrice(v, j), v)
+			end
 		end
 	end
 end
@@ -300,28 +302,28 @@ function pricer.LoadPrices()
 
 	pricer.PriceString = ParsePriceString()
 
-	pricer.WepPrices = LoadFile("weaponprices.txt") or pricer.WepPrices
-	pricer.EntPrices = LoadFile("entityprices.txt") or pricer.EntPrices
-	pricer.VehiclePrices = LoadFile("vehicleprices.txt") or pricer.VehiclePrices
-	pricer.AmmoPrices = LoadAmmoPrices() or pricer.AmmoPrices
+	pricetable.weapon = LoadFile("weaponprices.txt") or pricetable.weapon
+	pricetable.entity = LoadFile("entityprices.txt") or pricetable.entity
+	pricetable.vehicle = LoadFile("vehicleprices.txt") or pricetable.vehicle
+	pricetable.ammo = LoadAmmoPrices() or pricetable.ammo
 	
 	local cats_lookup, cats_list = LoadCategories()
 	pricer.CategoriesLookup = cats_lookup or pricer.CategoriesLookup
 	pricer.CategoriesList = cats_list or pricer.CategoriesList
 	
-	pricer.KillRewards = LoadFile("killrewards.txt") or pricer.KillRewards
+	pricetable.killreward = LoadFile("killrewards.txt") or pricetable.killreward
 	
-	hook.Run("ApplyPriceModifiers")
+	hook.Call("OnPricesLoaded", nil)
 	
 	local itemlist = list.GetForEdit("Weapon")
 	for k,v in pairs(itemlist) do
-		if v.AdminOnly and pricer.GetPrice(k, pricer.WepPrices) > 0 then
+		if v.AdminOnly and pricer.GetPrice(k, "weapon") > 0 then
 			v.AdminOnly = nil
 		end
 	end
 	itemlist = list.GetForEdit("SpawnableEntities")
 	for k,v in pairs(itemlist) do
-		if pricer.GetPrice(k, pricer.EntPrices) > 0 then
+		if pricer.GetPrice(k, "entity") > 0 then
 			v.AdminOnly = nil
 			if scripted_ents.GetStored(k) then
 				scripted_ents.GetStored(k).t.AdminOnly = nil
@@ -337,10 +339,10 @@ end
 function pricer.SendPrices(ply, reload)
 	net.Start("newprices")
 	net.WriteUInt(reload, 2)
-	net.WritePriceTable(pricer.WepPrices)
-	net.WritePriceTable(pricer.EntPrices)
-	net.WritePriceTable(pricer.VehiclePrices)
-	net.WritePriceTable(pricer.AmmoPrices)
+	net.WritePriceTable(pricetable.weapon)
+	net.WritePriceTable(pricetable.entity)
+	net.WritePriceTable(pricetable.vehicle)
+	net.WritePriceTable(pricetable.ammo)
 	if ply then
 		net.Send(ply)
 	else
@@ -374,19 +376,23 @@ end
 end]]--
 
 function pricer.GetKillReward(wep)
-	return pricer.KillRewards[wep] or 1
+	return pricetable.killreward[wep] or 1
 end
 
 function pricer.GetClipCount(wep, clip)
-	return pricer.ClipCount[wep] or (clip < 3 and 3) or 1
+	return pricetable.clipcount[wep] or (clip < 3 and 3) or 1
+end
+
+function pricer.GetClipSize(wep)
+	return pricetable.clipsize[wep]
 end
 
 function pricer.InCategory(class, category)
 	return (pricer.CategoriesLookup[category] or {})[class]
 end
 
-function pricer.GetPrice(name, prices)
-	return prices[name] or -2
+function pricer.GetPrice(name, priceset)
+	return pricetable[priceset][name] or -2
 end
 
 function pricer.GetPrintPrice(price)

@@ -60,14 +60,14 @@ net.Receive("moneychanged", function()
 end)
 
 local function UpdateWepPrice( icon, money )
-	icon:SetTextColor( ( LocalPlayer():HasWeapon( icon:GetSpawnName() ) and has_color ) or ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.WepPrices ) ) and buy_color ) or nobuy_color )
+	icon:SetTextColor( ( LocalPlayer():HasWeapon( icon:GetSpawnName() ) and has_color ) or ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), "weapon" ) ) and buy_color ) or nobuy_color )
 	icon.Label:SetTextColor( ( seasonalweapons[ icon:GetSpawnName() ] and seasonal_color ) or default_color )
 end
 local function UpdateEntPrice( icon, money )
-	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.EntPrices ) ) and buy_color ) or nobuy_color )
+	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), "entity" ) ) and buy_color ) or nobuy_color )
 end
 local function UpdateVehiclePrice( icon, money )
-	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), pricer.VehiclePrices ) ) and buy_color ) or nobuy_color )
+	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), "vehicle" ) ) and buy_color ) or nobuy_color )
 end
 local function UpdateAmmoOption( opt, money )
 	opt:SetTextColor( ( pricer.CanBuy( money, opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
@@ -114,11 +114,11 @@ function spawnmenu.UpdateSpawnlistPrices()
 		for k,v in pairs(g_SpawnMenu.PriceIcons) do
 			if !IsValid(v) then continue end
 			if v:GetContentType() == "weapon" then
-				UpdatePriceLabel(v, pricer.WepPrices)
+				UpdatePriceLabel(v, "weapon")
 			elseif v:GetContentType() == "entity" then
-				UpdatePriceLabel(v, pricer.EntPrices)
+				UpdatePriceLabel(v, "entity")
 			elseif v:GetContentType() == "vehicle" or v:GetContentType() == "simfphys_vehicles" then
-				UpdatePriceLabel(v, pricer.VehiclePrices)
+				UpdatePriceLabel(v, "vehicle")
 			end
 		end
 	end
@@ -431,7 +431,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 	icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 135, 206, 250, 255 ) )
 	
-	local price = pricer.GetPrice( obj.spawnname, pricer.WepPrices )
+	local price = pricer.GetPrice( obj.spawnname, "weapon" )
 	icon:SetText( pricer.GetPrintPrice(price) )
 	icon:SetContentAlignment( 7 )
 	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
@@ -466,7 +466,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 					local ammo = game.GetAmmoName(wep:GetPrimaryAmmoType())
 					local clipcount = pricer.GetClipCount(obj.spawnname, pricer.ClipSize[obj.spawnname] or wep:GetMaxClip1())
 					local amount = (pricer.ClipSize[obj.spawnname] or wep:GetMaxClip1()) * clipcount
-					local price = pricer.GetPrice(ammo, pricer.AmmoPrices)
+					local price = pricer.GetPrice(ammo, "ammo")
 					if amount > 0 then
 						local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Primary Ammo (" .. pricer.GetPrintPrice(price * amount) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
 						opt.AmmoPrice = price * amount
@@ -486,7 +486,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 					local ammo = game.GetAmmoName(wep:GetSecondaryAmmoType())
 					local clipcount = pricer.GetClipCount(obj.spawnname, pricer.ClipSize[obj.spawnname] or wep:GetMaxClip2())
 					local amount = (pricer.ClipSize[obj.spawnname] or wep:GetMaxClip2()) * clipcount
-					local price = pricer.GetPrice(ammo, pricer.AmmoPrices)
+					local price = pricer.GetPrice(ammo, "ammo")
 					if amount > 0 then
 						local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Secondary Ammo (" .. pricer.GetPrintPrice(price * amount) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
 						opt.AmmoPrice = price * amount
@@ -570,7 +570,7 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 	icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 205, 92, 92, 255 ) )
 	
-	local price = pricer.GetPrice( obj.spawnname, pricer.EntPrices )
+	local price = pricer.GetPrice( obj.spawnname, "entity" )
 	icon:SetText( pricer.GetPrintPrice(price) )
 	icon:SetContentAlignment( 7 )
 	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
@@ -650,7 +650,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 	icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 0, 0, 0, 255 ) )
 	
-	local price = pricer.GetPrice( obj.spawnname, pricer.VehiclePrices )
+	local price = pricer.GetPrice( obj.spawnname, "vehicle" )
 	icon:SetText( pricer.GetPrintPrice(price) )
 	icon:SetContentAlignment( 7 )
 	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
@@ -729,7 +729,7 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 	icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 0, 0, 0, 255 ) )
 	
-	local price = pricer.GetPrice( obj.spawnname, pricer.VehiclePrices )
+	local price = pricer.GetPrice( obj.spawnname, "vehicle" )
 	icon:SetText( pricer.GetPrintPrice(price) )
 	icon:SetContentAlignment( 7 )
 	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then

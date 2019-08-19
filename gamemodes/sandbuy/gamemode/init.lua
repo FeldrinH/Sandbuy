@@ -97,15 +97,8 @@ concommand.Add("setcategoryprice", function(ply, cmd, args)
 
 		print("Removed category price:", category)
 	else
-		local function ReturnPrice() 
-			return price
-		end
-	
-		hook.Add("ApplyPriceModifiers", "CategoryOverride_" .. category, function()
-			pricer.ApplyModifier(category, pricer.WepPrices, ReturnPrice)
-			pricer.ApplyModifier(category, pricer.EntPrices, ReturnPrice)
-			pricer.ApplyModifier(category, pricer.VehiclePrices, ReturnPrice)
-			pricer.ApplyModifier(category, pricer.AmmoPrices, ReturnPrice)
+		hook.Add("OnPricesLoaded", "CategoryOverride_" .. category, function()
+			pricer.ApplyModifier(pricer.CategoriesList[category], {"weapon", "entity", "vehicle", "ammo"}, function() return price end)
 		end)
 		
 		print("New category price:", category, "$" .. price)
@@ -205,14 +198,15 @@ local function GiveHeldAmmo(ply, cmd, args)
 		return
 	end
 	ammo = game.GetAmmoName(ammo)
+	local ammoprice = pricer.GetPrice(ammo, "ammo")
 	
 	local amount = 1
-	if pricer.GetPrice(ammo, pricer.AmmoPrices) < 0 then
+	if ammoprice < 0 then
 		--Ammo not for sale
 	elseif amountarg == "smart" then
-		amount = pricer.ClipSize[wep:GetClass()] or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
-		if (amount > 0) and (pricer.GetPrice(ammo, pricer.AmmoPrices) * amount > limit) and !GetConVar("freebuy"):GetBool() then
-			amount = math.floor(limit / pricer.GetPrice(ammo, pricer.AmmoPrices))
+		amount = pricer.GetClipSize(wep:GetClass()) or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
+		if (amount > 0) and (ammoprice * amount > limit) and !GetConVar("freebuy"):GetBool() then
+			amount = math.floor(limit / ammoprice)
 		end
 		if amount < 1 then
 			amount = 1
@@ -220,7 +214,7 @@ local function GiveHeldAmmo(ply, cmd, args)
 	elseif amountarg == "clip" then
 		amount = pricer.ClipSize[wep:GetClass()] or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
 	elseif amountarg == "max" then
-		amount = math.floor(limit / pricer.GetPrice(ammo, pricer.AmmoPrices))
+		amount = math.floor(limit / ammoprice)
 		if amount < 1 then
 			amount = 1
 		end
@@ -292,7 +286,7 @@ local function GetOptimalSeasonal(richest)
 	local new = nil
 	for i = 1,3 do
 		new = GetUniqueSeasonal()
-		if pricer.GetPrice(new, pricer.WepPrices) < richest then
+		if pricer.GetPrice(new, "weapon") < richest then
 			return new
 		end
 	end
@@ -403,23 +397,23 @@ function GM:PlayerSpawn(ply)
 	
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
+	BaseBaseClass.PlayerSpawn(self, ply)
+	
 	if ply.HasDied then
 		ply.KillStreak = 0
 	
-		local bailoutamount = ply:GetBailout()
+		local bailoutamount = gamemode.Call("GetBailout", ply)
 	
 		if ply.GetMoney and ply:GetMoney() < bailoutamount then
 			buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply:GetMoney())
 			ply:SetMoney(bailoutamount)
 			ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
-		elseif ply.DefaultMoneyOverride and ply.DefaultMoneyOverride < bailoutamount then
-			buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply.DefaultMoneyOverride)
-			ply.DefaultMoneyOverride = bailoutamount
-			ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
+		--elseif ply.DefaultMoneyOverride and ply.DefaultMoneyOverride < bailoutamount then
+		--	buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply.DefaultMoneyOverride)
+		--	ply.DefaultMoneyOverride = bailoutamount
+		--	ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
 		end
 	end
-	
-	BaseBaseClass.PlayerSpawn(self, ply)
 	
 	ply.HasDied = false
 	
@@ -427,8 +421,6 @@ function GM:PlayerSpawn(ply)
 end
 
 function GM:PlayerDeath(ply, inflictor, attacker)
-	local deltamoney = math.ceil(ply:GetMoney() * GetConVar("sbuy_bonusratio"):GetFloat() / 100)
-	
 	local weapon = inflictor
 	local killer = attacker
 	
@@ -454,18 +446,30 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	end
 	print(inflictor, attacker, weapon, killer, "[" .. weaponname .. "]")
 	
+	gamemode.Call("HandlePlayerDeath", ply, killer, weapon, weaponname)
+	
+	ply.HasDied = true
+	
+	ply:SendLua("GAMEMODE:SetDeathMessage(Entity(" .. killer:EntIndex() .. ")," .. ply.KillStreak .. ")")
+	
+	return BaseClass.PlayerDeath(self, ply, inflictor, attacker)
+end
+
+function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
+	local deltamoney = 0
+	
 	if killer:IsValid() && killer:IsPlayer() && killer != ply then
 		if ply:Team() != TEAM_UNASSIGNED and ply:Team() == killer:Team() then
 			killer:AddMoney(-pricer.TeamKillPenalty)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), -pricer.TeamKillPenalty)
-			deltamoney = 0
 		else
-			local killmoney = deltamoney
-			killmoney = killer:GetKillMoney() * pricer.GetKillReward(weaponname) * (self.SeasonalWeapons[weaponname] or 1) + deltamoney
+			deltamoney = gamemode.Call("GetKillBonus", ply, killer, weapon, weaponname)
+			local killmoney = gamemode.Call("GetKillReward", ply, killer, weapon, weaponname) + deltamoney
+			
 			killer:AddMoney(killmoney)
-			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney)
-			killer.TotalKillMoney = killer.TotalKillMoney + killmoney / killer:GetKillMoney()
+			killer.TotalKillMoney = killer.TotalKillMoney + gamemode.Call("GetNormalizedKillReward", killmoney, ply, killer, weapon, weaponname)
 			killer:AddKillStreak(1)
+			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney)
 		end
 	end
 	ply:AddMoney(-deltamoney)
@@ -473,12 +477,26 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	--	ply.TotalKillMoney = math.max(ply.TotalKillMoney - 1 - deltamoney / ply:GetKillMoney(), 0)
 	--end
 	buylogger.LogDeath(ply, killer, weaponname, ply:GetMoney(), -deltamoney)
-	
-	ply.HasDied = true
-	
-	ply:SendLua("GAMEMODE:SetDeathMessage(Entity(" .. killer:EntIndex() .. ")," .. ply.KillStreak .. ")")
-	
-	return BaseClass.PlayerDeath(self, ply, inflictor, attacker)
+end
+
+function GM:GetKillBonus(ply, killer, weapon, weaponname)
+	return math.ceil(ply:GetMoney() * GetConVar("sbuy_bonusratio"):GetFloat() / 100)
+end
+
+function GM:GetKillReward(ply, killer, weapon, weaponname)
+	return GetConVar("sbuy_killmoney"):GetInt() * pricer.GetKillReward(weaponname)
+end
+
+function GM:GetNormalizedKillReward(killmoney, ply, killer, weapon, weaponname)
+	return killmoney / GetConVar("sbuy_killmoney"):GetInt()
+end
+
+function GM:GetBuyPrice(ply, class, priceset)
+	return pricer.GetPrice(class, priceset)
+end
+
+function GM:GetBailout(ply)
+	return GetConVar("sbuy_defaultmoney"):GetInt() + math.floor(math.sqrt(0.25 + self.TotalKillMoney * 2 / GetConVar("sbuy_levelsize"):GetFloat()) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
 end
 
 function GM:GiveEcoMoney(ply)
@@ -497,7 +515,7 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 		return true
 	end
 	
-	local price = pricer.GetPrice(class, pricer.WepPrices)
+	local price = gamemode.Call("GetBuyPrice", ply, class, "weapon")
 	
 	if price == -5 then
 		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
@@ -547,7 +565,7 @@ end
 function GM:PlayerSpawnSWEP(ply, class, swep)
 	if !ply:Alive() or !BaseClass.PlayerSpawnSWEP(self, ply, class, swep) then return false end
 	
-	local price = pricer.GetPrice(class, pricer.WepPrices)
+	local price = gamemode.Call("GetBuyPrice", ply, class, "weapon")
 	
 	if price == -5 then
 		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
@@ -588,7 +606,7 @@ function GM:PlayerGiveAmmo(ply, ammo, amount)
 	if !ply:Alive() then return false end
 	if amount <= 0 then return false end
 
-	local price = pricer.GetPrice(ammo, pricer.AmmoPrices) * amount
+	local price = pricer.GetPrice(ammo, "ammo") * amount
 	
 	if GetConVar("freebuy"):GetBool() then
 		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
@@ -622,7 +640,7 @@ end
 function GM:PlayerSpawnSENT(ply, class)
 	if !ply:Alive() or !BaseClass.PlayerSpawnSENT(self, ply, class) then return false end
 	
-	local price = pricer.GetPrice(class, pricer.EntPrices)
+	local price = gamemode.Call("GetBuyPrice", ply, class, "entity")
 	
 	if price == -5 then
 		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
@@ -662,7 +680,7 @@ end
 function GM:PlayerSpawnVehicle(ply, model, class, vtable)
 	if !ply:Alive() or !BaseClass.PlayerSpawnVehicle(self, ply, model, class, vtable) then return false end
 	
-	local price = pricer.GetPrice(class, pricer.VehiclePrices)
+	local price = gamemode.Call("GetBuyPrice", ply, class, "vehicle")
 	
 	if price == -5 then
 		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
@@ -716,7 +734,7 @@ function GM:PlayerSpawnObject(ply, model, skin)
 end
 
 function GM:PlayerSpawnedSENT(ply, ent)
-	local price = pricer.GetPrice(ent:GetClass(), pricer.EntPrices)
+	local price = gamemode.Call("GetBuyPrice", ply, ent:GetClass(), "entity")
 	if price > 0 and pricer.InCategory(ent:GetClass(), "machines") then
 		ent.DestroyReward = math.floor(price * 0.5)
 	end
@@ -725,7 +743,7 @@ function GM:PlayerSpawnedSENT(ply, ent)
 end
 
 function GM:PlayerSpawnedVehicle(ply, ent)
-	local price = pricer.GetPrice(ent.VehicleName, pricer.VehiclePrices)
+	local price = gamemode.Call("GetBuyPrice", ply, ent.VehicleName, "vehicle")
 	if price > 0 then
 		ent.DestroyReward = math.floor(price * 0.5)
 	end

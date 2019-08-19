@@ -246,11 +246,11 @@ local function CopyItems(listname)
 	end
 end
 
-local function FilterItems(listname, prices, isdebug)
+local function FilterItems(listname, priceset, isdebug)
 	local itemlist = list.GetForEdit(listname)
 	local itemcopy = list.GetForEdit(listname .. "Backup")
 	for k,v in pairs(itemcopy) do
-		if pricer.GetPrice(k, prices) <= -2 and !isdebug then
+		if pricer.GetPrice(k, priceset) <= -2 and !isdebug then
 			itemlist[k] = nil
 		else
 			itemlist[k] = v
@@ -270,10 +270,10 @@ net.Receive("newprices", function(len)
 		print("Initial load")
 	end
 	
-	pricer.WepPrices = net.ReadPriceTable()
-	pricer.EntPrices = net.ReadPriceTable()
-	pricer.VehiclePrices = net.ReadPriceTable()
-	pricer.AmmoPrices = net.ReadPriceTable()
+	pricer.PriceTable.weapon = net.ReadPriceTable()
+	pricer.PriceTable.entity = net.ReadPriceTable()
+	pricer.PriceTable.vehicle = net.ReadPriceTable()
+	pricer.PriceTable.ammo = net.ReadPriceTable()
 	
 	if reload == 2 then
 		spawnmenu.UpdateSpawnlistPrices()
@@ -289,12 +289,12 @@ net.Receive("newprices", function(len)
 			if v.SpawnableBackup == nil then
 				v.SpawnableBackup = v.Spawnable or false
 			end
-			v.Spawnable = v.SpawnableBackup and (pricer.GetPrice(k, pricer.WepPrices) > -2 or isdebug)
+			v.Spawnable = v.SpawnableBackup and (pricer.GetPrice(k, "weapon") > -2 or isdebug)
 		end
 		
-		FilterItems("SpawnableEntities", pricer.EntPrices, isdebug)
-		FilterItems("Vehicles", pricer.VehiclePrices, isdebug)
-		FilterItems("simfphys_vehicles", pricer.VehiclePrices, isdebug)
+		FilterItems("SpawnableEntities", "entity", isdebug)
+		FilterItems("Vehicles", "vehicle", isdebug)
+		FilterItems("simfphys_vehicles", "vehicle", isdebug)
 	end
 
 	if reload == 1 then
