@@ -212,7 +212,7 @@ local function GiveHeldAmmo(ply, cmd, args)
 			amount = 1
 		end
 	elseif amountarg == "clip" then
-		amount = pricer.ClipSize[wep:GetClass()] or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
+		amount = pricer.GetClipSize(wep:GetClass()) or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
 	elseif amountarg == "max" then
 		amount = math.floor(limit / ammoprice)
 		if amount < 1 then
@@ -496,7 +496,7 @@ function GM:GetBuyPrice(ply, class, priceset)
 end
 
 function GM:GetBailout(ply)
-	return GetConVar("sbuy_defaultmoney"):GetInt() + math.floor(math.sqrt(0.25 + self.TotalKillMoney * 2 / GetConVar("sbuy_levelsize"):GetFloat()) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
+	return GetConVar("sbuy_defaultmoney"):GetInt() + math.floor(math.sqrt(0.25 + (ply.TotalKillMoney or 0) * 2 / GetConVar("sbuy_levelsize"):GetFloat()) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
 end
 
 function GM:GiveEcoMoney(ply)

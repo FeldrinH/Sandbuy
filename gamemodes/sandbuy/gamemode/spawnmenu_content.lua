@@ -464,8 +464,8 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 				g_SpawnMenu.AmmoOptions = {}
 				if wep:GetPrimaryAmmoType() != -1 then  
 					local ammo = game.GetAmmoName(wep:GetPrimaryAmmoType())
-					local clipcount = pricer.GetClipCount(obj.spawnname, pricer.ClipSize[obj.spawnname] or wep:GetMaxClip1())
-					local amount = (pricer.ClipSize[obj.spawnname] or wep:GetMaxClip1()) * clipcount
+					local clipcount = pricer.GetClipCount(obj.spawnname, pricer.GetClipSize(obj.spawnname) or wep:GetMaxClip1())
+					local amount = (pricer.GetClipSize(obj.spawnname) or wep:GetMaxClip1()) * clipcount
 					local price = pricer.GetPrice(ammo, "ammo")
 					if amount > 0 then
 						local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Primary Ammo (" .. pricer.GetPrintPrice(price * amount) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
@@ -484,8 +484,8 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 				end
 				if wep:GetSecondaryAmmoType() != -1 then
 					local ammo = game.GetAmmoName(wep:GetSecondaryAmmoType())
-					local clipcount = pricer.GetClipCount(obj.spawnname, pricer.ClipSize[obj.spawnname] or wep:GetMaxClip2())
-					local amount = (pricer.ClipSize[obj.spawnname] or wep:GetMaxClip2()) * clipcount
+					local clipcount = pricer.GetClipCount(obj.spawnname, pricer.GetClipSize(obj.spawnname) or wep:GetMaxClip2())
+					local amount = (pricer.GetClipSize(obj.spawnname) or wep:GetMaxClip2()) * clipcount
 					local price = pricer.GetPrice(ammo, "ammo")
 					if amount > 0 then
 						local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Secondary Ammo (" .. pricer.GetPrintPrice(price * amount) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
