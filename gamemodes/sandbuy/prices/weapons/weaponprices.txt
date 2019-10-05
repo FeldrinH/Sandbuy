@@ -158,7 +158,7 @@
 	"weapon_752_tt": 300,
 	"weapon_752_waltherp38": 300,
 	"weapon_752_welrod": 400,
-	"weapon_752_winchester": 1400,
+	"weapon_752_winchester": 1500,
 	"weapon_ar2": 1000,
 	"weapon_bugbait": -2,
 	"weapon_crossbow": 1000,

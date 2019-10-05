@@ -17,6 +17,7 @@
 	"weapon_752_panzerfaust": 4200,
 	"weapon_752_panzerschreck": 4000,
 	"weapon_752_piat": 4000,
+	"weapon_neurowep_flakshotgun": 3100,
 	"weapon_neurowep_handmortar": 2800,
 	"weapon_neurowep_javelin": 5000,
 	"weapon_neurowep_m79": -4,
