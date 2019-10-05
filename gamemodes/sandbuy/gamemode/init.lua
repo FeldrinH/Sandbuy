@@ -456,14 +456,14 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 end
 
 function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
-	local deltamoney = 0
+	local deltamoney = gamemode.Call("GetKillBonus", ply, killer, weapon, weaponname)
 	
 	if killer:IsValid() && killer:IsPlayer() && killer != ply then
 		if ply:Team() != TEAM_UNASSIGNED and ply:Team() == killer:Team() then
 			killer:AddMoney(-pricer.TeamKillPenalty)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), -pricer.TeamKillPenalty)
 		else
-			deltamoney = gamemode.Call("GetKillBonus", ply, killer, weapon, weaponname)
+			//deltamoney = 
 			local killmoney = gamemode.Call("GetKillReward", ply, killer, weapon, weaponname) + deltamoney
 			
 			killer:AddMoney(killmoney)
