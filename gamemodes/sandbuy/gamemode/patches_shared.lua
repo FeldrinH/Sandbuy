@@ -83,13 +83,14 @@ local weaponoverrides = {
 local categoryoverrides = {
 	["Rifle"] = "Assault Rifles",
 	["Carbine"] = "Assault Rifles",
-	["Weapon"] = "Melee",
+	["Weapon"] = "Melee weapons",
 	["Dual Guns"] = "Sub-Machine Guns",
 	["Dual Sub-Machine Guns"] = "Sub-Machine Guns",
 	["Dual Pistols"] = "Pistols & Revolvers",
 	["Grenade"] = "Launchers & Explosives",
 	["Revolver"] = "Pistols & Revolvers",
-	["Pistol"] = "Pistols & Revolvers"
+	["Pistol"] = "Pistols & Revolvers",
+	["melee weapon"] = "Melee weapons"
 }
 
 local toolwhitelist = {
@@ -235,6 +236,10 @@ hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 	for k,v in pairs(list.GetForEdit("Weapon")) do
 		if v.Category == "TFA CS:O" then
 			local weptype = weapons.Get(v.ClassName):GetType()
+			if weptype and string.find(string.lower(weptype), "grade ", 1, true) then
+				weptype = string.sub(weptype, select(2, string.find(string.lower(weptype), "grade ", 1, true))+1)
+			end
+			weptype = string.Trim(weptype, "Transcendence Grade ")
 			if (weptype or weaponoverrides[v.ClassName]) then
 				v.Category = "CS:O " .. (weaponoverrides[v.ClassName] or categoryoverrides[weptype] or (weptype .. "s"))
 			end

@@ -102,14 +102,17 @@ hook.Add("OnEntityCreated", "LimitProxySpam", function(ent)
 			end
 		end)
 	elseif ent:GetClass() == "npc_tripmine" then
-		local predictedowner = FindPredictedOwner("weapon_slam", ent:GetPos())
-		if !IsValid(predictedowner) then print("WARNING: No owner found for SLAM " .. tostring(ent) ) return end
-		
-		local oldproxy = FindOldMine(predictedowner, "npc_tripmine")
-		ent.PredictedOwner = predictedowner
-		if IsValid(oldproxy) then
-			oldproxy:TakeDamage(1000, oldproxy, oldproxy)
-		end
+		timer.Simple(0, function()
+			if !IsValid(ent) then return end
+			local predictedowner = FindPredictedOwner("weapon_slam", ent:GetPos())
+			if !IsValid(predictedowner) then print("WARNING: No owner found for SLAM " .. tostring(ent) ) return end
+			
+			local oldproxy = FindOldMine(predictedowner, "npc_tripmine")
+			ent.PredictedOwner = predictedowner
+			if IsValid(oldproxy) then
+				oldproxy:TakeDamage(1000, oldproxy, oldproxy)
+			end
+		end)
 	end
 end)
 
