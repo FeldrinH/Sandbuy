@@ -118,7 +118,40 @@ concommand.Add("setoverrideprice", function(ply, cmd, args)
 	
 	pricer.SetPrice(wep, price, args[3] .. "prices.txt")
 	
-	print("New override price:", wep, "$" .. price, GetConVar("sbuy_overrides"):GetString())
+	print("New override price:", wep, "$" .. price, "", GetConVar("sbuy_overrides"):GetString())
+end)
+
+concommand.Add("addsourceweapon", function(ply, cmd, args)
+	if IsValid(ply) and !ply:IsAdmin() then return end
+	
+	local sourcewep = ply:GetActiveWeapon()
+	if !IsValid(sourcewep) then
+		print("Please hold valid weapon to set as source weapon")
+		return
+	end
+	sourcewep = sourcewep:GetClass()
+	
+	if args[1] then
+		local wep = args[1]
+		
+		pricer.SetPrice(wep, sourcewep, "sourceweapons.txt")
+		
+		print("New source weapon " .. wep .. " -> " .. sourcewep, "", GetConVar("sbuy_overrides"):GetString())
+	else
+		hook.Add("PlayerDeath", "AddSourceWeapon", function(dply, infl, atk)
+			if !IsValid(infl) or infl:IsPlayer() or dply != ply then return end
+			
+			local wep = infl:GetClass()
+			
+			pricer.SetPrice(wep, sourcewep, "sourceweapons.txt")
+		
+			print("New source weapon " .. wep .. " -> " .. sourcewep, "", GetConVar("sbuy_overrides"):GetString())
+		
+			hook.Remove("PlayerDeath", "AddSourceWeapon")
+		end)
+		
+		print("Please kill yourself with weapon")
+	end
 end)
 
 concommand.Add("sbuy_giveammo", function(ply, cmd, args)

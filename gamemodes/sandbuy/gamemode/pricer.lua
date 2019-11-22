@@ -274,6 +274,28 @@ function pricer.SavePriceTable(filename, prices)
 	wfile:Close()
 end
 
+function pricer.SaveTextTable(filename, prices)
+	local sortedprices = {}
+	for k,v in pairs(prices) do
+		table.insert(sortedprices, {wep = k, price = v})
+	end
+	table.sort(sortedprices, function(a, b) return tostring(a.wep) < tostring(b.wep) end)
+	
+	local wfile = file.Open(filename, "w", "DATA")
+	
+	wfile:Write("{\n")
+	for k,v in ipairs(sortedprices) do
+		if next(sortedprices, k) == nil then
+			wfile:Write("\t\"" .. v.wep .. "\": \"" .. v.price .. "\"\n")
+		else
+			wfile:Write("\t\"" .. v.wep .. "\": \"" .. v.price .. "\",\n")
+		end
+	end
+	wfile:Write("}")
+	
+	wfile:Close()
+end
+
 function pricer.SetPrice(wep, price, filename, priceset)
 	if priceset == nil then
 		priceset = GetConVar("sbuy_overrides"):GetString()
@@ -294,7 +316,11 @@ function pricer.SetPrice(wep, price, filename, priceset)
 		pricetable[wep] = price
 	end
 
-	pricer.SavePriceTable(filepath, pricetable)
+	if filename == "sourceweapons.txt" then
+		pricer.SaveTextTable(filepath, pricetable)
+	else
+		pricer.SavePriceTable(filepath, pricetable)
+	end
 end
 
 function pricer.LoadPrices()
@@ -312,6 +338,8 @@ function pricer.LoadPrices()
 	pricer.CategoriesList = cats_list or pricer.CategoriesList
 	
 	pricetable.killreward = LoadFile("killrewards.txt") or pricetable.killreward
+	
+	pricetable.sourceweapon = LoadFile("sourceweapons.txt") or pricetable.sourceweapon
 	
 	hook.Call("OnPricesLoaded", nil)
 	
@@ -377,6 +405,10 @@ end]]--
 
 function pricer.GetKillReward(wep)
 	return pricetable.killreward[wep] or 1
+end
+
+function pricer.GetSourceWeapon(wep)
+	return pricetable.sourceweapon[wep] or wep
 end
 
 function pricer.GetClipCount(wep, clip)
