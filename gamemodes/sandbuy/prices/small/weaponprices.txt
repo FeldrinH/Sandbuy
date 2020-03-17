@@ -27,5 +27,6 @@
 	"weapon_neurowep_rpg7": 6000,
 	"weapon_rpg": 4500,
 	"weapon_slam": 1200,
+	"weapon_smg1": 1000,
 	"weapon_stinger": 3500
 }

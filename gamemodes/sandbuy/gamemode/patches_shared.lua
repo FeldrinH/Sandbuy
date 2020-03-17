@@ -77,7 +77,13 @@ local weaponoverrides = {
 	tfa_cso_at4ex = "Launchers & Explosives",
 	tfa_cso_rpg7 = "Launchers & Explosives",
 	tfa_cso_rpg7_v6 = "Launchers & Explosives",
-	tfa_cso_rpg7_v8 = "Launchers & Explosives"
+	tfa_cso_rpg7_v8 = "Launchers & Explosives",
+	tfa_cso_speargun = "Designated Marksman Rifles",
+	tfa_cso_speargun_v6 = "Designated Marksman Rifles",
+	tfa_cso_stinger = "Designated Marksman Rifles",
+	tfa_cso_dualtacknife = "Melee weapons",
+	tfa_cso_tacticalknife = "Melee weapons",
+	tfa_cso_tritacknife = "Melee weapons"
 }
 
 local categoryoverrides = {
@@ -238,8 +244,8 @@ hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 			local weptype = weapons.Get(v.ClassName):GetType()
 			if weptype and string.find(string.lower(weptype), "grade ", 1, true) then
 				weptype = string.sub(weptype, select(2, string.find(string.lower(weptype), "grade ", 1, true))+1)
+				weptype = string.Trim(weptype, "Transcendence Grade ")
 			end
-			weptype = string.Trim(weptype, "Transcendence Grade ")
 			if (weptype or weaponoverrides[v.ClassName]) then
 				v.Category = "CS:O " .. (weaponoverrides[v.ClassName] or categoryoverrides[weptype] or (weptype .. "s"))
 			end
