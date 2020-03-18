@@ -8,7 +8,7 @@ PLAYER.DropWeaponOnDie = true
 
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Int", 0, "Money")
-	--self.Player:NetworkVar("Int", 1, "Killstreak")
+	self.Player:NetworkVar("Int", 1, "Killstreak")
 	
 	if SERVER then
 		self.Player:NetworkVarNotify("Money", function(ply, name, old, new)
@@ -19,8 +19,9 @@ function PLAYER:SetupDataTables()
 		end)
 		
 		self.Player:SetMoney(self.Player.DefaultMoneyOverride or GetConVar("sbuy_startmoney"):GetInt())
-		--self.Player:SetKillstreak(0)
+		self.Player:SetKillstreak(self.Player.KillstreakOverride or 0)
 		self.Player.DefaultMoneyOverride = nil
+		self.Player.KillstreakOverride = nil
 	end
 
 	return BaseClass.SetupDataTables(self)

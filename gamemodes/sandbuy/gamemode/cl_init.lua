@@ -13,6 +13,20 @@ surface.CreateFont("DollarSignFont", {
 	additive = true
 })
 
+surface.CreateFont("KillstreakCaption", {
+	font = "Roboto Bold",
+	size = 32,
+	shadow = true,
+	antialias = true
+})
+
+surface.CreateFont("KillstreakFont", {
+	font = "Roboto Black",
+	size = 100,
+	antialias = true,
+	shadow = true
+})
+
 surface.CreateFont("DeathMessageFont", {
 	font = "Roboto",
 	size = 64
@@ -25,16 +39,21 @@ surface.CreateFont("DeathMessageFontSmall", {
 
 local bg_color = Color(0, 0, 0, 76)
 local text_color = Color(255, 235, 20)
+local streak_color = Color(255, 255, 255)
+
+local curmoney = -1
+local curstreak = -1
 
 local lastmoney = -1
 local lastwidth = 0
---local laststreak = 0
---local streaktext = ""
+
+local laststreak = -1
+local streaktext = ""
 
 local hoffset = math.floor(ScrH() * 696 / 768) - 56
 local voffset = math.ceil(ScrW() * 25 / 1366)
---local hoffsetstreak = math.floor(ScrH() * 696 / 768) - 56
---local voffsetstreak = math.ceil(ScrW() * 25 / 1366)
+local hoffsetstreak = math.floor(ScrH() * 700 / 768) - 56
+local voffsetstreak = math.ceil(ScrW() * 1330 / 1366)
 
 local deathmessage_killer = nil
 local deathmessage_health = 0
@@ -69,7 +88,7 @@ function GM:HUDPaint()
 	if GetConVarNumber("cl_drawhud") == 0 then return end
 	
 	if gamemode.Call("HUDShouldDraw", "CHudHealth") and LocalPlayer():Alive() and LocalPlayer():GetObserverMode() == OBS_MODE_NONE then
-		local curmoney = LocalPlayer():GetMoney()
+		curmoney = LocalPlayer():GetMoney()
 		
 		if curmoney != lastmoney then
 			surface.SetFont("HudNumbers")
@@ -80,6 +99,18 @@ function GM:HUDPaint()
 		draw.RoundedBox(5, voffset, hoffset - 5, lastwidth, 44, bg_color)
 		draw.SimpleText(curmoney, "HudNumbers", voffset + 23, hoffset, text_color)
 		draw.SimpleText("$", "DollarSignFont", voffset + 7, hoffset, text_color)
+		
+		curstreak = LocalPlayer():GetKillstreak()
+		
+		if curstreak != laststreak then
+			streaktext = curstreak .. "X"
+			laststreak = curstreak
+		end
+		
+		if curstreak > 0 then
+			draw.SimpleText("KILLSTREAK", "KillstreakCaption", voffsetstreak, hoffsetstreak - 100, streak_color, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
+			draw.SimpleText(streaktext, "KillstreakFont", voffsetstreak, hoffsetstreak, streak_color, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
+		end
 	end
 	
 	if !LocalPlayer():Alive() then
@@ -99,27 +130,17 @@ function GM:HUDPaint()
 			else
 				draw.SimpleTextOutlined("who survived with " .. deathmessage_health .. " health" .. (deathmessage_armor > 0 and (" and " .. deathmessage_armor .. " armor") or ""), "DeathMessageFontSmall", ScrW()/2, ScrH()/2 - 80, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
 			end
-			draw.SimpleTextOutlined(deathmessage_killstreak, "DeathMessageFont", ScrW()/2, ScrH()/2 + 20, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
+			draw.SimpleTextOutlined(deathmessage_killstreak, "DeathMessageFontSmall", ScrW()/2, ScrH()/2 + 20, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
 		else
 			draw.SimpleTextOutlined(deathmessage_text, "DeathMessageFont", ScrW()/2, ScrH()/2 - 140, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
-			draw.SimpleTextOutlined(deathmessage_killstreak, "DeathMessageFont", ScrW()/2, ScrH()/2 - 20, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
+			draw.SimpleTextOutlined(deathmessage_killstreak, "DeathMessageFontSmall", ScrW()/2, ScrH()/2 - 20, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, 2, Color(0,0,0))
 		end
 		
 	end
-	
-	--[[local curstreak = LocalPlayer():GetKillstreak()
-	if curstreak > 0 then
-		if curstreak != laststreak then
-			streaktext = curstreak + "x Streak"
-			laststreak = curstreak
-		end
-	
-		draw.SimpleText(curmoney, "HudNumbers", voffset + 23, hoffset, text_color)
-	end]]
 end
 
-function GM:SetDeathMessage(killer, killstreak)
-	deathmessage_killstreak = killstreak .. "x killstreak"
+function GM:SetDeathMessage(killer)
+	deathmessage_killstreak = "Your killstreak: " .. LocalPlayer():GetKillstreak() .. "X"
 	if killer == nil then return end
 	if IsValid(killer) and killer:IsPlayer() then
 		if killer == LocalPlayer() then

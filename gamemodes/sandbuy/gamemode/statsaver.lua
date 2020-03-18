@@ -111,6 +111,7 @@ hook.Add("PlayerInitialSpawn", "LoadStats", function(ply)
 		ply.StatSaver_RestoreWeapons = true
 		
 		ply.DefaultMoneyOverride = plystats.money
+		ply.KillstreakOverride = plystats.killstreak
 		ply.TotalKillMoney = plystats.killmoney
 	end
 	
@@ -165,7 +166,7 @@ hook.Add("PlayerDisconnected", "SaveStats", function(ply)
 		end
 	end
 	
-	local plystats = { nick=ply:Nick(), frags=ply:Frags(), deaths=ply:Deaths(), hasdied=ply.HasDied, money=ply:GetMoney(), killmoney=ply.TotalKillMoney, weps=weps, ammo=ammo }
+	local plystats = { nick=ply:Nick(), frags=ply:Frags(), deaths=ply:Deaths(), hasdied=ply.HasDied, money=ply:GetMoney(), killstreak=ply:GetKillstreak(), killmoney=ply.TotalKillMoney, weps=weps, ammo=ammo }
 	if ply:Alive() and IsValid(ply:GetActiveWeapon()) then
 		plystats.activewep = ply:GetActiveWeapon():GetClass()
 	end

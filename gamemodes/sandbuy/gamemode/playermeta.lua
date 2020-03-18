@@ -11,10 +11,7 @@ function meta:AddMoney(delta)
 end
 
 if SERVER then
-	function meta:AddKillStreak(killcount)
-		self.KillStreak = self.KillStreak + killcount
-		if !self:Alive() then
-			self:SendLua("GAMEMODE:SetDeathMessage(nil," .. self.KillStreak .. ")")
-		end
+	function meta:AddKillstreak(killcount)
+		self:SetKillstreak(self:GetKillstreak() + killcount)
 	end
 end
