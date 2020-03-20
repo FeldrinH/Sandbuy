@@ -64,7 +64,7 @@ local deathmessage_killstreak = ""
 local deathmessage_overrides = {
 	["76561198076382343"] = "You were claimed by ", --Martin
 	["76561198315916037"] = "You were deported by ", --TRUMP
-	["76561198033567884"] = "You were dead by " --Egert
+	["76561198033567884"] = "You were corrected by " --Egert
 }
 
 hook.Add("HUDPaint", "Sandbuy_ShowHelp", function()
@@ -140,7 +140,7 @@ function GM:HUDPaint()
 end
 
 function GM:SetDeathMessage(killer)
-	deathmessage_killstreak = "Your killstreak: " .. LocalPlayer():GetKillstreak() .. "X"
+	deathmessage_killstreak = "Your killstreak: " .. LocalPlayer():GetKillstreak() .. "x"
 	if killer == nil then return end
 	if IsValid(killer) and killer:IsPlayer() then
 		if killer == LocalPlayer() then
