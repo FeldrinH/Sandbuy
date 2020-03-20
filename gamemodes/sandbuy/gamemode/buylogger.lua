@@ -3,14 +3,18 @@ buylogger = buylogger or {Active=false}
 function buylogger.Init()
 	if buylogger.Active then return end
 
-	if !file.Exists("buylog.txt", "DATA") then
-		file.Write("buylog.txt", "action,player,target,newmoney,killweapon\n")
+	local filename = os.date("buylogs/%Y.%m.%d-%H.%M-", os.time()) .. game.GetMap() .. ".txt"
+	if !file.Exists("buylogs", "DATA") then
+		file.CreateDir("buylogs")
+	end
+	if !file.Exists(filename, "DATA") then
+		file.Write(filename, "action,player,target,newmoney,killweapon\n")
 	end
 	
 	if buylogger.Freebuy then
 		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --FREEBUY DISABLED--\n")
 	else
-		buylogger.File = file.Open("buylog.txt", "a", "DATA")
+		buylogger.File = file.Open(filename, "a", "DATA")
 		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " " .. game.GetMap() .. " --LOGGING STARTED--\n")
 	end
 	buylogger.Active = true
