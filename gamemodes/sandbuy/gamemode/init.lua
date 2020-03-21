@@ -495,13 +495,13 @@ function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
 			killer:AddMoney(-pricer.TeamKillPenalty)
 			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), -pricer.TeamKillPenalty)
 		else
-			//deltamoney = 
-			local killmoney = gamemode.Call("GetKillReward", ply, killer, weapon, weaponname) + deltamoney
+			local killpoints = gamemode.Call("GetKillPoints", ply, killer, weapon, weaponname)
+			local killmoney = gamemode.Call("GetKillReward", ply, killer, killpoints, weapon, weaponname)
 			
-			killer:AddMoney(killmoney)
-			killer.TotalKillMoney = killer.TotalKillMoney + gamemode.Call("GetNormalizedKillReward", killmoney, ply, killer, weapon, weaponname)
+			killer:AddMoney(killmoney + deltamoney)
+			killer.TotalKillMoney = killer.TotalKillMoney + gamemode.Call("GetNormalizedKillReward", ply, killer, killpoints, killmoney, deltamoney, weapon, weaponname)
 			killer:AddKillstreak(1)
-			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney)
+			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney + deltamoney)
 		end
 	end
 	ply:AddMoney(-deltamoney)
@@ -515,12 +515,16 @@ function GM:GetKillBonus(ply, killer, weapon, weaponname)
 	return math.ceil(ply:GetMoney() * GetConVar("sbuy_bonusratio"):GetFloat() / 100)
 end
 
-function GM:GetKillReward(ply, killer, weapon, weaponname)
-	return GetConVar("sbuy_killmoney"):GetInt() * pricer.GetKillReward(weaponname)
+function GM:GetKillPoints(ply, killer, weapon, weaponname)
+	return pricer.GetKillReward(weaponname)
 end
 
-function GM:GetNormalizedKillReward(killmoney, ply, killer, weapon, weaponname)
-	return killmoney / GetConVar("sbuy_killmoney"):GetInt()
+function GM:GetKillReward(ply, killer, killpoints, weapon, weaponname)
+	return GetConVar("sbuy_killmoney"):GetInt() * killpoints
+end
+
+function GM:GetNormalizedKillReward(ply, killer, killpoints, killmoney, deltamoney, weapon, weaponname)
+	return killpoints + deltamoney / GetConVar("sbuy_killmoney"):GetInt()
 end
 
 function GM:GetBuyPrice(ply, class, priceset)
