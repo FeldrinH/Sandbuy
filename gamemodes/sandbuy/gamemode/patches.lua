@@ -1,3 +1,5 @@
+patcher = patcher or {}
+
 --local blocked_ammo = {[10]=true, [30]=true, [32]=true, [33]=true, [35]=true, [37]=true}
 
 local function UpdateUndo(cvarname, old, new)

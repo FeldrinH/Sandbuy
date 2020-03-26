@@ -295,6 +295,8 @@ net.Receive("newprices", function(len)
 	pricer.PriceTable.entity = net.ReadPriceTable()
 	pricer.PriceTable.vehicle = net.ReadPriceTable()
 	pricer.PriceTable.ammo = net.ReadPriceTable()
+	pricer.PriceTable.clipcount = net.ReadPriceTable()
+	pricer.PriceTable.clipsize = net.ReadPriceTable()
 	
 	if reload == 2 then
 		spawnmenu.UpdateSpawnlistPrices()

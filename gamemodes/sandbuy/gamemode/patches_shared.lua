@@ -1,3 +1,6 @@
+patcher = patcher or {}
+patcher.AmmoOverrides = patcher.AmmoOverrides or {}
+
 if CLIENT then
 	language.Add("Shuriken_ammo", "Shuriken")
 	language.Add("SniperPenetratedRound_ammo", "Sniper Rounds")
@@ -14,12 +17,47 @@ end
 hook.Remove("Think", "NeuroHeadshotsClientDeathThink")
 hook.Remove("PlayerDeathThink", "NeuroWeapons_HeadlessRagdollGore")
 hook.Remove("PlayerDeath", "NeuroWeapons_RemoveBrokenHead")
+
 local scaledamage = hook.GetTable()["ScalePlayerDamage"]
 if scaledamage and scaledamage["NeuroWeapons_HeadshotKlonk"] then
-	local name, chunks = debug.getupvalue(scaledamage["NeuroWeapons_HeadshotKlonk"], 1)
-	if name == "Chunks" then
-		table.Empty(chunks)
-	end
+	hook.Add("ScalePlayerDamage", "NeuroWeapons_HeadshotKlonk", function( ply, hitgroup, dmginfo )
+		
+		if( ply:HasGodMode() ) then return end 
+		
+		if( GetConVarNumber("neuroweapons_headshotsound") == 0 ) then return end 
+		local atk = dmginfo:GetAttacker()
+		local damage = dmginfo:GetDamage() 
+		local PlayerGear = ply.NeuroArmor
+		local stoptheshow, damagescale = ply:IsHitgroupProtected( hitgroup, dmginfo ) 
+		local dist = ( ply:GetPos() - atk:GetPos() ):Length()
+		-- print( dist, damage )
+		
+		ply.LastHitgroupHit = hitgroup 
+		ply.LastDamageTaken = damage 
+		if( SERVER ) then 
+		
+			ply:NeuroWeapons_SendBloodyScreen()
+			if( atk:IsPlayer() && ( atk:GetPos() - ply:GetPos() ):Length() < 72 ) then 
+				
+				atk:NeuroWeapons_SendBloodyScreen()
+			end 
+			
+		end 
+		
+		if( stoptheshow ) then 
+			
+			dmginfo:ScaleDamage( damagescale )
+			
+			return
+			
+		end 
+		if ( hitgroup == HITGROUP_HEAD ) then
+			
+			-- ply:SetNWBool("HeadshotIcon", true )	
+			ply.HeadshotIcon = true 
+		
+		end 
+	end )
 end
 
 hook.Remove( "PostDrawEffects", "RenderWidgets" )
@@ -114,15 +152,16 @@ local allowed_pickup = {
 }
 
 hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
-	if ent:IsVehicle() and !IsValid(ent:GetDriver()) then
-		return
-	elseif !allowed_pickup[ent:GetClass()] then
+	if !allowed_pickup[ent:GetClass()] then
+		return false
+	end
+	if ent:IsVehicle() and IsValid(ent:GetDriver()) then
 		return false
 	end
 end)
 
 hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
-	if ply:IsSuperAdmin() then return end
+	if ply:IsSuperAdmin() and GetConVar("sbuy_debug"):GetBool() then return end
 	
 	print(tool)
 	if IsValid(trace.Entity) and trace.Entity:IsPlayer() then
@@ -133,6 +172,12 @@ hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
 	end
 end)
 
+local ammooverrides = patcher.AmmoOverrides
+
+function patcher.AddAmmoOverride(wepclass, primary, secondary)
+	ammooverrides[wepclass] = {p = primary, s = secondary}
+end
+
 local function ModifyWeapon(wepclass, modfunc)
 	local wep = weapons.GetStored(wepclass)
 	if wep then
@@ -141,6 +186,19 @@ local function ModifyWeapon(wepclass, modfunc)
 end
 
 game.AddAmmoType({name = "Shuriken"})
+
+patcher.AddAmmoOverride("weapon_neurowep_bow", "XBowBolt")
+patcher.AddAmmoOverride("weapon_neurowep_shuriken", "Shuriken")
+patcher.AddAmmoOverride("weapon_neurowep_stickynade", "StickyGrenade")
+patcher.AddAmmoOverride("weapon_neurowep_50cal", "SniperPenetratedRound")
+patcher.AddAmmoOverride("weapon_neurowep_50cal_ap", "SniperPenetratedRound")
+patcher.AddAmmoOverride("weapon_neurowep_acr10", "SniperPenetratedRound")
+patcher.AddAmmoOverride("weapon_neurowep_m24", "SniperPenetratedRound")
+patcher.AddAmmoOverride("weapon_neurowep_ptrs41", "SniperPenetratedRound")
+patcher.AddAmmoOverride("weapon_neurowep_he44", "SMG1_Grenade")
+
+patcher.AddAmmoOverride("tfa_cso_gungnir_nrm", "AirboatGun")
+patcher.AddAmmoOverride("tfa_cso_gungnir", "AirboatGun")
 
 hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 	ModifyWeapon("bobs_gun_base", function(wep)
@@ -203,41 +261,17 @@ hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 				end
 		end
 	end)
-
-	ModifyWeapon("weapon_neurowep_bow", function(wep)
-		wep.Primary.Ammo = "XBowBolt"
-	end)
-	ModifyWeapon("weapon_neurowep_shuriken", function(wep)
-		wep.Primary.Ammo = "Shuriken"
-	end)
-	ModifyWeapon("weapon_neurowep_stickynade", function(wep)
-		wep.Primary.Ammo = "StickyGrenade"
-	end)
-	ModifyWeapon("weapon_neurowep_50cal", function(wep)
-		wep.Primary.Ammo = "SniperPenetratedRound"
-	end)
-	ModifyWeapon("weapon_neurowep_50cal_ap", function(wep)
-		wep.Primary.Ammo = "SniperPenetratedRound"
-	end)
-	ModifyWeapon("weapon_neurowep_acr10", function(wep)
-		wep.Primary.Ammo = "SniperPenetratedRound"
-	end)
-	ModifyWeapon("weapon_neurowep_m24", function(wep)
-		wep.Primary.Ammo = "SniperPenetratedRound"
-	end)
-	ModifyWeapon("weapon_neurowep_ptrs41", function(wep)
-		wep.Primary.Ammo = "SniperPenetratedRound"
-	end)
-	ModifyWeapon("weapon_neurowep_he44", function(wep)
-		wep.Primary.Ammo = "SMG1_Grenade"
-	end)
 	
-	ModifyWeapon("tfa_cso_gungnir_nrm", function(wep)
-		wep.Primary.Ammo = "AirboatGun"
-	end)
-	ModifyWeapon("tfa_cso_gungnir", function(wep)
-		wep.Primary.Ammo = "AirboatGun"
-	end)
+	for k,v in pairs(ammooverrides) do
+		ModifyWeapon(k, function(wep)
+			if v.p then
+				wep.Primary.Ammo = v.p
+			end
+			if v.s then
+				wep.Secondary.Ammo = v.s
+			end
+		end)
+	end
 	
 	for k,v in pairs(list.GetForEdit("Weapon")) do
 		if v.Category == "TFA CS:O" then

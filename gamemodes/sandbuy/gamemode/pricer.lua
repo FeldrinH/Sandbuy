@@ -4,7 +4,9 @@ pricer = pricer or {
 		ammo = {},
 		vehicle = {},
 		entity = {},
-		killreward = {}
+		killreward = {},
+		clipcount = {},
+		clipsize = {}
 	}
 }
 
@@ -15,40 +17,20 @@ pricer.TeamKillPenalty = 200
 -- Local variable for faster and more convenient access
 local pricetable = pricer.PriceTable
 
-pricetable.clipcount = {
-}
-
-pricetable.clipsize = {
-	sbuy_medkit = 20,
-	sbuy_armorkit = 10,
-	weapon_rpg = 1,
-	weapon_ss_singleshotgun = 2,
-	weapon_ss2_doubleshotgun = 2,
-	weapon_ss_doubleshotgun = 2,
-	weapon_ss_tommygun = 20,
-	weapon_ss_flamer = 30,
-	weapon_ss_laser = 20,
-	weapon_ss_ghostbuster = 40,
-	weapon_ss_cannon = 1,
-	weapon_ss2_cannon = 1,
-	weapon_ss_minigun = 50,
-	weapon_ss2_minigun = 50,
-	weapon_ss_rocketlauncher = 1,
-	weapon_ss_sniper = 4,
-	weapon_ss2_sniper = 4,
-	weapon_ss2_autoshotgun = 8,
-	weapon_ss2_klodovik = 1,
-	weapon_ss2_grenadelauncher = 2,
-	weapon_ss2_uzi = 30,
-	weapon_ss2_plasmarifle = 20,
-	weapon_ss2_rocketlauncher = 1,
-	weapon_ss2_seriousbomb = 1
-}
-
 function net.WritePriceTable(prices)
 	for k,v in pairs(prices) do
 		net.WriteString(k)
 		net.WriteInt(v, 32)
+	end
+	
+	net.WriteString("")
+end
+
+function net.WriteCategoryList(name, cat)
+	net.WriteString(name)
+	
+	for k,v in pairs(cat) do
+		net.WriteString(v)
 	end
 	
 	net.WriteString("")
@@ -66,6 +48,18 @@ function net.ReadPriceTable()
 	end
 
 	return prices
+end
+
+function net.ReadCategoryList()
+	local cat_list = {}
+	
+	while true do
+		local k = net.ReadString()
+		if k == "" then break end
+		table.insert(cat_list, k)
+	end
+
+	return table.ListToLookupTable(cat_list), cat_list
 end
 
 function table.ListToLookupTable(vlist)
@@ -301,6 +295,10 @@ function pricer.SetPrice(wep, price, filename, priceset)
 		priceset = GetConVar("sbuy_overrides"):GetString()
 	end
 	
+	if filename == "categories.txt" then
+		error("Setting category values not supported")
+	end
+	
 	if !file.Exists("prices/" .. priceset, "DATA") then
 		file.CreateDir("prices/" .. priceset)
 	end
@@ -308,7 +306,13 @@ function pricer.SetPrice(wep, price, filename, priceset)
 	local filepath = "prices/" .. priceset .. "/" .. filename
 	
 	local localfile = file.Read(filepath)
-	local pricetable = localfile and util.JSONToTable(localfile) or {}
+	local pricetable = {}
+	if localfile then
+		pricetable = util.JSONToTable(localfile)
+		if !pricetable then
+			error("Failed to parse existing prices for " .. filepath)
+		end
+	end
 	
 	if price == -3 then
 		pricetable[wep] = nil
@@ -332,14 +336,15 @@ function pricer.LoadPrices()
 	pricetable.entity = LoadFile("entityprices.txt") or pricetable.entity
 	pricetable.vehicle = LoadFile("vehicleprices.txt") or pricetable.vehicle
 	pricetable.ammo = LoadAmmoPrices() or pricetable.ammo
+	pricetable.clipcount = LoadFile('clipcount.txt') or pricetable.clipcount
+	pricetable.clipsize = LoadFile('clipsize.txt') or pricetable.clipsize
+	
+	pricetable.killreward = LoadFile("killrewards.txt") or pricetable.killreward
+	pricetable.sourceweapon = LoadFile("sourceweapons.txt") or pricetable.sourceweapon
 	
 	local cats_lookup, cats_list = LoadCategories()
 	pricer.CategoriesLookup = cats_lookup or pricer.CategoriesLookup
 	pricer.CategoriesList = cats_list or pricer.CategoriesList
-	
-	pricetable.killreward = LoadFile("killrewards.txt") or pricetable.killreward
-	
-	pricetable.sourceweapon = LoadFile("sourceweapons.txt") or pricetable.sourceweapon
 	
 	hook.Call("OnPricesLoaded", nil)
 	
@@ -371,6 +376,15 @@ function pricer.SendPrices(ply, reload)
 	net.WritePriceTable(pricetable.entity)
 	net.WritePriceTable(pricetable.vehicle)
 	net.WritePriceTable(pricetable.ammo)
+	net.WritePriceTable(pricetable.clipcount)
+	net.WritePriceTable(pricetable.clipsize)
+	for k,v in pairs(pricer.CategoriesList) do
+		if k != "machines" then
+			net.WriteCategoryList(k, v)
+		end
+	end
+	net.WriteString("")
+	
 	if ply then
 		net.Send(ply)
 	else
