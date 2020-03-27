@@ -225,5 +225,10 @@
 		"sent_p51mustang_p": 1,
 		"sent_su-35_p": 1,
 		"sent_at-1_p": 1
+	},
+	"moveables": {
+		"sent_flying_bomb": 1,
+		"sent_oldcannon_p": 1,
+		"sent_mortar_p": 1
 	}
 }

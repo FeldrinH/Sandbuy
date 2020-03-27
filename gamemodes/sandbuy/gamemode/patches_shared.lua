@@ -137,22 +137,8 @@ local categoryoverrides = {
 	["melee weapon"] = "Melee weapons"
 }
 
-local toolwhitelist = {
-	paint = true,
-	colour = true,
-	--ladder = true,
-	material = true,
-	simfphyswheeleditor = true
-}
-
-local allowed_pickup = {
-	sent_flying_bomb = true,
-	sent_oldcannon_p = true,
-	sent_mortar_p = true
-}
-
 hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
-	if !allowed_pickup[ent:GetClass()] then
+	if !pricer.InCategory(ent:GetClass(), 'moveables') then
 		return false
 	end
 	if ent:IsVehicle() and IsValid(ent:GetDriver()) then
@@ -167,7 +153,7 @@ hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
 	if IsValid(trace.Entity) and trace.Entity:IsPlayer() then
 		return false
 	end
-	if !toolwhitelist[tool] then
+	if !pricer.InCategory(tool, 'allowedtools') then
 		return false
 	end
 end)

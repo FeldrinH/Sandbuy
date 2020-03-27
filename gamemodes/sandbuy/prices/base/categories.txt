@@ -1,0 +1,8 @@
+{
+	"allowedtools": {
+		"paint": 1,
+		"colour": 1,
+        "material": 1,
+        "simfphyswheeleditor": 1
+	}
+}
