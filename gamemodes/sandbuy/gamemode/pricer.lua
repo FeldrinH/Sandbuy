@@ -59,7 +59,7 @@ function net.ReadCategoryList()
 		table.insert(cat_list, k)
 	end
 
-	return table.ListToLookupTable(cat_list), cat_list
+	return cat_list
 end
 
 function table.ListToLookupTable(vlist)
@@ -376,14 +376,17 @@ function pricer.SendPrices(ply, reload)
 	net.WritePriceTable(pricetable.entity)
 	net.WritePriceTable(pricetable.vehicle)
 	net.WritePriceTable(pricetable.ammo)
-	net.WritePriceTable(pricetable.clipcount)
-	net.WritePriceTable(pricetable.clipsize)
-	for k,v in pairs(pricer.CategoriesList) do
-		if k != "machines" then
-			net.WriteCategoryList(k, v)
+
+	if reload != 2 then
+		net.WritePriceTable(pricetable.clipcount)
+		net.WritePriceTable(pricetable.clipsize)
+		for k,v in pairs(pricer.CategoriesList) do
+			if k != "machines" then
+				net.WriteCategoryList(k, v)
+			end
 		end
+		net.WriteString("")
 	end
-	net.WriteString("")
 	
 	if ply then
 		net.Send(ply)
