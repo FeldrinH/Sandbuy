@@ -1,0 +1,8 @@
+{
+	"danguvestfullbody": 1000,
+	"danguvestheavy": 400,
+	"danguvesthelmet": 200,
+	"danguvestnormal": 400,
+	"danguvestsmall": 350,
+	"danguveststab": 200
+}

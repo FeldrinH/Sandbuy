@@ -5,5 +5,5 @@
 	"sbuy_medkit": 0,
 	"weapon_fists": 0,
 	"weapon_physgun": -1,
-	"weapon_simrepair": 0
+	"weapon_simrepair": -1
 }

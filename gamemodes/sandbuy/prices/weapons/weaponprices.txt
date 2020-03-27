@@ -108,7 +108,7 @@
 	"weapon_752_30cal": 3200,
 	"weapon_752_amerk": 100,
 	"weapon_752_avs36": 1600,
-	"weapon_752_bar": 1000,
+	"weapon_752_bar": 1200,
 	"weapon_752_bazooka": 3200,
 	"weapon_752_bren": 2000,
 	"weapon_752_c96": 800,
