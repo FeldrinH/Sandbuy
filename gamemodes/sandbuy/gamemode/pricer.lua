@@ -96,8 +96,8 @@ local function ValidatePriceSetName(name)
 	elseif string.len(name) > 32 then
 		ErrorNoHalt("WARNING: Ignoring invalid priceset name '" .. name .. "'. Name must be 32 characters or shorter")
 		return false
-	elseif string.match(name, "[^%l%d_-]") then
-		ErrorNoHalt("WARNING: Ignoring invalid priceset name '" .. name .. "'. Name must contain only lowercase letters, numbers, '-' and '_'")
+	elseif string.match(name, "[^%l%d_%-%.]") then
+		ErrorNoHalt("WARNING: Ignoring invalid priceset name '" .. name .. "'. Name must contain only lowercase letters, numbers, '-', '_' and '.'")
 		return false
 	end
 	
@@ -175,7 +175,7 @@ local function LoadFile(filename, categories)
 						end
 					end
 					
-					print("  " .. set.name .. " (filter): " .. table.Count(loadprices))
+					print("  " .. set.name .. " (filter): " .. table.Count(loadprices) - 1)
 				elseif loadprices["<OVERLAY>"] then
 					for k,v in pairs(loadprices) do
 						if (prices[k] or -2) >= -1 then
@@ -183,7 +183,7 @@ local function LoadFile(filename, categories)
 						end
 					end
 					
-					print("  " .. set.name .. " (overlay): " .. table.Count(loadprices))
+					print("  " .. set.name .. " (overlay): " .. table.Count(loadprices) - 1)
 				else
 					for k,v in pairs(loadprices) do
 						prices[k] = v
@@ -197,6 +197,12 @@ local function LoadFile(filename, categories)
 		end
 	end
 	
+	for k,v in pairs(prices) do
+		if v == -2 then
+			prices[k] = nil
+		end
+	end
+
 	return prices
 end
 
@@ -300,6 +306,9 @@ function pricer.SetPrice(wep, price, filename, priceset)
 	end
 	
 	if !file.Exists("prices/" .. priceset, "DATA") then
+		if #file.Find("gamemodes/sandbuy/prices/" .. priceset .. "/*", "GAME") > 0 then
+			error("Attempt to set price on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory")
+		end
 		file.CreateDir("prices/" .. priceset)
 	end
 	
