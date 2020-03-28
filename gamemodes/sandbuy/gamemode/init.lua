@@ -19,7 +19,6 @@ local BaseBaseClass = baseclass.Get( "gamemode_base" )
 util.AddNetworkString("moneychanged")
 util.AddNetworkString("weaponbought")
 util.AddNetworkString("newprices")
-util.AddNetworkString("newseasonals")
 
 CreateConVar("freebuy", 0, FCVAR_NOTIFY)
 cvars.AddChangeCallback("freebuy", function(convar, old, new)
@@ -299,86 +298,12 @@ concommand.Add("givemoney", function(ply, cmd, args)
 	target:PrintMessage(HUD_PRINTCENTER, "You were given $" .. amount .. " by " .. ply:Nick())
 end)
 
-GM.SeasonalWeapons = {}
-
-local latestseasonals = {}
-local seasonalindex = 0
-local function GetUniqueSeasonal()
-	local seasonalslist = pricer.CategoriesList.seasonals or {}
-	seasonalindex = seasonalindex + 1
-	while true do
-		local new = seasonalslist[math.random(#seasonalslist)]
-		if !latestseasonals[new] or latestseasonals[new] < seasonalindex - 10 then
-			latestseasonals[new] = seasonalindex
-			return new
-		end
-	end
-end
-
-local function GetOptimalSeasonal(richest)
-	local new = nil
-	for i = 1,3 do
-		new = GetUniqueSeasonal()
-		if pricer.GetPrice(new, "weapon") < richest then
-			return new
-		end
-	end
-	return new
-end
-
-local function UpdateSeasonals()
-	local richest = 0
-	for k,v in pairs(player.GetAll()) do
-		if v:GetMoney() > richest then
-			richest = v:GetMoney()
-		end
-	end
-	--print("R: " .. richest)
-
-	table.Empty(GAMEMODE.SeasonalWeapons)
-	for i = 1,2 do
-		GAMEMODE.SeasonalWeapons[GetOptimalSeasonal(richest)] = 2
-	end
-	
-	--PrintTable(GAMEMODE.SeasonalWeapons)
-	
-	net.Start("newseasonals")
-	net.WriteTable(GAMEMODE.SeasonalWeapons)
-	net.Broadcast()
-end
-
-concommand.Add("sbuy_updateseasonals", function(ply) 
-	if IsValid(ply) and !ply:IsAdmin() then return end
-	UpdateSeasonals()
-end)
-
-local function GiveEcoMoneyAll()
-	for k,v in pairs(player.GetAll()) do
-		GAMEMODE:GiveEcoMoney(v)
-	end
-end
-
---[[cvars.AddChangeCallback("sbuy_ecotime", function(cvar, old, new)
-	if tonumber(new) == 0 then
-		timer.Remove("Sandbuy_Eco")
-	else
-		if timer.Exists("Sandbuy_Eco") then
-			timer.Adjust("Sandbuy_Eco", tonumber(new), 0, GiveEcoMoneyAll)
-		else
-			timer.Create("Sandbuy_Eco", tonumber(new), 0, GiveEcoMoneyAll)
-		end
-	end
-end, "Sbuy_EcoUpdate")]]--
-
 function GM:Initialize()
 	pricer.LoadPrices()
 	
 	if GetConVar("sbuy_log"):GetBool() then
 		buylogger.Init()
 	end
-	
-	--timer.Create("Sandbuy_UpdateSeasonalWeapons", 600, 0 , UpdateSeasonals)
-	--timer.Simple(5, UpdateSeasonals)
 	
 	return BaseClass.Initialize(self)
 end
@@ -402,10 +327,6 @@ end
 
 function GM:PlayerAuthed(ply, steamid, uniqueid)
 	pricer.SendPrices(ply, 0)
-	
-	net.Start("newseasonals")
-	net.WriteTable(GAMEMODE.SeasonalWeapons)
-	net.Send(ply)
 	
 	return BaseClass.PlayerAuthed(self, ply, steamid, uniqueid)
 end

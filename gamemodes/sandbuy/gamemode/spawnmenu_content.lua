@@ -4,9 +4,6 @@ local buy_color = Color( 0, 255, 0 )
 local buy_color_dark = Color( 0, 160, 0 )
 local has_color = Color( 150, 150, 150 )
 
-local seasonal_color = Color( 255, 255, 0 )
-local default_color = Color( 255, 255, 255 )
-
 surface.CreateFont("TrebuchetPrice24", {
 	font = "Trebuchet",
 	size = 24,
@@ -28,28 +25,12 @@ local function GetWepCategory(wep)
 	return (list.GetForEdit("Weapon")[wep] and list.GetForEdit("Weapon")[wep].Category) or "Other"
 end
 
-local seasonalweapons = {}
-
 net.Receive("weaponbought", function()
 	local wep = net.ReadString()
 	
 	if IsValid(g_SpawnMenu) and g_SpawnMenu:IsVisible() then
 		spawnmenu.UpdateSpawnlistHasWeapon(wep)
 	end
-end)
-
-net.Receive("newseasonals", function()
-	local seasonals = net.ReadTable()
-	
-	if IsValid(g_SpawnMenu) and g_SpawnMenu:IsVisible() then
-		spawnmenu.UpdateSpawnlistSeasonalWeapons(seasonals)
-	end
-	
-	for k,v in pairs(seasonals) do
-		chat.AddText(seasonal_color, GetWepName(k), " (", GetWepCategory(k), ") now has double kill reward!")
-	end
-	
-	seasonalweapons = seasonals
 end)
 
 net.Receive("moneychanged", function()
@@ -61,7 +42,6 @@ end)
 
 local function UpdateWepPrice( icon, money )
 	icon:SetTextColor( ( LocalPlayer():HasWeapon( icon:GetSpawnName() ) and has_color ) or ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), "weapon" ) ) and buy_color ) or nobuy_color )
-	icon.Label:SetTextColor( ( seasonalweapons[ icon:GetSpawnName() ] and seasonal_color ) or default_color )
 end
 local function UpdateEntPrice( icon, money )
 	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), "entity" ) ) and buy_color ) or nobuy_color )
@@ -130,19 +110,6 @@ function spawnmenu.UpdateSpawnlistHasWeapon(wep)
 			if !IsValid(v) then continue end
 			if v:GetSpawnName() == wep then
 				v:SetTextColor(has_color)
-			end
-		end
-	end
-end
-
-function spawnmenu.UpdateSpawnlistSeasonalWeapons(seasonals)
-	if g_SpawnMenu.PriceIcons then
-		for k,v in pairs(g_SpawnMenu.PriceIcons) do
-			if !IsValid(v) then continue end
-			if seasonals[v:GetSpawnName()] then
-				v.Label:SetTextColor(seasonal_color)
-			elseif seasonalweapons[v:GetSpawnName()] then
-				v.Label:SetTextColor(default_color)
 			end
 		end
 	end
@@ -442,9 +409,6 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 	icon:SetFont( ( price >= 0 and "TrebuchetPrice24" ) or "Trebuchet18" )
 	icon:SetExpensiveShadow(1, Color(0,0,0))
 	icon:SetTextInset(8,8)
-	if seasonalweapons[obj.spawnname] then
-		icon.Label:SetTextColor(seasonal_color)
-	end
 	
 	icon.DoClick = function()
 		RunConsoleCommand( "gm_giveswep", obj.spawnname )
