@@ -333,7 +333,7 @@ end
 
 function GM:PlayerInitialSpawn(ply)
 	buylogger.LogJoin(ply)
-	
+
 	ply.TotalKillMoney = ply.TotalKillMoney or 0
 	
 	BaseClass.PlayerInitialSpawn(self, ply)
@@ -462,6 +462,42 @@ function GM:GetStartMoney(ply)
 	return GetConVar("sbuy_startmoney"):GetInt()
 end
 
+function GM:DoBuy(ply, price, class, buy_type, str_buy, str_needmoney, str_denied) -- may include extra arguments, e.g. amount for ammo purchases
+	if price == -5 then
+		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	end
+	
+	if GetConVar("freebuy"):GetBool() then
+		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
+			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+			return true
+		else
+			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+			return false
+		end
+	end
+	
+	if pricer.CanBuy(ply:GetMoney(), price) then
+		ply:AddMoney(-price)
+		ply:PrintMessage(HUD_PRINTCENTER, string.format(str_buy, price))
+		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+		
+		buylogger.LogBuy(ply, class, buy_type, ply:GetMoney(), -price)
+		
+		return true
+	elseif price >= 0 then
+		ply:PrintMessage(HUD_PRINTCENTER, string.format(str_needmoney, price))
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	else
+		ply:PrintMessage(HUD_PRINTCENTER, str_denied)
+		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+		return false
+	end
+end
+
 function GM:PlayerGiveSWEP(ply, class, swep)
 	if !ply:Alive() then return false end
 	
@@ -470,90 +506,21 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 	end
 	
 	local price = gamemode.Call("GetBuyPrice", ply, class, "weapon")
-	
-	if price == -5 then
-		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	end
-	
-	if GetConVar("freebuy"):GetBool() then
-		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
-			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-			
-			net.Start("weaponbought")
-			net.WriteString(class)
-			net.Send(ply)
-			
-			return true
-		else
-			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-			return false
-		end
-	end
-	
-	if pricer.CanBuy(ply:GetMoney(), price) then
-		ply:AddMoney(-price)
-		ply:PrintMessage(HUD_PRINTCENTER, "Weapon bought for $" .. price)
-		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-		
+	local didbuy = gamemode.Call("DoBuy", ply, price, class, 'weapon', "Weapon bought for $%i", "Need $%i to buy weapon", "Weapon not for sale")
+	if didbuy then
 		net.Start("weaponbought")
 		net.WriteString(class)
-		net.WriteBool(false)
 		net.Send(ply)
-		
-		buylogger.LogBuy(ply, class, "weapon", ply:GetMoney(), -price)
-		
-		return true
-	elseif price >= 0 then
-		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy weapon")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	else
-		ply:PrintMessage(HUD_PRINTCENTER, "Weapon not for sale")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
 	end
+
+	return didbuy
 end
 
 function GM:PlayerSpawnSWEP(ply, class, swep)
 	if !ply:Alive() or !BaseClass.PlayerSpawnSWEP(self, ply, class, swep) then return false end
 	
 	local price = gamemode.Call("GetBuyPrice", ply, class, "weapon")
-	
-	if price == -5 then
-		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	end
-	
-	if GetConVar("freebuy"):GetBool() then
-		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
-			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-			return true
-		else
-			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-			return false
-		end
-	end
-	
-	if pricer.CanBuy(ply:GetMoney(), price) then
-		ply:AddMoney(-price)
-		ply:PrintMessage(HUD_PRINTCENTER, "Weapon bought for $" .. price)
-		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-		
-		buylogger.LogBuy(ply, class, "weapon-drop", ply:GetMoney(), -price)
-		
-		return true
-	elseif price >= 0 then
-		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy weapon")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	else
-		ply:PrintMessage(HUD_PRINTCENTER, "Weapon not for sale")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	end
+	return gamemode.Call("DoBuy", ply, price, class, 'weapon-drop', "Weapon bought for $%i", "Need $%i to buy weapon", "Weapon not for sale") 
 end
 
 function GM:PlayerGiveAmmo(ply, ammo, amount)
@@ -561,114 +528,21 @@ function GM:PlayerGiveAmmo(ply, ammo, amount)
 	if amount <= 0 then return false end
 
 	local price = pricer.GetPrice(ammo, "ammo") * amount
-	
-	if GetConVar("freebuy"):GetBool() then
-		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
-			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-			return true
-		else
-			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-			return false
-		end
-	end
-	
-	if pricer.CanBuy(ply:GetMoney(), price) then
-		ply:AddMoney(-price)
-		ply:PrintMessage(HUD_PRINTCENTER, "Ammo bought for $" .. price)
-		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-		
-		buylogger.LogBuy(ply, ammo, "ammo", ply:GetMoney(), -price)
-		
-		return true
-	elseif price >= 0 then
-		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy ammo")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	else
-		ply:PrintMessage(HUD_PRINTCENTER, "Ammo type not for sale")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	end
+	return gamemode.Call("DoBuy", ply, price, ammo, 'ammo', "Ammo bought for $%i", "Need $%i to buy ammo", "Ammo type not for sale", amount)
 end
 
 function GM:PlayerSpawnSENT(ply, class)
 	if !ply:Alive() or !BaseClass.PlayerSpawnSENT(self, ply, class) then return false end
 	
 	local price = gamemode.Call("GetBuyPrice", ply, class, "entity")
-	
-	if price == -5 then
-		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	end
-	
-	if GetConVar("freebuy"):GetBool() then
-		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
-			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-			return true
-		else
-			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-			return false
-		end
-	end
-	
-	if pricer.CanBuy(ply:GetMoney(), price) then
-		ply:AddMoney(-price)
-		ply:PrintMessage(HUD_PRINTCENTER, "Entity bought for $" .. price)
-		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-		
-		buylogger.LogBuy(ply, class, "entity", ply:GetMoney(), -price)
-		
-		return true
-	elseif price >= 0 then
-		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy entity")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	else
-		ply:PrintMessage(HUD_PRINTCENTER, "Entity not for sale")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	end
+	return gamemode.Call("DoBuy", ply, price, class, 'entity', "Entity bought for $%i", "Need $%i to buy entity", "Entity not for sale")
 end
 
 function GM:PlayerSpawnVehicle(ply, model, class, vtable)
 	if !ply:Alive() or !BaseClass.PlayerSpawnVehicle(self, ply, model, class, vtable) then return false end
 	
 	local price = gamemode.Call("GetBuyPrice", ply, class, "vehicle")
-	
-	if price == -5 then
-		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	end
-	
-	if GetConVar("freebuy"):GetBool() then
-		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
-			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-			return true
-		else
-			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-			return false
-		end
-	end
-	
-	if pricer.CanBuy(ply:GetMoney(), price) then
-		ply:AddMoney(-price)
-		ply:PrintMessage(HUD_PRINTCENTER, "Vehicle bought for $" .. price)
-		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
-		
-		buylogger.LogBuy(ply, class, "vehicle", ply:GetMoney(), -price)
-		
-		return true
-	elseif price >= 0 then
-		ply:PrintMessage(HUD_PRINTCENTER, "Need $" .. price .. " to buy vehicle")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	else
-		ply:PrintMessage(HUD_PRINTCENTER, "Vehicle not for sale")
-		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
-		return false
-	end
+	return gamemode.Call("DoBuy", ply, price, class, 'vehicle', "Vehicle bought for $%i", "Need $%i to buy vehicle", "Vehicle not for sale")
 end
 
 function GM:PlayerSpawnProp(ply, model)
