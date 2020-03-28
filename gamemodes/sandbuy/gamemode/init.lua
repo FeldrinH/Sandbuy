@@ -445,7 +445,8 @@ function GM:GetKillReward(ply, killer, killpoints, weapon, weaponname)
 end
 
 function GM:GetNormalizedKillReward(ply, killer, killpoints, killmoney, deltamoney, weapon, weaponname)
-	return killpoints + deltamoney / GetConVar("sbuy_killmoney"):GetInt()
+	local killmoney = GetConVar("sbuy_killmoney"):GetInt()
+	return killpoints + (killmoney == 0 and 0 or deltamoney / killmoney)
 end
 
 function GM:GetBuyPrice(ply, class, priceset)
@@ -454,15 +455,6 @@ end
 
 function GM:GetBailout(ply)
 	return GetConVar("sbuy_defaultmoney"):GetInt() + math.floor(math.sqrt(0.25 + (ply.TotalKillMoney or 0) * 2 / GetConVar("sbuy_levelsize"):GetFloat()) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
-end
-
-function GM:GiveEcoMoney(ply)
-	local ecoamount = ply:GetBailout()
-
-	if ply.GetMoney and !ply.IsAFK and ply:Alive() then
-		ply:AddMoney(ecoamount)
-		buylogger.LogBailout(ply, ply:GetMoney(), ecoamount)
-	end
 end
 
 function GM:PlayerGiveSWEP(ply, class, swep)
