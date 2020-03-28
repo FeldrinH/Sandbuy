@@ -104,7 +104,6 @@
 	"m9k_vikhr": 3000,
 	"m9k_winchester73": 1500,
 	"seal6-c4": -2,
-	"weapon_357": 800,
 	"weapon_752_30cal": 3200,
 	"weapon_752_amerk": 100,
 	"weapon_752_avs36": 1600,
@@ -159,11 +158,7 @@
 	"weapon_752_waltherp38": 300,
 	"weapon_752_welrod": 400,
 	"weapon_752_winchester": 1500,
-	"weapon_ar2": 1000,
 	"weapon_bugbait": -2,
-	"weapon_crossbow": 1000,
-	"weapon_crowbar": 100,
-	"weapon_frag": 50,
 	"weapon_jericho": 5000,
 	"weapon_neurowep_50cal": 2900,
 	"weapon_neurowep_50cal_ap": 2700,
@@ -229,12 +224,5 @@
 	"weapon_neurowep_xm1014": 3600,
 	"weapon_np_flaregun": 100,
 	"weapon_np_repairgun": 100,
-	"weapon_physcannon": 200,
-	"weapon_pistol": 100,
-	"weapon_rpg": 2200,
-	"weapon_shotgun": 300,
-	"weapon_slam": 700,
-	"weapon_smg1": 800,
-	"weapon_stinger": 2600,
-	"weapon_stunstick": 100
+	"weapon_stinger": 2600
 }
