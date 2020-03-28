@@ -12,7 +12,7 @@
 			"text"		"Load Prices"
 			"help"		"List of prices to load. 'default' is included prices. Define custom prices under garrysmod/data/prices. Use 'reloadprices' to apply"
 			"type"		"Text"
-			"default"	"base weapons vehicles overrides"
+			"default"	"base arcade small overrides"
 		}
 	
 		2
@@ -48,7 +48,7 @@
 			"text"		"Disable Undo"
 			"help"		"If enabled, undo will be disabled"
 			"type"		"CheckBox"
-			"default"	"1"
+			"default"	"0"
 		}
 		
 		6
