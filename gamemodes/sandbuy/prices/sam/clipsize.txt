@@ -1,7 +1,4 @@
 {
-	"sbuy_medkit": 20,
-	"sbuy_armorkit": 10,
-	"weapon_rpg": 1,
 	"weapon_ss_singleshotgun": 2,
 	"weapon_ss2_doubleshotgun": 2,
 	"weapon_ss_doubleshotgun": 2,

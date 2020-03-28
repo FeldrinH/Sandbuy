@@ -1,5 +1,4 @@
 {
-	"grenade_ar2": "weapon_smg1",
 	"m9k_gdcwa_matador_90mm": "m9k_matador",
 	"m9k_gdcwa_rpg_heat": "m9k_rpg7",
 	"m9k_improvised_explosive": "m9k_ied_detonator",
@@ -15,11 +14,9 @@
 	"m9k_thrown_knife": "m9k_machete",
 	"m9k_thrown_m61": "m9k_m61_frag",
 	"m9k_thrown_sticky_grenade": "m9k_sticky_grenade",
-	"rpg_missile": "weapon_rpg",
 	"sent_mini_flak": "weapon_neurowep_flakshotgun",
 	"sent_rpg7_rocket": "weapon_neurowep_rpg7",
 	"sent_neuro_h44_flechette": "weapon_neurowep_he44",
 	"entityflame": "weapon_neurowep_molotov",
-	"sent_mini_shell": "weapon_neurowep_gau8",
-	"crossbow_bolt": "weapon_crossbow"
+	"sent_mini_shell": "weapon_neurowep_gau8"
 }

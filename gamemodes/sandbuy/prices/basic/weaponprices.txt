@@ -1,0 +1,15 @@
+{
+	"weapon_357": 800,
+	"weapon_ar2": 1000,
+	"weapon_bugbait": -2,
+	"weapon_crossbow": 1000,
+	"weapon_crowbar": 100,
+	"weapon_frag": 50,
+	"weapon_physcannon": 200,
+	"weapon_pistol": 100,
+	"weapon_rpg": 2200,
+	"weapon_shotgun": 300,
+	"weapon_slam": 700,
+	"weapon_smg1": 800,
+	"weapon_stunstick": 100
+}
