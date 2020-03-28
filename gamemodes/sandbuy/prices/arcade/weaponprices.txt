@@ -223,6 +223,5 @@
 	"weapon_neurowep_winchester_1887": 3000,
 	"weapon_neurowep_xm1014": 3600,
 	"weapon_np_flaregun": 100,
-	"weapon_np_repairgun": 100,
 	"weapon_stinger": 2600
 }

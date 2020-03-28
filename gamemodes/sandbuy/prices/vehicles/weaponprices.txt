@@ -1,3 +1,5 @@
 {
-	"targetdesignator": 0
+	"targetdesignator": 0,
+	"weapon_np_repairgun": 100,
+	"weapon_simrepair": -1
 }
