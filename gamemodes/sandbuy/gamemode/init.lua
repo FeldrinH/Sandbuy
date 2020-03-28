@@ -457,6 +457,11 @@ function GM:GetBailout(ply)
 	return GetConVar("sbuy_defaultmoney"):GetInt() + math.floor(math.sqrt(0.25 + (ply.TotalKillMoney or 0) * 2 / GetConVar("sbuy_levelsize"):GetFloat()) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
 end
 
+-- If ply == nil, this should return a generic default value for startmoney
+function GM:GetStartMoney(ply)
+	return GetConVar("sbuy_startmoney"):GetInt()
+end
+
 function GM:PlayerGiveSWEP(ply, class, swep)
 	if !ply:Alive() then return false end
 	

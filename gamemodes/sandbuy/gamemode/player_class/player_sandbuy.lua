@@ -18,7 +18,7 @@ function PLAYER:SetupDataTables()
 			net.Send(ply)
 		end)
 		
-		self.Player:SetMoney(self.Player.DefaultMoneyOverride or GetConVar("sbuy_startmoney"):GetInt())
+		self.Player:SetMoney(self.Player.DefaultMoneyOverride or gamemode.Call("GetStartMoney", self.Player))
 		self.Player:SetKillstreak(self.Player.KillstreakOverride or 0)
 		self.Player.DefaultMoneyOverride = nil
 		self.Player.KillstreakOverride = nil

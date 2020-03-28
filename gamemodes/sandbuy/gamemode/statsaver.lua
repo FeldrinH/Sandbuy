@@ -17,7 +17,7 @@ concommand.Add("resetfull", function( ply, cmd, args, argString  )
 			v.NeuroPlanes_SavedWeapons = nil
 			v.NeuroPlanes_ActiveWeapon = nil
 			v.TotalKillMoney = 0
-			v:SetMoney(GetConVar("sbuy_startmoney"):GetInt())
+			v:SetMoney(gamemode.Call("GetStartMoney", v))
 			v:Spawn()
 			
 			if argString != "" then
@@ -32,7 +32,7 @@ concommand.Add("resetfull", function( ply, cmd, args, argString  )
 		stats[targetid] = nil
 	end
 	
-	buylogger.LogReset("full", GetConVar("sbuy_startmoney"):GetInt())
+	buylogger.LogReset("full", gamemode.Call("GetStartMoney"))
 end)
 
 concommand.Add("resetplayers", function( ply, cmd, args, argString )
@@ -49,7 +49,7 @@ concommand.Add("resetplayers", function( ply, cmd, args, argString )
 			v.NeuroPlanes_SavedWeapons = nil
 			v.NeuroPlanes_ActiveWeapon = nil
 			v.TotalKillMoney = 0
-			v:SetMoney(GetConVar("sbuy_startmoney"):GetInt())
+			v:SetMoney(gamemode.Call("GetStartMoney", v))
 			
 			if argString != "" then
 				targetid = v:SteamID()
@@ -63,7 +63,7 @@ concommand.Add("resetplayers", function( ply, cmd, args, argString )
 		stats[targetid] = nil
 	end
 	
-	buylogger.LogReset("players", GetConVar("sbuy_startmoney"):GetInt())
+	buylogger.LogReset("players", gamemode.Call("GetStartMoney"))
 end)
 
 concommand.Add("resetstats", function( ply, cmd, args, argString  )
