@@ -477,13 +477,14 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "3" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
 			if LocalPlayer():IsAdmin() then
 				menu:AddOption( "Set price", function()
-					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_overrides"):GetString() .. ")", "New price:", price, function(text)
+					local oldprice = pricer.GetPrice(obj.spawnname, 'weapon')
+					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_overrides"):GetString() .. ")", "New price:", oldprice, function(text)
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
 						RunConsoleCommand("setoverrideprice", obj.spawnname, newprice, "weapon")
 						
-						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
+						icon:SetText(pricer.GetPrintPrice(oldprice) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
 					end, nil, "Set", "Cancel")
 				end )
