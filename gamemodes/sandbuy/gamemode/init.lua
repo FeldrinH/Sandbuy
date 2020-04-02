@@ -462,6 +462,23 @@ function GM:GetStartMoney(ply)
 	return GetConVar("sbuy_startmoney"):GetInt()
 end
 
+function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
+	if hitgroup == HITGROUP_HEAD then
+		dmginfo:ScaleDamage(4)
+	end
+
+	if hitgroup == HITGROUP_LEFTARM ||
+		 hitgroup == HITGROUP_RIGHTARM ||
+		 hitgroup == HITGROUP_LEFTLEG ||
+		 hitgroup == HITGROUP_RIGHTLEG then
+		dmginfo:ScaleDamage(0.375)
+	end
+	
+	if hitgroup == HITGROUP_GEAR then
+		dmginfo:ScaleDamage(0.5)
+	end
+end
+
 function GM:DoBuy(ply, price, class, buy_type, str_buy, str_needmoney, str_denied) -- may include extra arguments, e.g. amount for ammo purchases
 	if price == -5 then
 		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
