@@ -67,9 +67,10 @@ local deathmessage_overrides = {
 	["76561198033567884"] = "You were corrected by " --Egert
 }
 
-local function AddSandbuyNotifier()
+local function AddSandbuyNotifier(hookname)
 	hook.Add(hookname, "Sandbuy_ShowHelp", function()
-		if LocalPlayer():IsValid() then
+		if IsValid(LocalPlayer()) then
+			print("----- Welcome to Sandbuy! -----  (" .. hookname .. ")") 
 			hook.Remove(hookname, "Sandbuy_ShowHelp")
 			
 			for i = 1,BUTTON_CODE_LAST do
