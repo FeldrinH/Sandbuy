@@ -67,20 +67,25 @@ local deathmessage_overrides = {
 	["76561198033567884"] = "You were corrected by " --Egert
 }
 
-hook.Add("HUDPaint", "Sandbuy_ShowHelp", function()
-	if LocalPlayer():IsValid() then
-		hook.Remove("HUDPaint", "Sandbuy_ShowHelp")
-		
-		for i = 1,BUTTON_CODE_LAST do
-			local kb = input.LookupKeyBinding(i) or ""
-			if string.find(kb, "buyheldammo") or string.find(kb, "sbuy_giveprimaryammo") then return end
+local function AddSandbuyNotifier()
+	hook.Add(hookname, "Sandbuy_ShowHelp", function()
+		if LocalPlayer():IsValid() then
+			hook.Remove(hookname, "Sandbuy_ShowHelp")
+			
+			for i = 1,BUTTON_CODE_LAST do
+				local kb = input.LookupKeyBinding(i) or ""
+				if string.find(kb, "buyheldammo") or string.find(kb, "sbuy_giveprimaryammo") then return end
+			end
+			
+			chat.AddText(Color(0,255,0), "----- Welcome to Sandbuy! -----")
+			chat.AddText(Color(100,255,100), "Type ", Color(130,130,255), "bind g buyheldammo", Color(100,255,100), " in debug console to bind buying ammo for your weapon to G (or another key of your choosing)")
+			chat.AddText(Color(100,255,100), "See https://github.com/FeldrinH/Sandbuy/wiki for more info")
 		end
-		
-		chat.AddText(Color(0,255,0), "----- Welcome to Sandbuy! -----")
-		chat.AddText(Color(100,255,100), "Type ", Color(130,130,255), "bind g buyheldammo", Color(100,255,100), " in console to bind buying ammo for your weapon to G (or another key of your choosing)")
-		chat.AddText(Color(100,255,100), "See https://github.com/FeldrinH/Sandbuy/wiki for more info")
-	end
-end)
+	end)
+end
+
+AddSandbuyNotifier("HUDPaint")
+AddSandbuyNotifier("OnSpawnMenuClose")
 
 function GM:HUDPaint()
 	BaseClass.HUDPaint(self)
@@ -287,6 +292,8 @@ net.Receive("newprices", function(len)
 		print("Full reload")
 	elseif reload == 2 then
 		print("Quick reload")
+	elseif reload == 3 then
+		print('Prices only reload')
 	else
 		print("Initial load")
 	end
@@ -296,20 +303,17 @@ net.Receive("newprices", function(len)
 	pricer.PriceTable.vehicle = net.ReadPriceTable()
 	pricer.PriceTable.ammo = net.ReadPriceTable()
 	
-	if reload != 2 then
+	if reload != 3 then
 		pricer.PriceTable.clipcount = net.ReadPriceTable()
 		pricer.PriceTable.clipsize = net.ReadPriceTable()
 
-		pricer.CategoriesList = {}
 		pricer.CategoriesLookup = {}
 		while true do
 			local catname = net.ReadString()
 			if catname == "" then
 				break
 			end
-			local cat_list = net.ReadCategoryList()
-			pricer.CategoriesList[catname] = cat_list
-			pricer.CategoriesLookup[catname] = table.ListToLookupTable(cat_list)
+			pricer.CategoriesLookup[catname] = net.ReadCategoryTable()
 		end
 	end
 

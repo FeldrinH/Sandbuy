@@ -29,6 +29,14 @@ cvars.AddChangeCallback("freebuy", function(convar, old, new)
 	end
 end, "Sandbuy_Freebuy")
 
+local function MsgCaller(text, ply)
+	if ply and !ply:IsListenServerHost() then
+		ply:PrintMessage(HUD_PRINTCONSOLE, text)
+	else
+		print(text)
+	end
+end
+
 local function GetDeprecatedMessage(cmdname)
 	return function(ply)
 		ply:PrintMessage(HUD_PRINTTALK, "This command is deprecated. Please use '" .. cmdname .. "'")
@@ -38,31 +46,37 @@ end
 concommand.Add("reloadprices", function(ply)
 	if IsValid(ply) and !ply:IsAdmin() then return end
 
+	pricer.StartRepl(ply)
 	pricer.LoadPrices()
-
+	pricer.EndRepl()
+	
 	pricer.SendPrices(nil, 1)
 end)
 
 concommand.Add("quickloadprices", function(ply)
 	if IsValid(ply) and !ply:IsAdmin() then return end
 
+	pricer.StartRepl(ply)
 	pricer.LoadPrices()
+	pricer.EndRepl()
 
 	pricer.SendPrices(nil, 2)
 end)
 
 -- TODO
 concommand.Add("listprices", function(ply)
-	print("CUSTOM:")
+	if IsValid(ply) and !ply:IsAdmin() then return end
+
+	MsgCaller("CUSTOM:", ply)
 	local fsc,drc = file.Find("prices/*", "DATA")
 	for k,v in pairs(drc) do
-		print("  " .. v)
+		MsgCaller("  " .. v, ply)
 	end
 	
-	print("BUILT-IN:")
+	MsgCaller("BUILT-IN:", ply)
 	local fs,dr = file.Find("gamemodes/sandbuy/prices/*", "GAME")
 	for k,v in pairs(dr) do
-		print("  " .. v)
+		MsgCaller("  " .. v, ply)
 	end
 end)
 
@@ -78,15 +92,29 @@ concommand.Add("normalizeprices", function(ply)
 		end
 	end
 	
-	print("Normalized prices")
+	MsgCaller("Normalized prices", ply)
+end)
+
+concommand.Add("mergeactiveprices", function(ply, argStr, args)
+	if IsValid(ply) and !ply:IsAdmin() then return end
+	
+	local outprices = args[1]
+	if !outprices then
+		MsgCaller('No priceset to output to specified', ply)
+		return
+	end
+	
+	pricer.SaveLoadedPrices(outprices)
+	
+	MsgCaller("Merged active prices and output to '" .. outprices .. "'", ply)
 end)
 
 concommand.Add("setcategoryprice", function(ply, cmd, args)
 	if IsValid(ply) and !ply:IsAdmin() then return end
 	
 	local category = args[1]
-	if !pricer.CategoriesList[category] then
-		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid category: " .. category)
+	if !pricer.CategoriesLookup[category] then
+		MsgCaller("Invalid category: " .. category, ply)
 		return
 	end
 	
@@ -94,30 +122,40 @@ concommand.Add("setcategoryprice", function(ply, cmd, args)
 	if !price then
 		hook.Remove("ApplyPriceModifiers", "CategoryOverride_" .. category)
 
-		print("Removed category price:", category)
+		MsgCaller("Removed category price: " .. category, ply)
 	else
 		hook.Add("OnPricesLoaded", "CategoryOverride_" .. category, function()
-			pricer.ApplyModifier(pricer.CategoriesList[category], {"weapon", "entity", "vehicle", "ammo"}, function() return price end)
+			pricer.ApplyModifier(pricer.CategoriesLookup[category], {"weapon", "entity", "vehicle", "ammo"}, function() return price end)
 		end)
 		
-		print("New category price:", category, "$" .. price)
+		MsgCaller("New category price:  " .. category .. "  $" .. price, ply)
 	end
 end)
 
-concommand.Add("setoverrideprice", function(ply, cmd, args)
+concommand.Add("setprice", function(ply, cmd, args)
 	if IsValid(ply) and !ply:IsAdmin() then return end
 
 	local wep = args[1]
 	local price = tonumber(args[2])
 	
 	if !wep or !price or !args[3] then 
-		print("Usage:  setoverrideprice [classname] [price] [type]")
+		MsgCaller("Usage:  setoverrideprice [classname] [price] [type] [priceset (defaults to value of sbuy_overrides)]", ply)
 		return
 	end
 	
-	pricer.SetPrice(wep, price, args[3] .. "prices.txt")
+	local priceset = args[4] or GetConVar("sbuy_overrides"):GetString()
+	if !pricer.ValidatePriceSetName(priceset, true) then
+		MsgCaller('ERROR: Invalid priceset name', ply)
+		return
+	end
+	if !file.Exists("prices/" .. priceset, "DATA") and #file.Find("gamemodes/sandbuy/prices/" .. priceset .. "/*", "GAME") > 0 then
+		MsgCaller('ERROR: Attempt to set price on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory', ply)
+		return
+	end
+		
+	pricer.SetPrice(wep, price, args[3] .. "prices.txt", priceset)
 	
-	print("New override price:", wep, "$" .. price, "", GetConVar("sbuy_overrides"):GetString())
+	MsgCaller("New override price:  " .. wep .. ": $" .. price .. " in '" .. priceset .. "'", ply)
 end)
 
 concommand.Add("addsourceweapon", function(ply, cmd, args)
@@ -125,7 +163,7 @@ concommand.Add("addsourceweapon", function(ply, cmd, args)
 	
 	local sourcewep = ply:GetActiveWeapon()
 	if !IsValid(sourcewep) then
-		print("Please hold valid weapon to set as source weapon")
+		MsgCaller("Please hold valid weapon to set as source weapon", ply)
 		return
 	end
 	sourcewep = sourcewep:GetClass()
@@ -135,7 +173,7 @@ concommand.Add("addsourceweapon", function(ply, cmd, args)
 		
 		pricer.SetPrice(wep, sourcewep, "sourceweapons.txt")
 		
-		print("New source weapon " .. wep .. " -> " .. sourcewep, "", GetConVar("sbuy_overrides"):GetString())
+		MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. GetConVar("sbuy_overrides"):GetString(), ply)
 	else
 		hook.Add("PlayerDeath", "AddSourceWeapon", function(dply, infl, atk)
 			if !IsValid(infl) or infl:IsPlayer() or dply != ply then return end
@@ -144,12 +182,12 @@ concommand.Add("addsourceweapon", function(ply, cmd, args)
 			
 			pricer.SetPrice(wep, sourcewep, "sourceweapons.txt")
 		
-			print("New source weapon " .. wep .. " -> " .. sourcewep, "", GetConVar("sbuy_overrides"):GetString())
+			MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. GetConVar("sbuy_overrides"):GetString(), ply)
 		
 			hook.Remove("PlayerDeath", "AddSourceWeapon")
 		end)
 		
-		print("Please kill yourself with weapon")
+		MsgCaller("Please kill yourself with weapon", ply)
 	end
 end)
 
@@ -484,6 +522,15 @@ function GM:DoBuy(ply, price, class, buy_type, str_buy, str_needmoney, str_denie
 		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
 		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
 		return false
+	elseif price == -4 then
+		if ply:IsAdmin() then
+			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
+			return true
+		else
+			ply:PrintMessage(HUD_PRINTCENTER, "You need to be an admin to use this!")
+			ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
+			return false
+		end
 	end
 	
 	if GetConVar("freebuy"):GetBool() then

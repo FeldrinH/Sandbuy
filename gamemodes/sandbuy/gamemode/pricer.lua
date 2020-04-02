@@ -16,6 +16,37 @@ pricer.TeamKillPenalty = 200
 
 -- Local variable for faster and more convenient access
 local pricetable = pricer.PriceTable
+local replplayer = nil
+
+local function MsgRepl(text, color)
+	if replplayer then
+		replplayer:PrintMessage(HUD_PRINTCONSOLE, text)
+	end
+	
+	if color then
+		MsgC(color, text .. '\n')
+	else
+		print(text)
+	end
+end
+
+local function WarningRepl(text)
+	if replplayer then
+		replplayer:PrintMessage(HUD_PRINTCONSOLE, text)
+	end
+	
+	ErrorNoHalt(text .. '\n')
+end
+
+function pricer.StartRepl(ply)
+	if !ply:IsListenServerHost() then
+		replplayer = ply
+	end
+end
+
+function pricer.EndRepl()
+	replplayer = nil
+end
 
 function net.WritePriceTable(prices)
 	for k,v in pairs(prices) do
@@ -26,11 +57,11 @@ function net.WritePriceTable(prices)
 	net.WriteString("")
 end
 
-function net.WriteCategoryList(name, cat)
+function net.WriteCategoryTable(name, cat)
 	net.WriteString(name)
 	
 	for k,v in pairs(cat) do
-		net.WriteString(v)
+		net.WriteString(k)
 	end
 	
 	net.WriteString("")
@@ -50,16 +81,16 @@ function net.ReadPriceTable()
 	return prices
 end
 
-function net.ReadCategoryList()
-	local cat_list = {}
+function net.ReadCategoryTable()
+	local cat_lookup = {}
 	
 	while true do
 		local k = net.ReadString()
 		if k == "" then break end
-		table.insert(cat_list, k)
+		cat_lookup[k] = true
 	end
 
-	return cat_list
+	return cat_lookup
 end
 
 function table.ListToLookupTable(vlist)
@@ -90,14 +121,18 @@ function table.LookupTableNormalize(ltable)
 	end
 end
 
-local function ValidatePriceSetName(name)
-	if string.len(name) == 0 then
+local function ValidatePriceSetName(name, silent)
+	if !name or string.len(name) == 0 then
 		return false
 	elseif string.len(name) > 32 then
-		ErrorNoHalt("WARNING: Ignoring invalid priceset name '" .. name .. "'. Name must be 32 characters or shorter")
+		if !silent then 
+			WarningRepl("WARNING: Ignoring invalid priceset name '" .. name .. "'. Name must be 32 characters or shorter")
+		end
 		return false
 	elseif string.match(name, "[^%l%d_%-%.]") then
-		ErrorNoHalt("WARNING: Ignoring invalid priceset name '" .. name .. "'. Name must contain only lowercase letters, numbers, '-', '_' and '.'")
+		if !silent then
+			WarningRepl("WARNING: Ignoring invalid priceset name '" .. name .. "'. Name must contain only lowercase letters, numbers, '-', '_' and '.'")
+		end
 		return false
 	end
 	
@@ -105,7 +140,7 @@ local function ValidatePriceSetName(name)
 end
 
 local function ParsePriceString()
-	print("PRICESETS")
+	MsgRepl("PRICESETS")
 	
 	local pricestring = GetConVar("sbuy_prices"):GetString()
 	local parse = string.Split(pricestring, " ")
@@ -122,29 +157,29 @@ local function ParsePriceString()
 		if file.Exists("data/prices/" .. v , "GAME") then
 			path = "data/prices/" .. v .. "/"
 			if #file.Find("gamemodes/sandbuy/prices/" .. v .. "/*", "GAME") > 0 then
-				print("  " .. v .. ": custom, ignoring built-in")
+				MsgRepl("  " .. v .. ": custom, ignoring built-in")
 			else
-				print("  " .. v .. ": custom")
+				MsgRepl("  " .. v .. ": custom")
 			end
 		elseif #file.Find("gamemodes/sandbuy/prices/" .. v .. "/*", "GAME") > 0 then
 			path = "gamemodes/sandbuy/prices/" .. v .. "/"
-			print("  " .. v .. ": built-in")
+			MsgRepl("  " .. v .. ": built-in")
 		else
-			MsgC(Color(255,0,0), "  " .. v .. ": missing\n")
+			MsgRepl("  " .. v .. ": missing", Color(255,0,0))
 		end
 		
 		parse[k] = {name = v, path = path}
 	end
 	
 	if !overrideloaded then
-		MsgC(Color(255,255,0), "  Override prices '" .. GetConVar("sbuy_overrides"):GetString() .. "' not set to load\n")
+		MsgRepl("  Override prices '" .. GetConVar("sbuy_overrides"):GetString() .. "' not set to load", Color(255,255,0))
 	end
 	
 	return parse
 end
 
 local function LoadFile(filename, categories)
-	print(string.upper(string.StripExtension(filename)))
+	MsgRepl(string.upper(string.StripExtension(filename)))
 	
 	local prices = {}
 	
@@ -167,7 +202,7 @@ local function LoadFile(filename, categories)
 						end
 					end
 					
-					print("  " .. set.name .. ": " .. table.concat(table.GetKeys(loadprices), ", "))
+					MsgRepl("  " .. set.name .. ": " .. table.concat(table.GetKeys(loadprices), ", "))
 				elseif loadprices["<FILTER>"] then
 					for k,v in pairs(prices) do
 						if !loadprices[k] then
@@ -175,7 +210,7 @@ local function LoadFile(filename, categories)
 						end
 					end
 					
-					print("  " .. set.name .. " (filter): " .. table.Count(loadprices) - 1)
+					MsgRepl("  " .. set.name .. " (filter): " .. table.Count(loadprices) - 1)
 				elseif loadprices["<OVERLAY>"] then
 					for k,v in pairs(loadprices) do
 						if (prices[k] or -2) >= -1 then
@@ -183,16 +218,16 @@ local function LoadFile(filename, categories)
 						end
 					end
 					
-					print("  " .. set.name .. " (overlay): " .. table.Count(loadprices) - 1)
+					MsgRepl("  " .. set.name .. " (overlay): " .. table.Count(loadprices) - 1)
 				else
 					for k,v in pairs(loadprices) do
 						prices[k] = v
 					end
 					
-					print("  " .. set.name .. ": " .. table.Count(loadprices))
+					MsgRepl("  " .. set.name .. ": " .. table.Count(loadprices))
 				end
 			else
-				MsgC(Color(255,0,0), "  " .. set.name .. ": <invalid>\n")
+				MsgRepl("  " .. set.name .. ": <invalid>", Color(255,0,0))
 			end
 		end
 	end
@@ -208,21 +243,16 @@ end
 
 local function LoadCategories()
 	local cats_lookup = LoadFile("categories.txt", true)
-	if !cats_lookup then return end
-	
-	local cats_list = {}
-	
+		
 	for k,v in pairs(cats_lookup) do
 		table.LookupTableNormalize(v)
-		cats_list[k] = table.LookupTableToList(v)
 	end
 	
-	return cats_lookup, cats_list
+	return cats_lookup
 end
 
 local function LoadAmmoPrices()
 	local prices = LoadFile("ammoprices.txt")
-	if !prices then return end
 	
 	for k,v in pairs(prices) do
 		if !isstring(k) then
@@ -244,34 +274,56 @@ function pricer.ApplyModifier(items, pricesets, modifier)
 	end
 end
 
-function pricer.PrintModifier(category, prices, modifier)
-	for k,v in pairs(pricer.CategoriesList[category]) do
-		if pricer.GetPrice(v, prices) >= 0 then
-			print('"' .. v .. '": ' .. modifier(pricer.GetPrice(k, prices)) .. ',')
+--[[function pricer.PrintModifier(category, prices, modifier)
+	for k,v in pairs(pricer.CategoriesLookup[category]) do
+		if pricer.GetPrice(k, prices) >= 0 then
+			print('"' .. k .. '": ' .. modifier(pricer.GetPrice(k, prices)) .. ',')
 		end
 	end
-end
+end]]
 
 function pricer.SavePriceTable(filename, prices)
-	local sortedprices = {}
-	for k,v in pairs(prices) do
-		table.insert(sortedprices, {wep = k, price = v})
+	if table.IsEmpty(prices) then 
+		if file.Exists(filename, "DATA") then
+			file.Delete(filename)
+		end
+		return
 	end
-	table.sort(sortedprices, function(a, b) return tostring(a.wep) < tostring(b.wep) end)
-	
+
 	local wfile = file.Open(filename, "w", "DATA")
 	
-	wfile:Write("{\n")
-	for k,v in ipairs(sortedprices) do
-		if next(sortedprices, k) == nil then
-			wfile:Write("\t\"" .. v.wep .. "\": " .. v.price .. "\n")
+	local isfirst = true
+	wfile:Write("{")
+	for k,v in SortedPairs(prices) do
+		if isfirst then
+			wfile:Write("\n\t\"" .. k .. "\": " .. v)
 		else
-			wfile:Write("\t\"" .. v.wep .. "\": " .. v.price .. ",\n")
+			wfile:Write(",\n\t\"" .. k .. "\": " .. v)
 		end
 	end
-	wfile:Write("}")
+	wfile:Write("\n}")
 	
 	wfile:Close()
+end
+
+function pricer.SaveLoadedPrices(priceset)
+	local dirpath = "prices/" .. priceset .. "/"
+	if !file.Exists("prices/" .. priceset, "DATA") then
+		file.CreateDir("prices/" .. priceset)
+	end
+	
+	pricer.SavePriceTable(dirpath .. 'weaponprices.txt', pricetable.weapon)
+	pricer.SavePriceTable(dirpath .. 'entityprices.txt', pricetable.entity)
+	pricer.SavePriceTable(dirpath .. 'vehicleprices.txt', pricetable.vehicle)
+	pricer.SavePriceTable(dirpath .. 'ammoprices.txt', pricetable.ammo)
+	
+	pricer.SavePriceTable(dirpath .. 'clipcount.txt', pricetable.clipcount)
+	pricer.SavePriceTable(dirpath .. 'clipsize.txt', pricetable.clipsize)
+	
+	pricer.SavePriceTable(dirpath .. 'killrewards.txt', pricetable.killreward)
+	pricer.SavePriceTable(dirpath .. 'sourceweapons.txt', pricetable.sourceweapon)
+	
+	-- TODO: Save categories
 end
 
 function pricer.SaveTextTable(filename, prices)
@@ -302,12 +354,12 @@ function pricer.SetPrice(wep, price, filename, priceset)
 	end
 	
 	if filename == "categories.txt" then
-		error("Setting category values not supported")
+		error("ERROR: Setting category values not supported")
 	end
 	
 	if !file.Exists("prices/" .. priceset, "DATA") then
 		if #file.Find("gamemodes/sandbuy/prices/" .. priceset .. "/*", "GAME") > 0 then
-			error("Attempt to set price on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory")
+			error("ERROR: Attempt to set price on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory")
 		end
 		file.CreateDir("prices/" .. priceset)
 	end
@@ -337,45 +389,27 @@ function pricer.SetPrice(wep, price, filename, priceset)
 end
 
 function pricer.LoadPrices()
-	print("------PRICES------")
+	MsgRepl("------PRICES------")
 
 	pricer.PriceString = ParsePriceString()
 
-	pricetable.weapon = LoadFile("weaponprices.txt") or pricetable.weapon
-	pricetable.entity = LoadFile("entityprices.txt") or pricetable.entity
-	pricetable.vehicle = LoadFile("vehicleprices.txt") or pricetable.vehicle
-	pricetable.ammo = LoadAmmoPrices() or pricetable.ammo
-	pricetable.clipcount = LoadFile('clipcount.txt') or pricetable.clipcount
-	pricetable.clipsize = LoadFile('clipsize.txt') or pricetable.clipsize
+	pricetable.weapon = LoadFile("weaponprices.txt")
+	pricetable.entity = LoadFile("entityprices.txt")
+	pricetable.vehicle = LoadFile("vehicleprices.txt")
+	pricetable.ammo = LoadAmmoPrices()
+	pricetable.clipcount = LoadFile('clipcount.txt')
+	pricetable.clipsize = LoadFile('clipsize.txt')
 	
-	pricetable.killreward = LoadFile("killrewards.txt") or pricetable.killreward
-	pricetable.sourceweapon = LoadFile("sourceweapons.txt") or pricetable.sourceweapon
+	pricetable.killreward = LoadFile("killrewards.txt")
+	pricetable.sourceweapon = LoadFile("sourceweapons.txt")
 	
-	local cats_lookup, cats_list = LoadCategories()
-	pricer.CategoriesLookup = cats_lookup or pricer.CategoriesLookup
-	pricer.CategoriesList = cats_list or pricer.CategoriesList
+	pricer.CategoriesLookup = LoadCategories()
 	
-	hook.Call("OnPricesLoaded", nil)
+	hook.Call("OnPricesLoaded")
 	
-	local itemlist = list.GetForEdit("Weapon")
-	for k,v in pairs(itemlist) do
-		if v.AdminOnly and pricer.GetPrice(k, "weapon") > 0 then
-			v.AdminOnly = nil
-		end
-	end
-	itemlist = list.GetForEdit("SpawnableEntities")
-	for k,v in pairs(itemlist) do
-		if pricer.GetPrice(k, "entity") > 0 then
-			v.AdminOnly = nil
-			if scripted_ents.GetStored(k) then
-				scripted_ents.GetStored(k).t.AdminOnly = nil
-			end
-		end
-	end
-	
-	print()
-	print("Reloaded prices")
-	print("------------------")
+	MsgRepl("")
+	MsgRepl("Reloaded prices")
+	MsgRepl("------------------")
 end
 
 function pricer.SendPrices(ply, reload)
@@ -386,12 +420,12 @@ function pricer.SendPrices(ply, reload)
 	net.WritePriceTable(pricetable.vehicle)
 	net.WritePriceTable(pricetable.ammo)
 
-	if reload != 2 then
+	if reload != 3 then
 		net.WritePriceTable(pricetable.clipcount)
 		net.WritePriceTable(pricetable.clipsize)
-		for k,v in pairs(pricer.CategoriesList) do
+		for k,v in pairs(pricer.CategoriesLookup) do
 			if k != "machines" then
-				net.WriteCategoryList(k, v)
+				net.WriteCategoryTable(k, v)
 			end
 		end
 		net.WriteString("")
@@ -456,12 +490,16 @@ end
 function pricer.GetPrintPrice(price)
 	if price == -5 then
 		return "BAD"
+	elseif price == -4 then
+		return "ADMIN"
 	elseif price == -3 then
 		return "RESET"
-	elseif price < -1 then
+	elseif price == -2 then
 		return "UNDEFINED"
 	elseif price == -1 then
 		return "NOT FOR SALE"
+	elseif price < 0 then
+		return "INVALID"
 	elseif price == 0 then
 		return "FREE"
 	else
