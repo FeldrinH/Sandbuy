@@ -1,8 +1,8 @@
 {
 	"<OVERLAY>": 1,
 	"AR2AltFire": 400,
-	"NerveGas": 1800,
-	"nitroG": 800,
 	"Improvised_Explosive": 2000,
-	"SatCannon": 3000
+	"NerveGas": 1800,
+	"SatCannon": 3000,
+	"nitroG": 800
 }

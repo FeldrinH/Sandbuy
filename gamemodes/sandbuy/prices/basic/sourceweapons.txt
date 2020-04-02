@@ -1,5 +1,5 @@
 {
+	"crossbow_bolt": "weapon_crossbow",
 	"grenade_ar2": "weapon_smg1",
-	"rpg_missile": "weapon_rpg",
-	"crossbow_bolt": "weapon_crossbow"
+	"rpg_missile": "weapon_rpg"
 }

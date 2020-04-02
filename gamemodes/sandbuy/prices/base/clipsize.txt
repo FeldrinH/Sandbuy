@@ -1,4 +1,4 @@
 {
-	"sbuy_medkit": 20,
-	"sbuy_armorkit": 10
+	"sbuy_armorkit": 10,
+	"sbuy_medkit": 20
 }
