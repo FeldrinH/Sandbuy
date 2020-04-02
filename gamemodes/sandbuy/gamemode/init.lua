@@ -139,15 +139,15 @@ concommand.Add("setprice", function(ply, cmd, args)
 	local price = tonumber(args[2])
 	
 	if !wep or !price or !args[3] then 
-		MsgCaller("Usage:  setoverrideprice [classname] [price] [type] [priceset (defaults to value of sbuy_overrides)]", ply)
+		MsgCaller("Usage:  setprice [classname] [price] [type] [priceset (defaults to value of sbuy_overrides)]", ply)
 		return
 	end
 	
 	local priceset = args[4] or GetConVar("sbuy_overrides"):GetString()
-	if !pricer.ValidatePriceSetName(priceset, true) then
+	--[[if !pricer.ValidatePriceSetName(priceset, true) then
 		MsgCaller('ERROR: Invalid priceset name', ply)
 		return
-	end
+	end]]
 	if !file.Exists("prices/" .. priceset, "DATA") and #file.Find("gamemodes/sandbuy/prices/" .. priceset .. "/*", "GAME") > 0 then
 		MsgCaller('ERROR: Attempt to set price on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory', ply)
 		return

@@ -292,14 +292,32 @@ function pricer.SavePriceTable(filename, prices)
 
 	local wfile = file.Open(filename, "w", "DATA")
 	
-	local isfirst = true
 	wfile:Write("{")
+	local isfirst = true
 	for k,v in SortedPairs(prices) do
-		if isfirst then
-			wfile:Write("\n\t\"" .. k .. "\": " .. v)
-		else
-			wfile:Write(",\n\t\"" .. k .. "\": " .. v)
+		wfile:Write((isfirst and "\n\t\"" or ",\n\t\"") .. k .. "\": " .. v)
+		isfirst = false
+	end
+	wfile:Write("\n}")
+	
+	wfile:Close()
+end
+
+function pricer.SaveTextTable(filename, prices)
+	if table.IsEmpty(prices) then 
+		if file.Exists(filename, "DATA") then
+			file.Delete(filename)
 		end
+		return
+	end
+
+	local wfile = file.Open(filename, "w", "DATA")
+	
+	wfile:Write("{")
+	local isfirst = true
+	for k,v in SortedPairs(prices) do
+		wfile:Write((isfirst and "\n\t\"" or ",\n\t\"" ).. k .. "\": \"" .. v .. "\"")
+		isfirst = false
 	end
 	wfile:Write("\n}")
 	
@@ -321,31 +339,9 @@ function pricer.SaveLoadedPrices(priceset)
 	pricer.SavePriceTable(dirpath .. 'clipsize.txt', pricetable.clipsize)
 	
 	pricer.SavePriceTable(dirpath .. 'killrewards.txt', pricetable.killreward)
-	pricer.SavePriceTable(dirpath .. 'sourceweapons.txt', pricetable.sourceweapon)
+	pricer.SaveTextTable(dirpath .. 'sourceweapons.txt', pricetable.sourceweapon)
 	
 	-- TODO: Save categories
-end
-
-function pricer.SaveTextTable(filename, prices)
-	local sortedprices = {}
-	for k,v in pairs(prices) do
-		table.insert(sortedprices, {wep = k, price = v})
-	end
-	table.sort(sortedprices, function(a, b) return tostring(a.wep) < tostring(b.wep) end)
-	
-	local wfile = file.Open(filename, "w", "DATA")
-	
-	wfile:Write("{\n")
-	for k,v in ipairs(sortedprices) do
-		if next(sortedprices, k) == nil then
-			wfile:Write("\t\"" .. v.wep .. "\": \"" .. v.price .. "\"\n")
-		else
-			wfile:Write("\t\"" .. v.wep .. "\": \"" .. v.price .. "\",\n")
-		end
-	end
-	wfile:Write("}")
-	
-	wfile:Close()
 end
 
 function pricer.SetPrice(wep, price, filename, priceset)
@@ -354,12 +350,12 @@ function pricer.SetPrice(wep, price, filename, priceset)
 	end
 	
 	if filename == "categories.txt" then
-		error("ERROR: Setting category values not supported")
+		error("Setting category values not supported")
 	end
 	
 	if !file.Exists("prices/" .. priceset, "DATA") then
 		if #file.Find("gamemodes/sandbuy/prices/" .. priceset .. "/*", "GAME") > 0 then
-			error("ERROR: Attempt to set price on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory")
+			error("Attempt to set price on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory")
 		end
 		file.CreateDir("prices/" .. priceset)
 	end
@@ -372,6 +368,14 @@ function pricer.SetPrice(wep, price, filename, priceset)
 		pricetable = util.JSONToTable(localfile)
 		if !pricetable then
 			error("Failed to parse existing prices for " .. filepath)
+		end
+		if filename == "ammoprices.txt" then
+			for k,v in pairs(pricetable) do
+				if !isstring(k) then
+					pricetable[tostring(k)] = v
+					pricetable[k] = nil
+				end
+			end
 		end
 	end
 	

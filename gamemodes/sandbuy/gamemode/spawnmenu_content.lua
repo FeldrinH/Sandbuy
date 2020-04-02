@@ -354,7 +354,7 @@ hook.Add( "SpawnlistOpenGenericMenu", "SpawnlistOpenGenericMenu", function( canv
 			if newprice == nil then return end
 			
 			for k,v in pairs( selected ) do
-				RunConsoleCommand("setoverrideprice", v:GetSpawnName(), newprice, v:GetContentType())
+				RunConsoleCommand("setprice", v:GetSpawnName(), newprice, v:GetContentType())
 				v:SetText(string.Split(v:GetText(), " ")[1] .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 				v:SetFont("Trebuchet18")
 			end
@@ -482,7 +482,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
-						RunConsoleCommand("setoverrideprice", obj.spawnname, newprice, "weapon")
+						RunConsoleCommand("setprice", obj.spawnname, newprice, "weapon")
 						
 						icon:SetText(pricer.GetPrintPrice(oldprice) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
@@ -562,7 +562,7 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
-						RunConsoleCommand("setoverrideprice", obj.spawnname, newprice, "entity")
+						RunConsoleCommand("setprice", obj.spawnname, newprice, "entity")
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
@@ -642,7 +642,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
-						RunConsoleCommand("setoverrideprice", obj.spawnname, newprice, "vehicle")
+						RunConsoleCommand("setprice", obj.spawnname, newprice, "vehicle")
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
@@ -720,7 +720,7 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
-						RunConsoleCommand("setoverrideprice", obj.spawnname, newprice, "vehicle")
+						RunConsoleCommand("setprice", obj.spawnname, newprice, "vehicle")
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
