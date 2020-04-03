@@ -258,6 +258,10 @@ hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 			end
 		end)
 	end
+	function patcher.AddAmmoOverride(wepclass, primary, secondary)
+		patcher.AddAmmoOverride(wepclass, primary, secondary)
+		error('patcher.AddAmmoOverride does not work after gamemode has been loaded')
+	end
 	
 	for k,v in pairs(list.GetForEdit("Weapon")) do
 		if v.Category == "TFA CS:O" then

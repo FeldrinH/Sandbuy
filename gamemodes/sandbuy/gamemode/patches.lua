@@ -73,11 +73,27 @@ hook.Add("PlayerLoadout","NeuroPlanes_LoadWeapons", function(ply)
 	return ply:NeuroPlanes_LoadWeapons()
 end)
 
-local function FindPredictedOwner(wep, pos)
+local mines_class = {}
+local mines_weapon = {}
+
+function patcher.RegisterMine(entity_class, weapon_class, print_name, get_owner_func, detonate_func)
+	local dat = { name = print_name, ent = entity_class, wep = weapon_class, ownerf = get_owner_func, detonatef = detonate_func }
+	mines_class[entity_class] = dat
+	mines_weapon[weapon_class] = dat
+end
+
+function patcher.UnregisterMine(entity_class)
+	local weapon_class = mines_class[entity_class].wep
+	mines_class[entity_class] = nil
+	mines_weapon[weapon_class] = nil
+end
+
+local function FindPredictedOwner(ent, dat)
+	local pos = ent:GetPos()
 	local closest = nil
 	local dist = 40000
 	for k,v in pairs(player.GetAll()) do
-		if pos:DistToSqr(v:GetPos()) < dist and v:GetActiveWeapon():GetClass() == wep then
+		if pos:DistToSqr(v:GetPos()) < dist and v:GetActiveWeapon():GetClass() == dat.wep then
 			closest = v
 			dist = pos:DistToSqr(v:GetPos())
 		end
@@ -92,43 +108,40 @@ local function FindOldMine(ply, class)
 end
 
 hook.Add("OnEntityCreated", "LimitProxySpam", function(ent)
-	if ent:GetClass() == "m9k_proxy" then
-		timer.Simple(0, function()
-			local predictedowner = FindPredictedOwner("m9k_proxy_mine", ent:GetPos())
-			if !IsValid(predictedowner) then print("WARNING: No owner found for proxy " .. tostring(ent) ) return end
-			
-			local oldproxy = FindOldMine(predictedowner, "m9k_proxy")
-			ent.PredictedOwner = predictedowner
-			if IsValid(oldproxy) then
-				oldproxy:Explosion()
-			end
-		end)
-	elseif ent:GetClass() == "npc_tripmine" then
+	if mines_class[ent:GetClass()] then
+		local dat = mines_class[ent:GetClass()]
+		
 		timer.Simple(0, function()
 			if !IsValid(ent) then return end
-			local predictedowner = FindPredictedOwner("weapon_slam", ent:GetPos())
-			if !IsValid(predictedowner) then print("WARNING: No owner found for SLAM " .. tostring(ent) ) return end
+		
+			local predictedowner = dat.ownerf(ent, dat)
+			if !IsValid(predictedowner) then print("WARNING: No owner found for mine " .. tostring(ent)) return end
 			
-			local oldproxy = FindOldMine(predictedowner, "npc_tripmine")
-			ent.PredictedOwner = predictedowner
+			local oldproxy = FindOldMine(predictedowner, dat.ent)
 			if IsValid(oldproxy) then
-				oldproxy:TakeDamage(1000, oldproxy, oldproxy)
+				dat.detonatef(oldproxy, dat)
 			end
+			
+			ent.PredictedOwner = predictedowner
 		end)
 	end
 end)
 
 hook.Add("PlayerSwitchWeapon", "ReportProxyLimit", function( ply, oldWpn, newWpn )
 	if !ply:Alive() then return end
-	if newWpn:GetClass() == "m9k_proxy_mine" then
-		if IsValid(FindOldMine(ply, "m9k_proxy")) then
-			ply:PrintMessage(HUD_PRINTTALK, "You have a proxy deployed. Placing another one will destroy the previous proxy.")
-		end
-	elseif newWpn:GetClass() == "weapon_slam" then
-		if IsValid(FindOldMine(ply, "npc_tripmine"))then
-			ply:PrintMessage(HUD_PRINTTALK, "You have a SLAM deployed. Placing another one will destroy the previous SLAM.")
+	if mines_weapon[newWpn:GetClass()] then
+		local dat = mines_weapon[newWpn:GetClass()]
+		if IsValid(FindOldMine(ply, dat.ent)) then
+			ply:PrintMessage(HUD_PRINTTALK, "You have a " .. dat.name .. " deployed. Placing another one will destroy the previous " .. dat.name .. ".")
 		end
 	end
+end)
+
+patcher.RegisterMine("m9k_proxy", "m9k_proxy_mine", "proxy", FindPredictedOwner, function(ent) 
+	ent:Explosion()
+end)
+patcher.RegisterMine("npc_tripmine", "weapon_slam", "SLAM", FindPredictedOwner, function(ent) 
+	ent:TakeDamage(1000, ent, ent)
 end)
 
 hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
