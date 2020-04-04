@@ -171,6 +171,13 @@ local function ModifyWeapon(wepclass, modfunc)
 	end
 end
 
+local function ModifyEntity(wepclass, modfunc)
+	local wep = scripted_ents.GetStored(wepclass).t
+	if wep then
+		modfunc(wep)
+	end
+end
+
 game.AddAmmoType({name = "Shuriken"})
 
 patcher.AddAmmoOverride("weapon_neurowep_bow", "XBowBolt")
@@ -187,6 +194,58 @@ patcher.AddAmmoOverride("tfa_cso_gungnir_nrm", "AirboatGun")
 patcher.AddAmmoOverride("tfa_cso_gungnir", "AirboatGun")
 
 hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
+	if CLIENT then
+		ModifyEntity("cw_attpack_base", function(ent)
+			local baseFont = "CW_HUD72"
+			local up = Vector(0, 0, 15)
+			local white, black, green = Color(255, 255, 255, 255), Color(0, 0, 0, 255), Color(215, 255, 160, 255)
+			local gray = Color(180, 180, 180, 255)
+			local drawShadowText = draw.ShadowText
+			local surfaceSetDrawColor = surface.SetDrawColor
+			local surfaceDrawRect = surface.DrawRect
+			
+			function ent:Draw()
+				self:DrawModel()
+				
+				if not self.halfHorizontalSize then
+					return
+				end
+				
+				local ply = LocalPlayer()
+				
+				self.inRange = not (ply:GetPos():Distance(self:GetPos()) > self.displayDistance)
+				
+				if not self.inRange then
+					return
+				end
+				
+				local eyeAng = EyeAngles()
+				eyeAng.p = 0
+				eyeAng.y = eyeAng.y - 90
+				eyeAng.r = 90
+				
+				cam.Start3D2D(self:GetPos() + up, eyeAng, 0.05)
+					local r, g, b, a = self:getTopPartColor()
+					surfaceSetDrawColor(r, g, b, a)
+					surfaceDrawRect(-self.halfHorizontalSize, -self.basePos, self.horizontalSize, self.verticalFontSize)
+					
+					surfaceSetDrawColor(0, 0, 0, 150)
+					surfaceDrawRect(-self.halfHorizontalSize, -self.blackBarPos, self.horizontalSize, self.verticalSize - 10)
+					
+					drawShadowText(self:getMainText(), baseFont, 0, self.arraySize * -self.verticalFontSize, white, black, 2, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+					
+					for k, v in ipairs(self.attachmentNames) do
+						if ply.CWAttachments[v.name] then
+							drawShadowText(v.display, baseFont, 0, v.vertPos, self:getNoAttachmentColor(), black, 2, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+						else
+							drawShadowText(v.display, baseFont, 0, v.vertPos, self:getAttachmentColor(), black, 2, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+						end
+					end
+				cam.End3D2D()
+			end
+		end)
+	end
+
 	ModifyWeapon("bobs_gun_base", function(wep)
 		--print(wep, "BOB'S GOING DOWN")
 		function wep:Reload()

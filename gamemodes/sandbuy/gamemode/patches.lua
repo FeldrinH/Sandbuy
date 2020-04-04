@@ -145,6 +145,12 @@ patcher.RegisterMine("npc_tripmine", "weapon_slam", "SLAM", FindPredictedOwner, 
 end)
 
 hook.Add("OnGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
+	if CustomizableWeaponry and CustomizableWeaponry.registeredAttachments then
+		for k,v in ipairs(CustomizableWeaponry.registeredAttachments) do
+			GetConVar(v.cvar):SetBool(false)
+		end
+	end
+
 	local mine_ent = scripted_ents.GetStored("sent_land_mine")
 	if !mine_ent then return end
 	function mine_ent.t:StartTouch( ent )
