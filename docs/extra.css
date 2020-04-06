@@ -1,0 +1,20 @@
+.codehilite .kr {
+  color: #3B78E7;
+}
+
+.codehilite .n {
+  color: rgb(180, 52, 170);
+}
+
+.md-typeset {
+  font-size: .7rem;
+  line-height: 1.6;
+}
+
+.md-typeset div.funcdef {
+  font-size: 120%;
+}
+
+.tocmarker {
+  display: none;
+}

@@ -1,0 +1,27 @@
+site_name: Sandbuy documentation
+theme:
+  name: 'material'
+  palette:
+    primary: 'blue'
+    accent: 'light blue'
+  logo:
+    icon: 'attach_money'
+extra_css: 
+  - 'extra.css'
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.superfences
+  - attr_list
+nav:
+  - Introduction: index.md
+  - Console variables: convars.md
+  - Editing prices: prices.md
+  - Lua API:
+    - Overview: lua/overview.md
+    - Reference:
+      - Hooks: lua/hooks.md
+      - Price manager: lua/pricer.md
+      - Patching: lua/patcher.md
