@@ -17,8 +17,8 @@ markdown_extensions:
   - attr_list
 nav:
   - Introduction: index.md
-  - Console variables: convars.md
-  - Editing prices: prices.md
+  - Customizing gameplay: convars.md
+  - Prices: prices.md
   - Lua API:
     - Overview: lua/overview.md
     - Reference:
