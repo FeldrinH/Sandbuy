@@ -19,7 +19,7 @@ local function SandbuySettings(pnl)
 		sbuy_killmoney = "1000",
 		sbuy_levelsize = "2",
 		sbuy_levelbonus = "100",
-		freebuy = "0"
+		sbuy_freebuy = "0"
 	}
 
 	pnl:AddControl( "ComboBox", { MenuButton = 1, Folder = "util_sandbuy", Options = { [ "#preset.default" ] = ConVarsDefault }, CVars = table.GetKeys( ConVarsDefault ) } )
@@ -54,30 +54,30 @@ local function SandbuySettings(pnl)
 	--slider.TranslateSliderValues = TranslateValuesRound
 	--slider.RoundDecimals = 0
 	
-	local slider = pnl:AddControl( "Slider", { Label = "Bonus Ratio", Command = "sbuy_bonusratio", Min = 0, Max = 100 } )
+	local slider = pnl:AddControl( "Slider", { Label = "Bonus ratio", Command = "sbuy_bonusratio", Min = 0, Max = 100 } )
 	
-	slider = pnl:AddControl( "Slider", { Label = "Start Money", Command = "sbuy_startmoney", Min = 0, Max = 2000 } )
+	slider = pnl:AddControl( "Slider", { Label = "Start money", Command = "sbuy_startmoney", Min = 0, Max = 2000 } )
 	slider.TranslateSliderValues = TranslateValuesRound
 	slider.RoundDecimals = -2
-	slider = pnl:AddControl( "Slider", { Label = "Base Money", Command = "sbuy_defaultmoney", Min = 0, Max = 2000 } )
+	slider = pnl:AddControl( "Slider", { Label = "Base money", Command = "sbuy_defaultmoney", Min = 0, Max = 2000 } )
 	slider.TranslateSliderValues = TranslateValuesRound
 	slider.RoundDecimals = -2
-	slider = pnl:AddControl( "Slider", { Label = "Kill Money", Command = "sbuy_killmoney", Min = 1, Max = 2000 } )
+	slider = pnl:AddControl( "Slider", { Label = "Kill money", Command = "sbuy_killmoney", Min = 1, Max = 2000 } )
 	slider.TranslateSliderValues = TranslateValuesRound
 	slider.RoundDecimals = -2
-	slider = pnl:AddControl( "Slider", { Label = "Bonus Per Level", Command = "sbuy_levelbonus", Min = 0, Max = 200 } )
+	slider = pnl:AddControl( "Slider", { Label = "Bonus per level", Command = "sbuy_levelbonus", Min = 0, Max = 200 } )
 	slider.TranslateSliderValues = TranslateValuesRound
 	slider.RoundDecimals = -1
-	slider = pnl:AddControl( "Slider", { Type = "float", Label = "Kills Required Per Level", Command = "sbuy_levelsize", Min = 1, Max = 5 } )
+	slider = pnl:AddControl( "Slider", { Type = "float", Label = "Kills required per level", Command = "sbuy_levelsize", Min = 1, Max = 5 } )
 	slider.TranslateSliderValues = TranslateValuesRound
 	slider.RoundDecimals = 1
 	
-	pnl:AddControl( "CheckBox", { Label = "Free Weapons", Command = "freebuy" } )
-	
+	pnl:AddControl( "CheckBox", { Label = "All weapons free (disables logging while active)", Command = "sbuy_freebuy" } )
 	pnl:AddControl( "CheckBox", { Label = "Logging (requires restart)", Command = "sbuy_log" } )
-	pnl:AddControl( "CheckBox", { Label = "Stat Saver (requires restart)", Command = "sbuy_statsaver" } )
-	pnl:AddControl( "CheckBox", { Label = "Disable Undo", Command = "sbuy_noundo" } )
-	pnl:AddControl( "CheckBox", { Label = "Debug Mode", Command = "sbuy_debug" } )
+	pnl:AddControl( "CheckBox", { Label = "Stat saver (requires restart)", Command = "sbuy_statsaver" } )
+	pnl:AddControl( "CheckBox", { Label = "Disable undo", Command = "sbuy_noundo" } )
+	pnl:AddControl( "CheckBox", { Label = "Debug mode", Command = "sbuy_debug" } )
+	pnl:AddControl( "CheckBox", { Label = "Autoreload prices", Command = "sbuy_autoreload" } )
 end
 
 local function ResetMenu(pnl)

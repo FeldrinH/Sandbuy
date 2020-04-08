@@ -20,8 +20,8 @@ util.AddNetworkString("moneychanged")
 util.AddNetworkString("weaponbought")
 util.AddNetworkString("newprices")
 
-CreateConVar("freebuy", 0, FCVAR_NOTIFY)
-cvars.AddChangeCallback("freebuy", function(convar, old, new)
+CreateConVar("sbuy_freebuy", 0, FCVAR_NOTIFY, "If enabled allows all weapons to be obtained for free. Temporarily disables logging to data/buylogs/ while active")
+cvars.AddChangeCallback("sbuy_freebuy", function(convar, old, new)
 	if !tobool(new) then
 		buylogger.Init()
 	else
@@ -297,7 +297,7 @@ local function GiveHeldAmmo(ply, cmd, args)
 			amount = maxamount
 		end
 		
-		if (amount > 0) and (ammoprice * amount > limit) and !GetConVar("freebuy"):GetBool() then
+		if (amount > 0) and (ammoprice * amount > limit) and !GetConVar("sbuy_freebuy"):GetBool() then
 			amount = math.floor(limit / ammoprice)
 		end
 		if amount < 1 then
@@ -543,7 +543,7 @@ function GM:DoBuy(ply, price, class, buy_type, str_buy, str_needmoney, str_denie
 		end
 	end
 	
-	if GetConVar("freebuy"):GetBool() then
+	if GetConVar("sbuy_freebuy"):GetBool() then
 		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 			return true
