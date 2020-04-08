@@ -9,17 +9,17 @@
 		1
 		{
 			"name"		"sbuy_prices"
-			"text"		"Load Prices"
-			"help"		"List of prices to load. 'default' is included prices. Define custom prices under garrysmod/data/prices. Use 'reloadprices' to apply"
+			"text"		"Load pricesets"
+			"help"		"List of pricesets to load. Use reload buttons under Sandbuy Settings or 'reloadprices' to apply"
 			"type"		"Text"
-			"default"	"base arcade small overrides"
+			"default"	"base basic arcade small overrides"
 		}
 	
 		3
 		{
 			"name"		"sbuy_log"
 			"text"		"Logging"
-			"help"		"If enabled, all monetary transactions (buying, dying, killing) will be logged for statistical purposes. Requires restart"
+			"help"		"If enabled, all monetary transactions (buying, dying, killing) will be logged for statistical purposes to data/buylogs/. Requires restart"
 			"type"		"CheckBox"
 			"default"	"1"
 		}
