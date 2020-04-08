@@ -5,7 +5,7 @@ pricer = pricer or {
 		vehicle = {},
 		entity = {},
 		killreward = {},
-		clipcount = {},
+		//clipcount = {},
 		clipsize = {}
 	}
 }
@@ -335,7 +335,7 @@ function pricer.SaveLoadedPrices(priceset)
 	pricer.SavePriceTable(dirpath .. 'vehicleprices.txt', pricetable.vehicle)
 	pricer.SavePriceTable(dirpath .. 'ammoprices.txt', pricetable.ammo)
 	
-	pricer.SavePriceTable(dirpath .. 'clipcount.txt', pricetable.clipcount)
+	//pricer.SavePriceTable(dirpath .. 'clipcount.txt', pricetable.clipcount)
 	pricer.SavePriceTable(dirpath .. 'clipsize.txt', pricetable.clipsize)
 	
 	pricer.SavePriceTable(dirpath .. 'killrewards.txt', pricetable.killreward)
@@ -401,7 +401,7 @@ function pricer.LoadPrices()
 	pricetable.entity = LoadFile("entityprices.txt")
 	pricetable.vehicle = LoadFile("vehicleprices.txt")
 	pricetable.ammo = LoadAmmoPrices()
-	pricetable.clipcount = LoadFile('clipcount.txt')
+	//pricetable.clipcount = LoadFile('clipcount.txt')
 	pricetable.clipsize = LoadFile('clipsize.txt')
 	
 	pricetable.killreward = LoadFile("killrewards.txt")
@@ -425,7 +425,7 @@ function pricer.SendPrices(ply, reload)
 	net.WritePriceTable(pricetable.ammo)
 
 	if reload != 3 then
-		net.WritePriceTable(pricetable.clipcount)
+		//net.WritePriceTable(pricetable.clipcount)
 		net.WritePriceTable(pricetable.clipsize)
 		for k,v in pairs(pricer.CategoriesLookup) do
 			if k != "machines" then
@@ -476,7 +476,7 @@ function pricer.GetSourceWeapon(wep)
 end
 
 function pricer.GetClipCount(wep, clip)
-	return pricetable.clipcount[wep] or (clip < 2 and 2) or 1
+	return (clip < 2 and 2) or 1
 end
 
 function pricer.GetClipSize(wep)

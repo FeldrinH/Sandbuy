@@ -305,7 +305,7 @@ net.Receive("newprices", function(len)
 	pricer.PriceTable.ammo = net.ReadPriceTable()
 	
 	if reload != 3 then
-		pricer.PriceTable.clipcount = net.ReadPriceTable()
+		//pricer.PriceTable.clipcount = net.ReadPriceTable()
 		pricer.PriceTable.clipsize = net.ReadPriceTable()
 
 		pricer.CategoriesLookup = {}
