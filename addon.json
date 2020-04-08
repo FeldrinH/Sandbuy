@@ -1,9 +1,10 @@
 {
 	"title"		:	"Sandbuy",
 	"type"		:	"gamemode",
-	"tags"		:	[ "roleplay", "fun" ],
+	"tags"		:	[ "realism", "fun" ],
 	"ignore"	:
 	[
-		".git*"
+		".git*",
+		"lua/autorun/*"
 	]
 }
