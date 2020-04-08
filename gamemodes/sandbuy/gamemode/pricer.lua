@@ -20,7 +20,7 @@ local replplayer = nil
 
 local function MsgRepl(text, color)
 	if replplayer then
-		replplayer:PrintMessage(HUD_PRINTCONSOLE, text)
+		replplayer:PrintMessage(HUD_PRINTTALK, text)
 	end
 	
 	if color then
@@ -32,7 +32,7 @@ end
 
 local function WarningRepl(text)
 	if replplayer then
-		replplayer:PrintMessage(HUD_PRINTCONSOLE, text)
+		replplayer:PrintMessage(HUD_PRINTTALK, text)
 	end
 	
 	ErrorNoHalt(text .. '\n')
@@ -150,7 +150,7 @@ local function ParsePriceString()
 		end
 	end
 	
-	local overrideloaded = table.HasValue(parse, GetConVar("sbuy_overrides"):GetString())
+	local overrideloaded = table.HasValue(parse, GetConVar("sbuy_saveto"):GetString())
 	
 	for k,v in pairs(parse) do
 		local path = nil
@@ -172,7 +172,7 @@ local function ParsePriceString()
 	end
 	
 	if !overrideloaded then
-		MsgRepl("  Override prices '" .. GetConVar("sbuy_overrides"):GetString() .. "' not set to load", Color(255,255,0))
+		MsgRepl("  Override prices '" .. GetConVar("sbuy_saveto"):GetString() .. "' not set to load", Color(255,255,0))
 	end
 	
 	return parse
@@ -346,7 +346,7 @@ end
 
 function pricer.SetPrice(wep, price, filename, priceset)
 	if priceset == nil then
-		priceset = GetConVar("sbuy_overrides"):GetString()
+		priceset = GetConVar("sbuy_saveto"):GetString()
 	end
 	
 	if filename == "categories.txt" then
@@ -476,7 +476,7 @@ function pricer.GetSourceWeapon(wep)
 end
 
 function pricer.GetClipCount(wep, clip)
-	return pricetable.clipcount[wep] or (clip < 3 and 3) or 1
+	return pricetable.clipcount[wep] or (clip < 2 and 2) or 1
 end
 
 function pricer.GetClipSize(wep)

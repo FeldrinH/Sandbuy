@@ -8,8 +8,7 @@ local function SandbuySettings(pnl)
 	pnl:AddControl( "Header", { Description = "#utilities.sandboxsettings" } )
 
 	local ConVarsDefault = {
-		sbuy_prices = "base arcade small overrides",
-		sbuy_overrides = "overrides",
+		sbuy_prices = "base basic arcade small overrides",
 		sbuy_log = "1",
 		sbuy_statsaver = "1",
 		sbuy_noundo = "0",
@@ -47,8 +46,8 @@ local function SandbuySettings(pnl)
 	pnl:Button( "Full reload prices (causes lag)", "reloadprices" )
 	pnl:Button( "Quick reload prices", "quickloadprices" )
 	
-	pnl:AddControl( "TextBox", { Label = "Load Prices", Command = "sbuy_prices", WaitForEnter = "1" } )
-	pnl:AddControl( "TextBox", { Label = "Override Prices", Command = "sbuy_overrides", WaitForEnter = "1" } )
+	pnl:AddControl( "TextBox", { Label = "Load pricesets", Command = "sbuy_prices", WaitForEnter = "1" } )
+	pnl:AddControl( "TextBox", { Label = "Save prices to", Command = "sbuy_saveto", WaitForEnter = "1" } )
 	--pnl:ControlHelp( "#persistent_mode.help" ):DockMargin( 16, 4, 16, 8 )
 	
 	--local slider = pnl:AddControl( "Slider", { Label = "Eco Time", Command = "sbuy_ecotime", Min = 0, Max = 20 } )

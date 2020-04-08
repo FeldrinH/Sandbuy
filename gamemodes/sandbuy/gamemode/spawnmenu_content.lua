@@ -349,7 +349,7 @@ hook.Add( "SpawnlistOpenGenericMenu", "SpawnlistOpenGenericMenu", function( canv
 	end )
 	menu:AddSpacer()
 	menu:AddOption( "Set price", function()
-		Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_overrides"):GetString() .. ")", "New price:", "", function(text)
+		Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", "", function(text)
 			local newprice = tonumber(text)
 			if newprice == nil then return end
 			
@@ -478,7 +478,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 			if LocalPlayer():IsAdmin() then
 				menu:AddOption( "Set price", function()
 					local oldprice = pricer.GetPrice(obj.spawnname, 'weapon')
-					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_overrides"):GetString() .. ")", "New price:", oldprice, function(text)
+					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", oldprice, function(text)
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
@@ -558,7 +558,7 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "0" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
 			if LocalPlayer():IsAdmin() then
 				menu:AddOption( "Set price", function()
-					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_overrides"):GetString() .. ")", "New price:", price, function(text)
+					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", price, function(text)
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
@@ -638,7 +638,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "1" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
 			if LocalPlayer():IsAdmin() then
 				menu:AddOption( "Set price", function()
-					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_overrides"):GetString() .. ")", "New price:", price, function(text)
+					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", price, function(text)
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						
@@ -716,7 +716,7 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
 			if LocalPlayer():IsAdmin() then
 				menu:AddOption( "Set price", function()
-					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_overrides"):GetString() .. ")", "New price:", price, function(text)
+					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", price, function(text)
 						local newprice = tonumber(text)
 						if newprice == nil then return end
 						

@@ -1,5 +1,8 @@
 DeriveGamemode( "sandbox" )
 
+CreateConVar("sbuy_saveto", "overrides", FCVAR_REPLICATED + (SERVER and FCVAR_ARCHIVE or 0), "Priceset to save prices to when setting prices in-game")
+CreateConVar("sbuy_autoreload", 1, FCVAR_REPLICATED + (SERVER and FCVAR_ARCHIVE or 0), "Enables automatic reloading of prices when setting prices in-game")
+
 include("playermeta.lua")
 include("pricer.lua")
 include("player_class/player_sandbuy.lua")

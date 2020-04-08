@@ -318,7 +318,7 @@ net.Receive("newprices", function(len)
 		end
 	end
 
-	if reload == 2 then
+	if reload == 2 or reload == 3 then
 		spawnmenu.UpdateSpawnlistPrices()
 	else
 		CopyItems("SpawnableEntities")

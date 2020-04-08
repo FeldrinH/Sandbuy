@@ -132,6 +132,11 @@ concommand.Add("setcategoryprice", function(ply, cmd, args)
 	end
 end)
 
+local function DoAutoReload()
+	pricer.LoadPrices()
+	pricer.SendPrices(nil, 3)
+end
+
 concommand.Add("setprice", function(ply, cmd, args)
 	if IsValid(ply) and !ply:IsAdmin() then return end
 
@@ -139,11 +144,11 @@ concommand.Add("setprice", function(ply, cmd, args)
 	local price = tonumber(args[2])
 	
 	if !wep or !price or !args[3] then 
-		MsgCaller("Usage:  setprice [classname] [price] [type] [priceset (defaults to value of sbuy_overrides)]", ply)
+		MsgCaller("Usage:  setprice [classname] [price] [type] [priceset (defaults to value of sbuy_saveto)]", ply)
 		return
 	end
 	
-	local priceset = args[4] or GetConVar("sbuy_overrides"):GetString()
+	local priceset = args[4] or GetConVar("sbuy_saveto"):GetString()
 	--[[if !pricer.ValidatePriceSetName(priceset, true) then
 		MsgCaller('ERROR: Invalid priceset name', ply)
 		return
@@ -156,6 +161,10 @@ concommand.Add("setprice", function(ply, cmd, args)
 	pricer.SetPrice(wep, price, args[3] .. "prices.txt", priceset)
 	
 	MsgCaller("New override price:  " .. wep .. ": $" .. price .. " in '" .. priceset .. "'", ply)
+	
+	if GetConVar("sbuy_autoreload"):GetBool() then
+		timer.Create("Sandbuy_AutoReloadTimer", 0.5, 1, DoAutoReload) // Ensure that autoreload only occurs once if a lot of prices are set at once
+	end
 end)
 
 concommand.Add("addsourceweapon", function(ply, cmd, args)
@@ -173,7 +182,7 @@ concommand.Add("addsourceweapon", function(ply, cmd, args)
 		
 		pricer.SetPrice(wep, sourcewep, "sourceweapons.txt")
 		
-		MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. GetConVar("sbuy_overrides"):GetString(), ply)
+		MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. GetConVar("sbuy_saveto"):GetString(), ply)
 	else
 		hook.Add("PlayerDeath", "AddSourceWeapon", function(dply, infl, atk)
 			if !IsValid(infl) or infl:IsPlayer() or dply != ply then return end
@@ -182,7 +191,7 @@ concommand.Add("addsourceweapon", function(ply, cmd, args)
 			
 			pricer.SetPrice(wep, sourcewep, "sourceweapons.txt")
 		
-			MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. GetConVar("sbuy_overrides"):GetString(), ply)
+			MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. GetConVar("sbuy_saveto"):GetString(), ply)
 		
 			hook.Remove("PlayerDeath", "AddSourceWeapon")
 		end)
@@ -231,38 +240,48 @@ local function PrintHeldAmmoUsage(ply)
 	--TODO
 end
 
+local usagestr = "Usage: buyheldammo [amount of ammo to buy or 0 for weapon clip size (default 0)] [maximum money to spend (default 800)] [primary/secondary/auto (default auto)]"
 local function GiveHeldAmmo(ply, cmd, args)
 	local wep = ply:GetActiveWeapon()
 	if !IsValid(wep) then return end
 	
-	local amountarg = args[1] or "smart"
-	local typearg = args[2] or "primary"
-	local limitarg = args[3] or 1000
+	local amountarg = args[1] or 0
+	local limitarg = args[2] or 800
+	local typearg = args[3] or "auto"
 	
 	local limit = tonumber(limitarg)
-	if !limit then
-		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid price limit: '" .. limitarg .. "'")
+	if !limit or limit <= 0 then
+		ply:PrintMessage(HUD_PRINTTALK, "Invalid price limit: '" .. limitarg .. "'")
+		ply:PrintMessage(HUD_PRINTTALK, usagestr)
 		return
 	end
-	if limit == 0 or limit > ply:GetMoney() then
-		limit = ply:GetMoney()
+	
+	local maxamount = tonumber(amountarg)
+	if !maxamount or maxamount < 0 then
+		ply:PrintMessage(HUD_PRINTTALK, "Invalid ammo amount: '" .. limitarg .. "'")
+		ply:PrintMessage(HUD_PRINTTALK, usagestr)
+		return
 	end
 	
 	local isprimary = true
 	local ammo = -1
-	if typearg == "primary" then
+	if typearg == "auto" then
 		ammo = wep:GetPrimaryAmmoType()
 		if ammo == -1 then
 			ammo = wep:GetSecondaryAmmoType()
 			isprimary = false
 		end
+	elseif typearg == "primary" then
+		ammo = wep:GetPrimaryAmmoType()
 	elseif typearg == "secondary" then
 		ammo = wep:GetSecondaryAmmoType()
 		isprimary = false
 	else
-		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid ammo type: '" .. typearg .. "'")
+		ply:PrintMessage(HUD_PRINTTALK, "Invalid ammo type: '" .. typearg .. "'")
+		ply:PrintMessage(HUD_PRINTTALK, usagestr)
 		return
 	end
+	
 	if ammo == -1 then 
 		--ply:PrintMessage(HUD_PRINTCONSOLE, "No suitable ammo found for weapon")
 		return
@@ -271,28 +290,19 @@ local function GiveHeldAmmo(ply, cmd, args)
 	local ammoprice = pricer.GetPrice(ammo, "ammo")
 	
 	local amount = 1
-	if ammoprice < 0 then
-		--Ammo not for sale
-	elseif amountarg == "smart" then
-		amount = pricer.GetClipSize(wep:GetClass()) or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
+	if ammoprice >= 0 then
+		if maxamount == 0 then
+			amount = pricer.GetClipSize(wep:GetClass()) or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
+		else
+			amount = maxamount
+		end
+		
 		if (amount > 0) and (ammoprice * amount > limit) and !GetConVar("freebuy"):GetBool() then
 			amount = math.floor(limit / ammoprice)
 		end
 		if amount < 1 then
 			amount = 1
 		end
-	elseif amountarg == "clip" then
-		amount = pricer.GetClipSize(wep:GetClass()) or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
-	elseif amountarg == "max" then
-		amount = math.floor(limit / ammoprice)
-		if amount < 1 then
-			amount = 1
-		end
-	elseif tonumber(args[1]) != nil then
-		amount = tonumber(args[1])
-	else
-		ply:PrintMessage(HUD_PRINTCONSOLE, "Invalid amount: '" .. amountarg .. "'")
-		return
 	end
 	
 	if !gamemode.Call("PlayerGiveAmmo", ply, ammo, amount) then return end
