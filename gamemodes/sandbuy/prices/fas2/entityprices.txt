@@ -1,0 +1,21 @@
+{
+	"fas2_ammo_bandages": 400,
+	"fas2_ammo_hemostats": 1200,
+	"fas2_ammo_quikclots": 800,
+	"fas2_att_acog": 170,
+	"fas2_att_c79": 160,
+	"fas2_att_compm4": 120,
+	"fas2_att_eotech": 120,
+	"fas2_att_foregrip": 90,
+	"fas2_att_harrisbipod": 200,
+	"fas2_att_leupold": 210,
+	"fas2_att_m2120mag": 200,
+	"fas2_att_mp5k30mag": 200,
+	"fas2_att_pso1": 210,
+	"fas2_att_sg55x30mag": 200,
+	"fas2_att_sks20mag": 100,
+	"fas2_att_sks30mag": 200,
+	"fas2_att_suppressor": 60,
+	"fas2_att_tritiumsights": 30,
+	"fas2_att_uziwoodenstock": 90
+}

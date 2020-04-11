@@ -29,7 +29,7 @@
 	"Grenade": 50,
 	"Harpoon": 150,
 	"Improvised_Explosive": 700,
-	"M67 Grenades": 200,
+	"M67 Grenades": 100,
 	"MedkitHealth": 4,
 	"NerveGas": 900,
 	"Nuclear_Warhead": 10000,

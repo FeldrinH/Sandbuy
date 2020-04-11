@@ -1,0 +1,4 @@
+{
+	"fas2_dv2": 2,
+	"fas2_machete": 2
+}

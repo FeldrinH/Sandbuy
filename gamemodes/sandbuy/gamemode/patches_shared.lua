@@ -172,9 +172,9 @@ local function ModifyWeapon(wepclass, modfunc)
 end
 
 local function ModifyEntity(wepclass, modfunc)
-	local wep = scripted_ents.GetStored(wepclass).t
-	if wep then
-		modfunc(wep)
+	local wep = scripted_ents.GetStored(wepclass)
+	if wep and wep.t then
+		modfunc(wep.t)
 	end
 end
 
@@ -246,6 +246,15 @@ hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 		end)
 	end
 
+	ModifyWeapon("fas2_m67", function(wep)
+		wep.Primary.DefaultClip = 1
+	end)
+	
+	ModifyWeapon("fas2_m79", function(wep)
+		wep.ExtraMags = 0
+		wep.Primary.DefaultClip = 3
+	end)
+	
 	ModifyWeapon("bobs_gun_base", function(wep)
 		--print(wep, "BOB'S GOING DOWN")
 		function wep:Reload()
@@ -320,6 +329,12 @@ hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 	function patcher.AddAmmoOverride(wepclass, primary, secondary)
 		patcher.AddAmmoOverride(wepclass, primary, secondary)
 		error('patcher.AddAmmoOverride does not work after gamemode has been loaded')
+	end
+	
+	for k,v in pairs(weapons.GetList()) do
+		if v.FirstDeployTime and v.FirstDeployTime > 0.45 then
+			v.FirstDeployTime = 0.45
+		end
 	end
 	
 	for k,v in pairs(list.GetForEdit("Weapon")) do
