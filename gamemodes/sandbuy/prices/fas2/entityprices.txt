@@ -1,7 +1,7 @@
 {
-	"fas2_ammo_bandages": 400,
-	"fas2_ammo_hemostats": 1200,
-	"fas2_ammo_quikclots": 800,
+	"fas2_ammo_bandages": 350,
+	"fas2_ammo_hemostats": 1050,
+	"fas2_ammo_quikclots": 700,
 	"fas2_att_acog": 170,
 	"fas2_att_c79": 160,
 	"fas2_att_compm4": 120,
