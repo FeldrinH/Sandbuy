@@ -142,15 +142,18 @@ local function AssembleTooltip(class, nicename)
 			damage = damage * 1.075
 		end
 	end
+	if swep.Damage and swep.Damage > 0 then
+		damage = swep.Damage * (swep.Shots or 1)
+	end
 	
 	local rpm = nil
 	local delay = nil
 	if firedata.RPM then
 		rpm = firedata.RPM
 		delay = 60 / rpm
-	elseif firedata.Delay then
-		rpm = 60 / firedata.Delay
-		delay = firedata.Delay
+	elseif firedata.Delay or swep.FireDelay then
+		rpm = 60 / (firedata.Delay or swep.FireDelay)
+		delay = (firedata.Delay or swep.FireDelay)
 	end
 	
 	local dps = nil
