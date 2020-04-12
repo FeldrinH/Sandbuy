@@ -60,6 +60,40 @@ if scaledamage and scaledamage["NeuroWeapons_HeadshotKlonk"] then
 	end )
 end
 
+local adjustmouse = hook.GetTable()["AdjustMouseSensitivity"]
+if adjustmouse and adjustmouse["NeuroTanksAdjustSensitivity"] then
+	hook.Add("AdjustMouseSensitivity", "NeuroTanksAdjustSensitivity", function(default_sensitivity)
+		local ply = LocalPlayer()
+		local tank = ply:GetScriptedVehicle()
+		
+		if tank.VehicleType && ( tank.VehicleType == VEHICLE_TANK || tank.VehicleType == STATIC_GUN ) then
+			local thirdperson = tank.MouseScale3rdPerson or 0.295
+			local firstperson = tank.MouseScale1stPerson or 0.15
+			
+			if GetConVarNumber("sensitivity", 0) > 15 then
+				thirdperson = thirdperson / GetConVarNumber("sensitivity", 0 )
+				firstperson = firstperson / GetConVarNumber("sensitivity", 0 )
+			end
+			
+			if GetConVarNumber("jet_cockpitview", 0) > 0 then
+				return firstperson
+			else
+				return thirdperson
+			end
+		end
+	end)
+end
+if adjustmouse and adjustmouse["AdjustNavalZoomSensitvity"] then
+	hook.Add("AdjustMouseSensitivity","AdjustNavalZoomSensitvity", function(sens)
+		local ply = LocalPlayer()
+		
+		if ply.zoomValue && IsValid( ply:GetScriptedVehicle() ) && ply:GetScriptedVehicle().IsMicroCruiser then
+			ply.sensitivityFraction = ply.zoomValue / DEFAULT_ZOOM
+			return math.Clamp( ply.sensitivityFraction, 0, 1 )
+		end
+	end)
+end
+
 hook.Remove( "PostDrawEffects", "RenderWidgets" )
 hook.Remove( "PlayerTick", "TickWidgets" )
 
