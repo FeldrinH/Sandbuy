@@ -303,6 +303,7 @@ net.Receive("newprices", function(len)
 	pricer.PriceTable.entity = net.ReadPriceTable()
 	pricer.PriceTable.vehicle = net.ReadPriceTable()
 	pricer.PriceTable.ammo = net.ReadPriceTable()
+	pricer.PriceTable.custom = net.ReadPriceTable()
 	
 	if reload != 3 then
 		//pricer.PriceTable.clipcount = net.ReadPriceTable()

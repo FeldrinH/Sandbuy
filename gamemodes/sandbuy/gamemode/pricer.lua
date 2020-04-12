@@ -334,6 +334,7 @@ function pricer.SaveLoadedPrices(priceset)
 	pricer.SavePriceTable(dirpath .. 'entityprices.txt', pricetable.entity)
 	pricer.SavePriceTable(dirpath .. 'vehicleprices.txt', pricetable.vehicle)
 	pricer.SavePriceTable(dirpath .. 'ammoprices.txt', pricetable.ammo)
+	pricer.SavePriceTable(dirpath .. 'customprices.txt', pricetable.custom)
 	
 	//pricer.SavePriceTable(dirpath .. 'clipcount.txt', pricetable.clipcount)
 	pricer.SavePriceTable(dirpath .. 'clipsize.txt', pricetable.clipsize)
@@ -401,6 +402,9 @@ function pricer.LoadPrices()
 	pricetable.entity = LoadFile("entityprices.txt")
 	pricetable.vehicle = LoadFile("vehicleprices.txt")
 	pricetable.ammo = LoadAmmoPrices()
+	
+	pricetable.custom = LoadFile('customprices.txt')
+	
 	//pricetable.clipcount = LoadFile('clipcount.txt')
 	pricetable.clipsize = LoadFile('clipsize.txt')
 	
@@ -423,6 +427,7 @@ function pricer.SendPrices(ply, reload)
 	net.WritePriceTable(pricetable.entity)
 	net.WritePriceTable(pricetable.vehicle)
 	net.WritePriceTable(pricetable.ammo)
+	net.WritePriceTable(pricetable.custom)
 
 	if reload != 3 then
 		//net.WritePriceTable(pricetable.clipcount)
