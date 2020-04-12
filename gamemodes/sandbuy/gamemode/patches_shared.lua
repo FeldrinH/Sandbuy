@@ -229,6 +229,12 @@ patcher.AddAmmoOverride("tfa_cso_gungnir", "AirboatGun")
 
 hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 	if CLIENT then
+		ModifyWeapon("weapon_neurowep_base", function(wep)
+			function wep:AdjustMouseSensitivity()
+				return -1
+			end
+		end)
+
 		ModifyEntity("cw_attpack_base", function(ent)
 			local baseFont = "CW_HUD72"
 			local up = Vector(0, 0, 15)
