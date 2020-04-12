@@ -1,5 +1,29 @@
 patcher = patcher or {}
-patcher.AmmoOverrides = patcher.AmmoOverrides or {}
+
+local ammooverrides = {}
+function patcher.AddAmmoOverride(wepclass, primary, secondary)
+	ammooverrides[wepclass] = {p = primary, s = secondary}
+end
+
+local function ModifyWeapon(wepclass, modfunc)
+	local wep = weapons.GetStored(wepclass)
+	if wep then
+		modfunc(wep)
+	end
+end
+patcher.ModifyWeapon = ModifyWeapon
+
+local function ModifyEntity(wepclass, modfunc)
+	local wep = scripted_ents.GetStored(wepclass)
+	if wep and wep.t then
+		modfunc(wep.t)
+	end
+end
+patcher.ModifyEntity = ModifyEntity
+
+include('custom_buy.lua')
+
+game.AddAmmoType({name = "Shuriken"})
 
 if CLIENT then
 	language.Add("Shuriken_ammo", "Shuriken")
@@ -192,28 +216,6 @@ hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
 	end
 end)
 
-local ammooverrides = patcher.AmmoOverrides
-
-function patcher.AddAmmoOverride(wepclass, primary, secondary)
-	ammooverrides[wepclass] = {p = primary, s = secondary}
-end
-
-local function ModifyWeapon(wepclass, modfunc)
-	local wep = weapons.GetStored(wepclass)
-	if wep then
-		modfunc(wep)
-	end
-end
-
-local function ModifyEntity(wepclass, modfunc)
-	local wep = scripted_ents.GetStored(wepclass)
-	if wep and wep.t then
-		modfunc(wep.t)
-	end
-end
-
-game.AddAmmoType({name = "Shuriken"})
-
 patcher.AddAmmoOverride("weapon_neurowep_bow", "XBowBolt")
 patcher.AddAmmoOverride("weapon_neurowep_shuriken", "Shuriken")
 patcher.AddAmmoOverride("weapon_neurowep_stickynade", "StickyGrenade")
@@ -367,7 +369,6 @@ hook.Add("PostGamemodeLoaded", "Sandbuy_ChangeAmmo", function()
 		end)
 	end
 	function patcher.AddAmmoOverride(wepclass, primary, secondary)
-		patcher.AddAmmoOverride(wepclass, primary, secondary)
 		error('patcher.AddAmmoOverride does not work after gamemode has been loaded')
 	end
 	
