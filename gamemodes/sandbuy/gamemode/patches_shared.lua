@@ -21,7 +21,7 @@ local function ModifyEntity(wepclass, modfunc)
 end
 patcher.ModifyEntity = ModifyEntity
 
-include('custom_buy.lua')
+//include('custom_buy.lua')
 
 game.AddAmmoType({name = "Shuriken"})
 
