@@ -69,10 +69,6 @@ local allowed_freeze = {
 	end
 end)]]
 
-hook.Add("PlayerLoadout","NeuroPlanes_LoadWeapons", function(ply)
-	return ply:NeuroPlanes_LoadWeapons()
-end)
-
 local mines_class = {}
 local mines_weapon = {}
 
@@ -227,52 +223,58 @@ if !meta.StripWeaponsRaw then
 	meta.StripWeaponsRaw = meta.StripWeapons
 end
 
-function meta:StripWeapons()
-	--debug.Trace()
-	if !self.HasDied then
-		self:NeuroPlanes_SaveWeapons()
-	end
-	self:StripWeaponsRaw()
-end
+if meta.GetScriptedVehicle then
+	hook.Add("PlayerLoadout","NeuroPlanes_LoadWeapons", function(ply)
+		return ply:NeuroPlanes_LoadWeapons()
+	end)
 
-function meta:NeuroPlanes_SaveWeapons()
-	local weps = {}
-	for k,v in pairs(self:GetWeapons()) do
-		weps[#weps+1] = {wep=v:GetClass(), clip1=v:Clip1(), clip2=v:Clip2()}
-	end
-	self.NeuroPlanes_SavedWeapons = weps
-	
-	if IsValid(self:GetActiveWeapon()) then
-		self.NeuroPlanes_ActiveWeapon = self:GetActiveWeapon():GetClass()
-	end
-end
-
-function meta:NeuroPlanes_LoadWeapons()
-	local restoresuccess = nil
-	
-	if !self.HasDied and self.NeuroPlanes_SavedWeapons != nil then
-		restoresuccess = true
-		
+	function meta:StripWeapons()
+		--debug.Trace()
+		if !self.HasDied then
+			self:NeuroPlanes_SaveWeapons()
+		end
 		self:StripWeaponsRaw()
-		
-		for k,v in pairs(self.NeuroPlanes_SavedWeapons) do
-			self:Give(v.wep,true)
-			local wep = self:GetWeapon(v.wep)
-			if v.clip1 >= 0 then
-				wep:SetClip1(v.clip1)
-			end
-			if v.clip2 >= 0 then
-				wep:SetClip2(v.clip2)
-			end
+	end
+
+	function meta:NeuroPlanes_SaveWeapons()
+		local weps = {}
+		for k,v in pairs(self:GetWeapons()) do
+			weps[#weps+1] = {wep=v:GetClass(), clip1=v:Clip1(), clip2=v:Clip2()}
 		end
+		self.NeuroPlanes_SavedWeapons = weps
 		
-		if self.NeuroPlanes_ActiveWeapon != nil then
-			self:SelectWeapon(self.NeuroPlanes_ActiveWeapon)
+		if IsValid(self:GetActiveWeapon()) then
+			self.NeuroPlanes_ActiveWeapon = self:GetActiveWeapon():GetClass()
 		end
 	end
-	
-	self.NeuroPlanes_SavedWeapons = nil
-	self.NeuroPlanes_ActiveWeapon = nil
-	
-	return restoresuccess
+
+	function meta:NeuroPlanes_LoadWeapons()
+		local restoresuccess = nil
+		
+		if !self.HasDied and self.NeuroPlanes_SavedWeapons != nil then
+			restoresuccess = true
+			
+			self:StripWeaponsRaw()
+			
+			for k,v in pairs(self.NeuroPlanes_SavedWeapons) do
+				self:Give(v.wep,true)
+				local wep = self:GetWeapon(v.wep)
+				if v.clip1 >= 0 then
+					wep:SetClip1(v.clip1)
+				end
+				if v.clip2 >= 0 then
+					wep:SetClip2(v.clip2)
+				end
+			end
+			
+			if self.NeuroPlanes_ActiveWeapon != nil then
+				self:SelectWeapon(self.NeuroPlanes_ActiveWeapon)
+			end
+		end
+		
+		self.NeuroPlanes_SavedWeapons = nil
+		self.NeuroPlanes_ActiveWeapon = nil
+		
+		return restoresuccess
+	end
 end
