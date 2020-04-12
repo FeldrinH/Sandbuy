@@ -12,7 +12,7 @@
 			"text"		"Load pricesets"
 			"help"		"List of pricesets to load. Use reload buttons under Sandbuy Settings or 'reloadprices' to apply"
 			"type"		"Text"
-			"default"	"base basic arcade small overrides"
+			"default"	"base basic classic small overrides"
 		}
 	
 		3

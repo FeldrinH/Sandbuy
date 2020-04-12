@@ -8,7 +8,7 @@ local function SandbuySettings(pnl)
 	pnl:AddControl( "Header", { Description = "#utilities.sandboxsettings" } )
 
 	local ConVarsDefault = {
-		sbuy_prices = "base basic arcade small overrides",
+		sbuy_prices = GetConVar("sbuy_prices"):GetDefault(),
 		sbuy_log = "1",
 		sbuy_statsaver = "1",
 		sbuy_noundo = "0",
