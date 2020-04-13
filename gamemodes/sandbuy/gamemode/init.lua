@@ -247,7 +247,7 @@ local function GiveHeldAmmo(ply, cmd, args)
 	if !IsValid(wep) then return end
 	
 	local amountarg = args[1] or 0
-	local limitarg = args[2] or 800
+	local limitarg = args[2] or 500
 	local typearg = args[3] or "auto"
 	
 	local limit = tonumber(limitarg)
