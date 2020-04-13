@@ -349,7 +349,7 @@ local function OpenAmmoMenu( icon )
 			opt.OnMouseReleased = MouseReleased
 			table.insert(g_SpawnMenu.AmmoOptions, opt)
 		end
-		if table.Empty(g_SpawnMenu.AmmoOptions) then
+		if table.IsEmpty(g_SpawnMenu.AmmoOptions) then
 			local opt = menu:AddOption( "No ammo available for weapon" )
 			opt:SetTextColor(Color(200,0,0))
 			opt:SetMouseInputEnabled(false)
@@ -367,7 +367,7 @@ end
 local function AddAmmoButton(ctrl)
 	local button = vgui.Create( "DButton", ctrl.ContentNavBar )
 	button:Dock(TOP)
-	button:SetHeight(60)
+	button:SetHeight(50)
 	button:SetContentAlignment(5)
 	button:SetFont("TrebuchetPrice24")
 	button:SetDoubleClickingEnabled(false)
