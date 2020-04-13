@@ -167,10 +167,23 @@ end
 function GM:OnSpawnMenuOpen()
 	if IsValid(g_SpawnMenu) then
 		spawnmenu.UpdateSpawnlistMoney(LocalPlayer():GetMoney())
+		spawnmenu.UpdateSpawnlistActiveWeapon()
 	end
 
 	return BaseClass.OnSpawnMenuOpen(self)
 end
+
+/*function GM:PlayerSwitchWeapon( ply, oldWeapon, newWeapon )
+	print(newWeapon)
+	if IsValid(g_SpawnMenu) and g_SpawnMenu:IsVisible() then
+		timer.Simple(0.01, function()
+			print(LocalPlayer():GetActiveWeapon())
+			spawnmenu.UpdateSpawnlistActiveWeapon()
+		end)
+	end
+
+	return BaseClass.PlayerSwitchWeapon( self, ply, oldWeapon, newWeapon )
+end*/
 
 local function Derma_AmountRequestSmall( strTitle, strText, strDefaultText, fnEnter, fnCancel, strButtonText, strButtonCancelText )
 

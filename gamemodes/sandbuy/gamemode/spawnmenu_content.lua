@@ -30,6 +30,7 @@ net.Receive("weaponbought", function()
 	
 	if IsValid(g_SpawnMenu) and g_SpawnMenu:IsVisible() then
 		spawnmenu.UpdateSpawnlistHasWeapon(wep)
+		timer.Simple(0.01, spawnmenu.UpdateSpawnlistActiveWeapon)
 	end
 end)
 
@@ -62,6 +63,66 @@ local function UpdatePriceLabel(icon, pricetable)
 	end
 end
 
+local function UpdateAmmoCanBuy(button, money)
+	if !button.AmmoPrice then
+		button:SetTextColor(Color(200,0,0))
+		button:SetEnabled(false)
+		button:SetCursor("none")
+	else
+		money = money or LocalPlayer():GetMoney()
+		button:SetEnabled(true)
+		button:SetCursor("hand")
+		button:SetTextColor( ( pricer.CanBuy( money, button.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
+	end
+end
+
+local function UpdateAmmoWeapon(button, wepclass)
+	local wep = LocalPlayer():GetActiveWeapon()
+	
+	if button.CurrentWeapon == wep then
+		return
+	end
+	button.CurrentWeapon = wep
+	
+	if !IsValid(wep) then
+		button:SetText( "Buy Ammo:\nNo active weapon" )
+		button.AmmoPrice = false
+		UpdateAmmoCanBuy(button)
+		return
+	end
+	
+	local ammotype = wep:GetPrimaryAmmoType()
+	local isprimary = true
+	if ammotype == -1 then
+		ammotype = wep:GetSecondaryAmmoType()
+		isprimary = false
+	end
+	if ammotype == -1 then
+		button:SetText( "Buy Ammo:\nNo ammo available" )
+		button.AmmoPrice = false
+		UpdateAmmoCanBuy(button)
+		return
+	end
+	
+	local ammo = game.GetAmmoName(ammotype)
+	local clipsize = pricer.GetClipSize(wep:GetClass()) or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
+	local clipcount = pricer.GetClipCount(wep:GetClass(), clipsize)
+	local amount = clipsize * clipcount
+	local price = pricer.GetPrice(ammo, "ammo")
+		
+	if amount == 0 or price < 0 then
+		button:SetText( "Buy Ammo:\nNo ammo for sale" )
+		button.AmmoPrice = false
+		UpdateAmmoCanBuy(button)
+		return
+	end
+	
+	button:SetText( "Buy Ammo:\n" .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " for " .. pricer.GetPrintPrice(price * amount) )
+	button.DoClick = function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end
+	button.AmmoPrice = price
+	UpdateAmmoCanBuy(button)
+end
+
 function spawnmenu.UpdateSpawnlistMoney(money)
 	if g_SpawnMenu.AmmoOptions then
 		for k,v in pairs(g_SpawnMenu.AmmoOptions) do
@@ -73,6 +134,11 @@ function spawnmenu.UpdateSpawnlistMoney(money)
 	if g_SpawnMenu.MoneyLables then
 		for k,v in pairs(g_SpawnMenu.MoneyLables) do
 			v:SetText("$" .. money)
+		end
+	end
+	if g_SpawnMenu.AmmoButtons then
+		for k,v in pairs(g_SpawnMenu.AmmoButtons) do
+			UpdateAmmoCanBuy(v, money)
 		end
 	end
 	if g_SpawnMenu.PriceIcons then
@@ -111,6 +177,14 @@ function spawnmenu.UpdateSpawnlistHasWeapon(wep)
 			if v:GetSpawnName() == wep then
 				v:SetTextColor(has_color)
 			end
+		end
+	end
+end
+
+function spawnmenu.UpdateSpawnlistActiveWeapon(wepclass)
+	if g_SpawnMenu.AmmoButtons then
+		for k,v in pairs(g_SpawnMenu.AmmoButtons) do
+			UpdateAmmoWeapon(v, wepclass)
 		end
 	end
 end
@@ -199,6 +273,14 @@ local function AssembleTooltip(class, nicename)
 	return out
 end
 
+local function MouseReleased( self, mousecode )
+	DButton.OnMouseReleased( self, mousecode )
+	if ( self.m_MenuClicking && mousecode == MOUSE_LEFT ) then
+		self.m_MenuClicking = false
+		--CloseDermaMenus()
+	end
+end
+
 local function AddMoneyLabel(ctrl)
 	local label = vgui.Create( "DLabel", ctrl.ContentNavBar )
 	label:Dock(TOP)
@@ -220,18 +302,67 @@ local function AddAmmoButton(ctrl)
 	button:SetHeight(60)
 	button:SetContentAlignment(5)
 	--button:SetFont("BigMoney")
-	--button:SetTextColor(Color(0,0,0))
-	button:SetText("Buy Ammo")
+	button:SetDoubleClickingEnabled(false)
 	
-	g_SpawnMenu.AmmoButton = button
-end
-
-local function MouseReleased( self, mousecode )
-	DButton.OnMouseReleased( self, mousecode )
-	if ( self.m_MenuClicking && mousecode == MOUSE_LEFT ) then
-		self.m_MenuClicking = false
-		--CloseDermaMenus()
+	//UpdateAmmoWeapon(button, IsValid(LocalPlayer():GetActiveWeapon()) and LocalPlayer():GetActiveWeapon():GetClass())
+	
+	button.DoRightClick = function( icon )
+		local menu = DermaMenu()
+		local wep = LocalPlayer():GetWeapon( obj.spawnname )
+		if IsValid(wep) then
+			g_SpawnMenu.AmmoOptions = {}
+			if wep:GetPrimaryAmmoType() != -1 then  
+				local ammo = game.GetAmmoName(wep:GetPrimaryAmmoType())
+				local clipcount = pricer.GetClipCount(obj.spawnname, pricer.GetClipSize(obj.spawnname) or wep:GetMaxClip1())
+				local amount = (pricer.GetClipSize(obj.spawnname) or wep:GetMaxClip1()) * clipcount
+				local price = pricer.GetPrice(ammo, "ammo")
+				if amount > 0 then
+					local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Primary Ammo (" .. pricer.GetPrintPrice(price * amount) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
+					opt.AmmoPrice = price * amount
+					opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
+					opt:SetDoubleClickingEnabled(false)
+					opt.OnMouseReleased = MouseReleased
+					table.insert(g_SpawnMenu.AmmoOptions, opt)
+				end
+				local opt = menu:AddOption( "Buy 1 Primary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, 1) end )
+				opt.AmmoPrice = price
+				opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
+				opt:SetDoubleClickingEnabled(false)
+				opt.OnMouseReleased = MouseReleased
+				table.insert(g_SpawnMenu.AmmoOptions, opt)
+			end
+			if wep:GetSecondaryAmmoType() != -1 then
+				local ammo = game.GetAmmoName(wep:GetSecondaryAmmoType())
+				local clipcount = pricer.GetClipCount(obj.spawnname, pricer.GetClipSize(obj.spawnname) or wep:GetMaxClip2())
+				local amount = (pricer.GetClipSize(obj.spawnname) or wep:GetMaxClip2()) * clipcount
+				local price = pricer.GetPrice(ammo, "ammo")
+				if amount > 0 then
+					local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Secondary Ammo (" .. pricer.GetPrintPrice(price * amount) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
+					opt.AmmoPrice = price * amount
+					opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
+					opt:SetDoubleClickingEnabled(false)
+					opt.OnMouseReleased = MouseReleased
+					table.insert(g_SpawnMenu.AmmoOptions, opt)
+				end
+				opt = menu:AddOption( "Buy 1 Secondary Ammo (" .. pricer.GetPrintPrice(price) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, 1) end )
+				opt.AmmoPrice = price
+				opt:SetTextColor( ( pricer.CanBuy( LocalPlayer():GetMoney(), opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
+				opt:SetDoubleClickingEnabled(false)
+				opt.OnMouseReleased = MouseReleased
+				table.insert(g_SpawnMenu.AmmoOptions, opt)
+			end
+		else
+			local opt = menu:AddOption( "Need to own a weapon to buy ammo" )
+			opt:SetTextColor(Color(200,0,0))
+			opt:SetMouseInputEnabled(false)
+			opt:SetCursor("none")
+		end
 	end
+	
+	if !g_SpawnMenu.AmmoButtons then
+		g_SpawnMenu.AmmoButtons = {}
+	end
+	table.insert(g_SpawnMenu.AmmoButtons, button)
 end
 
 local function Derma_StringRequestSmall( strTitle, strText, strDefaultText, fnEnter, fnCancel, strButtonText, strButtonCancelText )
@@ -372,6 +503,7 @@ spawnmenu.AddCreationTab( "#spawnmenu.content_tab", function()
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 
 	AddMoneyLabel(ctrl)
+	AddAmmoButton(ctrl)
 	
 	ctrl.OldSpawnlists = ctrl.ContentNavBar.Tree:AddNode( "#spawnmenu.category.browse", "icon16/cog.png" )
 
@@ -398,7 +530,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 	icon:SetName( obj.nicename )
 	icon:SetTooltip( AssembleTooltip(obj.spawnname, obj.nicename) or obj.nicename )
 	icon:SetMaterial( obj.material )
-	icon:SetAdminOnly( obj.admin )
+	//icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 135, 206, 250, 255 ) )
 	
 	local price = pricer.GetPrice( obj.spawnname, "weapon" )
@@ -515,7 +647,7 @@ spawnmenu.AddCreationTab( "#spawnmenu.category.weapons", function()
 	local ctrl = vgui.Create( "SpawnmenuContentPanel" )
 	
 	AddMoneyLabel(ctrl)
-	--AddAmmoButton(ctrl)
+	AddAmmoButton(ctrl)
 	
 	ctrl:EnableSearch( "weapons", "PopulateWeapons" )
 	ctrl:CallPopulateHook( "PopulateWeapons" )
@@ -535,7 +667,7 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 	icon:SetSpawnName( obj.spawnname )
 	icon:SetName( obj.nicename )
 	icon:SetMaterial( obj.material )
-	icon:SetAdminOnly( obj.admin )
+	//icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 205, 92, 92, 255 ) )
 	
 	local price = pricer.GetPrice( obj.spawnname, "entity" )
@@ -615,7 +747,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 	icon:SetSpawnName( obj.spawnname )
 	icon:SetName( obj.nicename )
 	icon:SetMaterial( obj.material )
-	icon:SetAdminOnly( obj.admin )
+	//icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 0, 0, 0, 255 ) )
 	
 	local price = pricer.GetPrice( obj.spawnname, "vehicle" )
@@ -694,7 +826,7 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 	icon:SetSpawnName( obj.spawnname )
 	icon:SetName( obj.nicename )
 	icon:SetMaterial( obj.material )
-	icon:SetAdminOnly( obj.admin )
+	//icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 0, 0, 0, 255 ) )
 	
 	local price = pricer.GetPrice( obj.spawnname, "vehicle" )
