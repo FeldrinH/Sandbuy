@@ -298,6 +298,7 @@ local function GiveHeldAmmo(ply, cmd, args)
 			amount = maxamount
 		end
 		
+		limit = math.min(limit, ply:GetMoney())
 		if (amount > 0) and (ammoprice * amount > limit) and !GetConVar("sbuy_freebuy"):GetBool() then
 			amount = math.floor(limit / ammoprice)
 		end

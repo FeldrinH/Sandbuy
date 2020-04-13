@@ -373,7 +373,9 @@ local function AddAmmoButton(ctrl)
 	button:SetDoubleClickingEnabled(false)
 	button:SetText("Buy Ammo")
 	
-	button.DoClick = OpenAmmoMenu
+	button.DoClick = function()
+		RunConsoleCommand("buyheldammo")
+	end
 	button.DoRightClick = OpenAmmoMenu
 	
 	if !g_SpawnMenu.AmmoButtons then
