@@ -167,7 +167,6 @@ end
 function GM:OnSpawnMenuOpen()
 	if IsValid(g_SpawnMenu) then
 		spawnmenu.UpdateSpawnlistMoney(LocalPlayer():GetMoney())
-		spawnmenu.UpdateSpawnlistActiveWeapon()
 	end
 
 	return BaseClass.OnSpawnMenuOpen(self)
