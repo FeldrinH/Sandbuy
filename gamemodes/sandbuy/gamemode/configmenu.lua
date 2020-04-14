@@ -46,8 +46,11 @@ local function SandbuySettings(pnl)
 	pnl:Button( "Full reload prices (causes lag)", "reloadprices" )
 	pnl:Button( "Quick reload prices", "quickloadprices" )
 	
+	--pnl:Button( "List available prices (in chat)", "listprices" )
+	
 	pnl:AddControl( "TextBox", { Label = "Load pricesets", Command = "sbuy_prices", WaitForEnter = "1" } )
 	pnl:AddControl( "TextBox", { Label = "Save prices to", Command = "sbuy_saveto", WaitForEnter = "1" } )
+	
 	--pnl:ControlHelp( "#persistent_mode.help" ):DockMargin( 16, 4, 16, 8 )
 	
 	--local slider = pnl:AddControl( "Slider", { Label = "Eco Time", Command = "sbuy_ecotime", Min = 0, Max = 20 } )

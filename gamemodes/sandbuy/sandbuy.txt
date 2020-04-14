@@ -8,6 +8,16 @@
 	{
 		1
 		{
+			"name"		"sbox_persist"
+			"text"		"persistent_mode"
+			"help"		"Enables 'Make Persistent' option when you right click on props while holding C, allowing you to save them across sessions. Leave empty to disable"
+			"type"		"Text"
+			"default"	""
+			"singleplayer" "1"
+		}
+	
+		2
+		{
 			"name"		"sbuy_prices"
 			"text"		"Load pricesets"
 			"help"		"List of pricesets to load. Use reload buttons under Sandbuy Settings or 'reloadprices' to apply"
@@ -317,16 +327,6 @@
 			"help"		"If enabled then manipulating the bones of other entities will be allowed"
 			"type"		"CheckBox"
 			"default"	"0"
-		}
-
-		36
-		{
-			"name"		"sbox_persist"
-			"text"		"persistent_mode"
-			"help"		"Enables 'Make Persistent' option when you right click on props while holding C, allowing you to save them across sessions. Leave empty to disable"
-			"type"		"Text"
-			"default"	""
-			"singleplayer" "1"
 		}
 	}
 }

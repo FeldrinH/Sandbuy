@@ -20,7 +20,7 @@ local replplayer = nil
 
 local function MsgRepl(text, color)
 	if replplayer then
-		replplayer:PrintMessage(HUD_PRINTTALK, text)
+		replplayer:PrintMessage(HUD_PRINTCONSOLE, text)
 	end
 	
 	if color then
@@ -32,7 +32,7 @@ end
 
 local function WarningRepl(text)
 	if replplayer then
-		replplayer:PrintMessage(HUD_PRINTTALK, text)
+		replplayer:PrintMessage(HUD_PRINTCONSOLE, text)
 	end
 	
 	ErrorNoHalt(text .. '\n')
