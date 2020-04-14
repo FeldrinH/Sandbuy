@@ -18,3 +18,7 @@
 .tocmarker {
   display: none;
 }
+
+div.md-container {
+  background-color: white;
+}

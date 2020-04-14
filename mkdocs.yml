@@ -17,11 +17,14 @@ markdown_extensions:
   - attr_list
 nav:
   - Introduction: index.md
-  - Customizing gameplay: convars.md
-  - Prices: prices.md
+  - Client configurtion: client_settings.md
+  - Server configuration: server_settings.md
+  - Price management: prices.md
+  - Differences from Sandbox: patches.md
+  - Advanced price system usage: advancedprices.md
   - Lua API:
     - Overview: lua/overview.md
     - Reference:
-      - Hooks: lua/hooks.md
-      - Price manager: lua/pricer.md
-      - Patching: lua/patcher.md
+      - Gamemode hooks: lua/hooks.md
+      - Price system: lua/pricer.md
+      - Patching system: lua/patcher.md
