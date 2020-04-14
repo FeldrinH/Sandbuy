@@ -35,8 +35,8 @@ local function SandbuySettings(pnl)
 	lbl:DockMargin( 8, 0, 8, 8 )
 	lbl:SetCursor("hand")
 
-	function lbl:DoClick() -- Defines what should happen when the label is clicked
-		gui.OpenURL("https://github.com/FeldrinH/Sandbuy/wiki")
+	function lbl:DoClick()
+		gui.OpenURL("https://sandbuy.readthedocs.io/")
 	end
 	
 	pnl:AddItem( lbl, nil )
@@ -75,7 +75,7 @@ local function SandbuySettings(pnl)
 	slider.TranslateSliderValues = TranslateValuesRound
 	slider.RoundDecimals = 1
 	
-	pnl:AddControl( "CheckBox", { Label = "All weapons free (disables logging while active)", Command = "sbuy_freebuy" } )
+	pnl:AddControl( "CheckBox", { Label = "Free weapons (disables logging while active)", Command = "sbuy_freebuy" } )
 	pnl:AddControl( "CheckBox", { Label = "Logging (requires restart)", Command = "sbuy_log" } )
 	pnl:AddControl( "CheckBox", { Label = "Stat saver (requires restart)", Command = "sbuy_statsaver" } )
 	pnl:AddControl( "CheckBox", { Label = "Disable undo", Command = "sbuy_noundo" } )
