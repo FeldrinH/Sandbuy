@@ -1,6 +1,5 @@
 DeriveGamemode( "sandbox" )
 
-CreateConVar("sbuy_saveto", "overrides", FCVAR_REPLICATED + (SERVER and FCVAR_ARCHIVE or 0), "Priceset to save prices to when setting prices in-game")
 CreateConVar("sbuy_autoreload", 1, FCVAR_REPLICATED + (SERVER and FCVAR_ARCHIVE or 0), "Enables automatic reloading of prices when setting prices in-game")
 
 include("playermeta.lua")
@@ -14,16 +13,18 @@ GM.Name = "Sandbuy"
 GM.Author = "FeldrinH"
 GM.IsSandboxDerived = true
 
-local itemlist = list.GetForEdit("Weapon")
-for k,v in pairs(itemlist) do
-	if v.AdminOnly then
+hook.Add("PostGamemodeLoaded", "Sanbuy_ClearAdminOnly", function()
+	local itemlist = list.GetForEdit("Weapon")
+	for k,v in pairs(itemlist) do
+		if v.AdminOnly then
+			v.AdminOnly = nil
+		end
+	end
+	itemlist = list.GetForEdit("SpawnableEntities")
+	for k,v in pairs(itemlist) do
 		v.AdminOnly = nil
+		if scripted_ents.GetStored(k) then
+			scripted_ents.GetStored(k).t.AdminOnly = nil
+		end
 	end
-end
-itemlist = list.GetForEdit("SpawnableEntities")
-for k,v in pairs(itemlist) do
-	v.AdminOnly = nil
-	if scripted_ents.GetStored(k) then
-		scripted_ents.GetStored(k).t.AdminOnly = nil
-	end
-end
+end)

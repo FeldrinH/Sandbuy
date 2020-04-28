@@ -8,7 +8,7 @@ function buylogger.Init()
 		file.CreateDir("buylogs")
 	end
 	if !file.Exists(filename, "DATA") then
-		file.Write(filename, "action,player,target,newmoney,killweapon\n")
+		file.Write(filename, "action,player,target,newmoney,deltamoney,killweapon\n")
 	end
 	
 	if buylogger.Freebuy then

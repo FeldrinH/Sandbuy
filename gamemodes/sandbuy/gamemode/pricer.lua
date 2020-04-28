@@ -39,7 +39,7 @@ local function WarningRepl(text)
 end
 
 function pricer.StartRepl(ply)
-	if !ply:IsListenServerHost() then
+	if IsValid(ply) and !ply:IsListenServerHost() then
 		replplayer = ply
 	end
 end

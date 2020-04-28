@@ -503,11 +503,12 @@ hook.Add( "SpawnlistOpenGenericMenu", "SpawnlistOpenGenericMenu", function( canv
 	menu:AddSpacer()
 	menu:AddOption( "Set price", function()
 		Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", "", function(text)
+			local saveto = GetConVar("sbuy_saveto"):GetString()
 			local newprice = tonumber(text)
 			if newprice == nil then return end
 			
 			for k,v in pairs( selected ) do
-				RunConsoleCommand("setprice", v:GetSpawnName(), newprice, v:GetContentType())
+				RunConsoleCommand("setprice", v:GetSpawnName(), newprice, v.pricetype or v:GetContentType(), saveto)
 				v:SetText(string.Split(v:GetText(), " ")[1] .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 				v:SetFont("Trebuchet18")
 			end
@@ -842,6 +843,7 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 
 	local icon = vgui.Create( "ContentIcon", container )
 	icon:SetContentType( "simfphys_vehicles" )
+	icon.pricetype = "vehicle"
 	icon:SetSpawnName( obj.spawnname )
 	icon:SetName( obj.nicename )
 	icon:SetMaterial( obj.material )

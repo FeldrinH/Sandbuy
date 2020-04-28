@@ -5,6 +5,8 @@ include("configmenu.lua")
 
 DEFINE_BASECLASS("gamemode_sandbox")
 
+CreateConVar("sbuy_saveto", "overrides", 0, "Priceset to save prices to when setting prices in-game")
+
 surface.CreateFont("DollarSignFont", {
 	font = "Roboto Light",
 	size = 32,
@@ -64,7 +66,8 @@ local deathmessage_killstreak = ""
 local deathmessage_overrides = {
 	["76561198076382343"] = "You were claimed by ", --Martin
 	["76561198315916037"] = "You were deported by ", --TRUMP
-	["76561198033567884"] = "You were corrected by " --Egert
+	["76561198033567884"] = "You were corrected by ", --Egert
+	["76561198100147578"] = "You were kräked by " --Leidt
 }
 
 local function AddSandbuyNotifier(hookname)
@@ -289,7 +292,7 @@ local function FilterItems(listname, priceset, isdebug)
 	local itemlist = list.GetForEdit(listname)
 	local itemcopy = list.GetForEdit(listname .. "Backup")
 	for k,v in pairs(itemcopy) do
-		if pricer.GetPrice(k, priceset) <= -2 and !isdebug then
+		if pricer.GetPrice(k, priceset) <= -2 and pricer.GetPrice(k, priceset) != -4 and !isdebug then
 			itemlist[k] = nil
 		else
 			itemlist[k] = v
