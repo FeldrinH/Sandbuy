@@ -635,9 +635,12 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 					local oldprice = pricer.GetPrice(obj.spawnname, 'weapon')
 					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", oldprice, function(text)
 						local newprice = tonumber(text)
-						if newprice == nil then return end
+						if newprice == nil then
+							chat.AddText(Color(255,0,0), "Invalid price: '" .. text .. "'")
+							return
+						end
 						
-						RunConsoleCommand("setprice", obj.spawnname, newprice, "weapon")
+						RunConsoleCommand("setprice", obj.spawnname, newprice, "weapon", GetConVar("sbuy_saveto"):GetString())
 						
 						icon:SetText(pricer.GetPrintPrice(oldprice) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
@@ -715,9 +718,12 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 				menu:AddOption( "Set price", function()
 					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", price, function(text)
 						local newprice = tonumber(text)
-						if newprice == nil then return end
+						if newprice == nil then
+							chat.AddText(Color(255,0,0), "Invalid price: '" .. text .. "'")
+							return
+						end
 						
-						RunConsoleCommand("setprice", obj.spawnname, newprice, "entity")
+						RunConsoleCommand("setprice", obj.spawnname, newprice, "entity", GetConVar("sbuy_saveto"):GetString())
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
@@ -795,9 +801,12 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 				menu:AddOption( "Set price", function()
 					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", price, function(text)
 						local newprice = tonumber(text)
-						if newprice == nil then return end
+						if newprice == nil then
+							chat.AddText(Color(255,0,0), "Invalid price: '" .. text .. "'")
+							return
+						end
 						
-						RunConsoleCommand("setprice", obj.spawnname, newprice, "vehicle")
+						RunConsoleCommand("setprice", obj.spawnname, newprice, "vehicle", GetConVar("sbuy_saveto"):GetString())
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")
@@ -874,9 +883,12 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 				menu:AddOption( "Set price", function()
 					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", price, function(text)
 						local newprice = tonumber(text)
-						if newprice == nil then return end
+						if newprice == nil then
+							chat.AddText(Color(255,0,0), "Invalid price: '" .. text .. "'")
+							return
+						end
 						
-						RunConsoleCommand("setprice", obj.spawnname, newprice, "vehicle")
+						RunConsoleCommand("setprice", obj.spawnname, newprice, "vehicle", GetConVar("sbuy_saveto"):GetString())
 						
 						icon:SetText(pricer.GetPrintPrice(price) .. " (" .. pricer.GetPrintPrice(newprice) .. ")")
 						icon:SetFont("Trebuchet18")

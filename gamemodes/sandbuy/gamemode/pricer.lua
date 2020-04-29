@@ -4,6 +4,7 @@ pricer = pricer or {
 		ammo = {},
 		vehicle = {},
 		entity = {},
+		custom = {},
 		killreward = {},
 		//clipcount = {},
 		clipsize = {}
@@ -150,7 +151,9 @@ local function ParsePriceString()
 		end
 	end
 	
-	local overrideloaded = table.HasValue(parse, GetConVar("sbuy_saveto"):GetString())
+	if replplayer then
+		local overrideloaded = table.HasValue(parse, replplayer:GetInfo("sbuy_saveto"))
+	end
 	
 	for k,v in pairs(parse) do
 		local path = nil
@@ -171,8 +174,8 @@ local function ParsePriceString()
 		parse[k] = {name = v, path = path}
 	end
 	
-	if !overrideloaded then
-		MsgRepl("  Override prices '" .. GetConVar("sbuy_saveto"):GetString() .. "' not set to load", Color(255,255,0))
+	if replplayer and !overrideloaded then
+		MsgRepl("  Override prices '" .. replplayer:GetInfo("sbuy_saveto") .. "' not set to load", Color(255,255,0))
 	end
 	
 	return parse
@@ -347,7 +350,7 @@ end
 
 function pricer.SetPrice(wep, price, filename, priceset)
 	if priceset == nil then
-		priceset = GetConVar("sbuy_saveto"):GetString()
+		error("No priceset specified")
 	end
 	
 	if filename == "categories.txt" then

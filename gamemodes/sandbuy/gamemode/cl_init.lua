@@ -5,7 +5,7 @@ include("configmenu.lua")
 
 DEFINE_BASECLASS("gamemode_sandbox")
 
-CreateConVar("sbuy_saveto", "overrides", 0, "Priceset to save prices to when setting prices in-game")
+CreateConVar("sbuy_saveto", "overrides", FCVAR_ARCHIVE + FCVAR_USERINFO, "Priceset to save prices to when setting prices in-game")
 
 surface.CreateFont("DollarSignFont", {
 	font = "Roboto Light",

@@ -149,11 +149,11 @@ concommand.Add("setprice", function(ply, cmd, args)
 		return
 	end
 	
-	local priceset = args[4] or GetConVar("sbuy_saveto"):GetString()
-	--[[if !pricer.ValidatePriceSetName(priceset, true) then
+	local priceset = args[4] or (ply and ply:GetInfo("sbuy_saveto"))
+	if !pricer.ValidatePriceSetName(priceset, true) then
 		MsgCaller('ERROR: Invalid priceset name', ply)
 		return
-	end]]
+	end
 	if !file.Exists("prices/" .. priceset, "DATA") and #file.Find("gamemodes/sandbuy/prices/" .. priceset .. "/*", "GAME") > 0 then
 		MsgCaller('ERROR: Attempt to set price on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory', ply)
 		return
@@ -169,7 +169,7 @@ concommand.Add("setprice", function(ply, cmd, args)
 end)
 
 concommand.Add("addsourceweapon", function(ply, cmd, args)
-	if IsValid(ply) and !ply:IsAdmin() then return end
+	if !IsValid(ply) or !ply:IsAdmin() then return end
 	
 	local sourcewep = ply:GetActiveWeapon()
 	if !IsValid(sourcewep) then
@@ -181,18 +181,18 @@ concommand.Add("addsourceweapon", function(ply, cmd, args)
 	if args[1] then
 		local wep = args[1]
 		
-		pricer.SetPrice(wep, sourcewep, "sourceweapons.txt")
+		pricer.SetPrice(wep, sourcewep, "sourceweapons.txt", ply:GetInfo("sbuy_saveto"))
 		
-		MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. GetConVar("sbuy_saveto"):GetString(), ply)
+		MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. ply:GetInfo("sbuy_saveto"), ply)
 	else
 		hook.Add("PlayerDeath", "AddSourceWeapon", function(dply, infl, atk)
 			if !IsValid(infl) or infl:IsPlayer() or dply != ply then return end
 			
 			local wep = infl:GetClass()
 			
-			pricer.SetPrice(wep, sourcewep, "sourceweapons.txt")
+			pricer.SetPrice(wep, sourcewep, "sourceweapons.txt", ply:GetInfo("sbuy_saveto"))
 		
-			MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. GetConVar("sbuy_saveto"):GetString(), ply)
+			MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. ply:GetInfo("sbuy_saveto"), ply)
 		
 			hook.Remove("PlayerDeath", "AddSourceWeapon")
 		end)
