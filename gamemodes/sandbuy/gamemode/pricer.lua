@@ -122,6 +122,18 @@ function table.LookupTableNormalize(ltable)
 	end
 end
 
+function pricer.ValidatePriceSetName(name)
+	if !name or string.len(name) == 0 then
+		return false
+	elseif string.len(name) > 32 then
+		return false
+	elseif string.match(name, "[^%l%d_%-%.]") then
+		return false
+	end
+	
+	return true
+end
+
 local function ValidatePriceSetName(name, silent)
 	if !name or string.len(name) == 0 then
 		return false
