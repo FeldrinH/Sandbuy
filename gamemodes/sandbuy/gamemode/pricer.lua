@@ -267,6 +267,13 @@ local function LoadAmmoPrices()
 	return prices
 end
 
+if CLIENT then
+	function pricer.ModifySelected(func)
+		
+		
+	end
+end
+
 function pricer.ApplyModifier(items, pricesets, modifier)
 	for i,j in pairs(pricesets) do
 		for k,v in pairs(items) do

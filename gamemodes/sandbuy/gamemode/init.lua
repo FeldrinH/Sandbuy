@@ -348,9 +348,13 @@ concommand.Add("givemoney", function(ply, cmd, args)
 	target:PrintMessage(HUD_PRINTCENTER, "You were given $" .. amount .. " by " .. ply:Nick())
 end)
 
-function GM:Initialize()
+function GM:PostGamemodeLoaded()
 	pricer.LoadPrices()
 	
+	return BaseClass.PostGamemodeLoaded(self)
+end
+
+function GM:Initialize()
 	if GetConVar("sbuy_log"):GetBool() then
 		buylogger.Init()
 	end
@@ -359,18 +363,7 @@ function GM:Initialize()
 end
 
 function GM:ShutDown()
-	local t1 = SysTime()
 	buylogger.Close()
-	local t2 = SysTime()
-	
-	print("--")
-	print("--")
-	print("--")
-	print("Flushed buylog")
-	print("Time:", t2 - t1)
-	print("--")
-	print("--")
-	print("--")
 	
 	return BaseClass.ShutDown(self)
 end
@@ -495,8 +488,7 @@ function GM:GetKillReward(ply, killer, killpoints, weapon, weaponname)
 end
 
 function GM:GetNormalizedKillReward(ply, killer, killpoints, killmoney, deltamoney, weapon, weaponname)
-	local killmoney = GetConVar("sbuy_killmoney"):GetInt()
-	return killpoints + (killmoney == 0 and 0 or deltamoney / killmoney)
+	return (killmoney + deltamoney) / GetConVar("sbuy_levelsize"):GetFloat()
 end
 
 function GM:GetBuyPrice(ply, class, priceset)
@@ -504,7 +496,7 @@ function GM:GetBuyPrice(ply, class, priceset)
 end
 
 function GM:GetBailout(ply)
-	return GetConVar("sbuy_defaultmoney"):GetInt() + math.floor(math.sqrt(0.25 + (ply.TotalKillMoney or 0) * 2 / GetConVar("sbuy_levelsize"):GetFloat()) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
+	return GetConVar("sbuy_defaultmoney"):GetInt() + math.floor(math.sqrt(0.25 + (ply.TotalKillMoney or 0) * 2) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
 end
 
 -- If ply == nil, this should return a generic default value for startmoney

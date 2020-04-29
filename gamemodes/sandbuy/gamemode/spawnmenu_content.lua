@@ -505,7 +505,10 @@ hook.Add( "SpawnlistOpenGenericMenu", "SpawnlistOpenGenericMenu", function( canv
 		Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", "", function(text)
 			local saveto = GetConVar("sbuy_saveto"):GetString()
 			local newprice = tonumber(text)
-			if newprice == nil then return end
+			if newprice == nil then
+				chat.AddText(Color(255,0,0), "Invalid price: '" .. text .. "'")
+				return
+			end
 			
 			for k,v in pairs( selected ) do
 				RunConsoleCommand("setprice", v:GetSpawnName(), newprice, v.pricetype or v:GetContentType(), saveto)
@@ -513,6 +516,10 @@ hook.Add( "SpawnlistOpenGenericMenu", "SpawnlistOpenGenericMenu", function( canv
 				v:SetFont("Trebuchet18")
 			end
 		end, nil, "Set", "Cancel")
+	end )
+	menu:AddSpacer()
+	menu:AddOption( "Mark in Lua", function()
+		pricer.SelectedIcons = selected
 	end )
 
 	menu:Open()
