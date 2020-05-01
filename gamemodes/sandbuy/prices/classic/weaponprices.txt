@@ -226,5 +226,5 @@
 	"weapon_neurowep_xm1014": 3600,
 	"weapon_np_flaregun": 100,
 	"weapon_rpg": 2600,
-	"weapon_stinger": 2500
+	"weapon_stinger": 2800
 }
