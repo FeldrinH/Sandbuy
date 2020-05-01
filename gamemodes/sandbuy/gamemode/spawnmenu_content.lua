@@ -501,6 +501,10 @@ hook.Add( "SpawnlistOpenGenericMenu", "SpawnlistOpenGenericMenu", function( canv
 		hook.Run( "SpawnlistContentChanged" )
 	end )
 	menu:AddSpacer()
+	menu:AddOption( "Mark in Lua", function()
+		pricer.SelectedIcons = selected
+	end )
+	menu:AddSpacer()
 	menu:AddOption( "Set price", function()
 		Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", "", function(text)
 			local saveto = GetConVar("sbuy_saveto"):GetString()
@@ -516,10 +520,6 @@ hook.Add( "SpawnlistOpenGenericMenu", "SpawnlistOpenGenericMenu", function( canv
 				v:SetFont("Trebuchet18")
 			end
 		end, nil, "Set", "Cancel")
-	end )
-	menu:AddSpacer()
-	menu:AddOption( "Mark in Lua", function()
-		pricer.SelectedIcons = selected
 	end )
 
 	menu:Open()

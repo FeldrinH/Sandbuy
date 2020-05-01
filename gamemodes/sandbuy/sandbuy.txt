@@ -108,7 +108,7 @@
 			"text"		"Kills Required Per Level"
 			"help"		"Amount of kills required per level of bailout bonus (Scales with level)"
 			"type"		"Numeric"
-			"default"	"2"
+			"default"	"2000"
 			"singleplayer" "1"
 		}
 		

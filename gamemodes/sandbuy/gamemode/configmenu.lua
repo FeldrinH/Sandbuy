@@ -14,11 +14,11 @@ local function SandbuySettings(pnl)
 		sbuy_noundo = "0",
 		sbuy_debug = "0",
 		sbuy_bonusratio = "20",
-		sbuy_startmoney = "1000",
-		sbuy_defaultmoney = "1000",
-		sbuy_killmoney = "1000",
-		sbuy_levelsize = "2",
-		sbuy_levelbonus = "100",
+		sbuy_startmoney = GetConVar("sbuy_startmoney"):GetDefault(),
+		sbuy_defaultmoney = GetConVar("sbuy_defaultmoney"):GetDefault(),
+		sbuy_killmoney = GetConVar("sbuy_killmoney"):GetDefault(),
+		sbuy_levelsize = GetConVar("sbuy_levelsize"):GetDefault(),
+		sbuy_levelbonus = GetConVar("sbuy_levelbonus"):GetDefault(),
 		sbuy_freebuy = "0"
 	}
 
@@ -71,9 +71,9 @@ local function SandbuySettings(pnl)
 	slider = pnl:AddControl( "Slider", { Label = "Bonus per level", Command = "sbuy_levelbonus", Min = 0, Max = 200 } )
 	slider.TranslateSliderValues = TranslateValuesRound
 	slider.RoundDecimals = -1
-	slider = pnl:AddControl( "Slider", { Type = "float", Label = "Kills required per level", Command = "sbuy_levelsize", Min = 1, Max = 5 } )
+	slider = pnl:AddControl( "Slider", { Label = "Level size scaling", Command = "sbuy_levelsize", Min = 0, Max = 4000 } )
 	slider.TranslateSliderValues = TranslateValuesRound
-	slider.RoundDecimals = 1
+	slider.RoundDecimals = -1
 	
 	pnl:AddControl( "CheckBox", { Label = "Free weapons (disables logging while active)", Command = "sbuy_freebuy" } )
 	pnl:AddControl( "CheckBox", { Label = "Logging (requires restart)", Command = "sbuy_log" } )
