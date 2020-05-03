@@ -14,4 +14,8 @@ if SERVER then
 	function meta:AddKillstreak(killcount)
 		self:SetKillstreak(self:GetKillstreak() + killcount)
 	end
+	
+	function meta:AddTotalKillMoney(bailoutmoney)
+		self.TotalKillMoney = math.max(self.TotalKillMoney + bailoutmoney / GetConVar("sbuy_levelsize"):GetInt(), 0)
+	end
 end

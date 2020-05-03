@@ -389,8 +389,6 @@ function GM:PlayerDisconnected(ply)
 end
 
 function GM:PlayerSpawn(ply)
-	print("Spawn")
-	
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
 	BaseBaseClass.PlayerSpawn(self, ply)
@@ -412,11 +410,11 @@ function GM:PlayerSpawn(ply)
 	end
 	
 	ply.HasDied = false
-	
-	print("End Spawn")
 end
 
 function GM:PlayerDeath(ply, inflictor, attacker)
+	print("On", ply)
+
 	local weapon = inflictor
 	local killer = attacker
 	
@@ -452,43 +450,46 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 end
 
 function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
-	local deltamoney = gamemode.Call("GetKillBonus", ply, killer, weapon, weaponname)
+	local deltamoney = gamemode.Call("GetDeathMoney", ply, killer, weapon, weaponname)
 	
-	if killer:IsValid() && killer:IsPlayer() && killer != ply then
-		if ply:Team() != TEAM_UNASSIGNED and ply:Team() == killer:Team() then
-			killer:AddMoney(-pricer.TeamKillPenalty)
-			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), -pricer.TeamKillPenalty)
-		else
-			local killpoints = gamemode.Call("GetKillPoints", ply, killer, weapon, weaponname)
-			local killmoney = gamemode.Call("GetKillReward", ply, killer, killpoints, weapon, weaponname)
-			
-			killer:AddMoney(killmoney + deltamoney)
-			killer.TotalKillMoney = killer.TotalKillMoney + gamemode.Call("GetNormalizedKillReward", ply, killer, killpoints, killmoney, deltamoney, weapon, weaponname)
+	if killer:IsValid() && killer:IsPlayer() then
+		local killmoney = gamemode.Call("GetKillMoney", ply, killer, weapon, weaponname)
+		
+		local rewardmoney, bailoutmoney = nil, nil
+		
+		rewardmoney, bailoutmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, deltamoney, weapon, weaponname)
+	
+		if rewardmoney == nil then
+			rewardmoney, bailoutmoney = gamemode.Call("GetKillReward", ply, killer, killmoney, deltamoney, weapon, weaponname)
 			killer:AddKillstreak(1)
-			buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), killmoney + deltamoney)
 		end
+		
+		killer:AddMoney(rewardmoney)
+		killer:AddTotalKillMoney(bailoutmoney or rewardmoney)
+		buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), rewardmoney)
 	end
 	ply:AddMoney(-deltamoney)
-	--if killer == ply then
-	--	ply.TotalKillMoney = math.max(ply.TotalKillMoney - 1 - deltamoney / ply:GetKillMoney(), 0)
-	--end
 	buylogger.LogDeath(ply, killer, weaponname, ply:GetMoney(), -deltamoney)
 end
 
-function GM:GetKillBonus(ply, killer, weapon, weaponname)
+function GM:GetDeathMoney(ply, killer, weapon, weaponname)
 	return math.ceil(ply:GetMoney() * GetConVar("sbuy_bonusratio"):GetFloat() / 100)
 end
 
-function GM:GetKillPoints(ply, killer, weapon, weaponname)
-	return pricer.GetKillReward(weaponname)
+function GM:GetKillMoney(ply, killer, weapon, weaponname)
+	return GetConVar("sbuy_killmoney"):GetInt() * pricer.GetKillReward(weaponname)
 end
 
-function GM:GetKillReward(ply, killer, killpoints, weapon, weaponname)
-	return GetConVar("sbuy_killmoney"):GetInt() * killpoints
+function GM:GetKillReward(ply, killer, killmoney, deltamoney, weapon, weaponname)
+	return killmoney + deltamoney
 end
 
-function GM:GetNormalizedKillReward(ply, killer, killpoints, killmoney, deltamoney, weapon, weaponname)
-	return (killmoney + deltamoney) / GetConVar("sbuy_levelsize"):GetFloat()
+function GM:GetKillPenalty(ply, killer, killmoney, deltamoney, weapon, weaponname)
+	if ply == killer then
+		return -killmoney
+	elseif ply:Team() != TEAM_UNASSIGNED and ply:Team() == killer:Team() then
+		return -GetConVar("sbuy_killmoney"):GetInt() / 2
+	end
 end
 
 function GM:GetBuyPrice(ply, class, priceset)
@@ -496,7 +497,7 @@ function GM:GetBuyPrice(ply, class, priceset)
 end
 
 function GM:GetBailout(ply)
-	return GetConVar("sbuy_defaultmoney"):GetInt() + math.floor(math.sqrt(0.25 + (ply.TotalKillMoney or 0) * 2) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
+	return GetConVar("sbuy_defaultmoney"):GetInt() + math.floor(math.sqrt(0.25 + math.max(ply.TotalKillMoney or 0, 0) * 2) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
 end
 
 -- If ply == nil, this should return a generic default value for startmoney
