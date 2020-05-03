@@ -1,5 +1,4 @@
 {
-	"npc_grenade_frag": 1.5,
 	"npc_tripmine": 0.5,
 	"weapon_crowbar": 2,
 	"weapon_pistol": 1.5,

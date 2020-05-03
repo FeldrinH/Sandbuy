@@ -4,7 +4,6 @@
 	"m9k_proxy": 0.5,
 	"m9k_released_poison": 0.5,
 	"m9k_thrown_knife": 1,
-	"m9k_thrown_m61": 2,
 	"sent_neuro_flashbang": 10,
 	"sent_tank_smokegrenade": 10,
 	"weapon_752_amerk": 2,
