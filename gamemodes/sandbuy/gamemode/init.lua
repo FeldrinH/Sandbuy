@@ -455,10 +455,8 @@ function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
 	if killer:IsValid() && killer:IsPlayer() then
 		local killmoney = gamemode.Call("GetKillMoney", ply, killer, weapon, weaponname)
 		
-		local rewardmoney, bailoutmoney = nil, nil
+		local rewardmoney, bailoutmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, deltamoney, weapon, weaponname)
 		
-		rewardmoney, bailoutmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, deltamoney, weapon, weaponname)
-	
 		if rewardmoney == nil then
 			rewardmoney, bailoutmoney = gamemode.Call("GetKillReward", ply, killer, killmoney, deltamoney, weapon, weaponname)
 			killer:AddKillstreak(1)
@@ -467,6 +465,11 @@ function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
 		killer:AddMoney(rewardmoney)
 		killer:AddTotalKillMoney(bailoutmoney or rewardmoney)
 		buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), rewardmoney)
+		
+		-- Recalculate death money if suicide, so percentage loss is applied after penalty
+		if ply == killer then
+			deltamoney = gamemode.Call("GetDeathMoney", ply, killer, weapon, weaponname)
+		end
 	end
 	ply:AddMoney(-deltamoney)
 	buylogger.LogDeath(ply, killer, weaponname, ply:GetMoney(), -deltamoney)
