@@ -50,6 +50,7 @@ if scaledamage and scaledamage["NeuroWeapons_HeadshotKlonk"] then
 		
 		if( GetConVarNumber("neuroweapons_headshotsound") == 0 ) then return end 
 		local atk = dmginfo:GetAttacker()
+		if !IsValid(atk) then return end
 		local damage = dmginfo:GetDamage() 
 		local PlayerGear = ply.NeuroArmor
 		local stoptheshow, damagescale = ply:IsHitgroupProtected( hitgroup, dmginfo ) 
@@ -196,7 +197,9 @@ local categoryoverrides = {
 }
 
 hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
-	if !pricer.InCategory(ent:GetClass(), 'moveables') then
+	if ply:IsSuperAdmin() and GetConVar("sbuy_debug"):GetBool() then return end
+
+	if !pricer.InCategory(ent:GetClass(), 'allowedphysgun') then
 		return false
 	end
 	if ent:IsVehicle() and IsValid(ent:GetDriver()) then
@@ -211,7 +214,24 @@ hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
 	if IsValid(trace.Entity) and trace.Entity:IsPlayer() then
 		return false
 	end
-	if !pricer.InCategory(tool, 'allowedtools') then
+	if !pricer.InCategory(tool, 'allowedtool') then
+		return false
+	end
+end)
+
+hook.Add("CanProperty", "Sandbuy_NerfProperties", function(ply, property, ent)
+	if ply:IsSuperAdmin() and GetConVar("sbuy_debug"):GetBool() then return end
+
+	print(property)
+	if !pricer.InCategory(tool, 'allowedproperty') then
+		return false
+	end
+end)
+
+hook.Add("CanEditVariable", "Sandbuy_NerfProperties", function(ent, ply, variable, val)
+	if ply:IsSuperAdmin() and GetConVar("sbuy_debug"):GetBool() then return end
+
+	if !pricer.InCategory(ent:GetClass(), 'allowededit') then
 		return false
 	end
 end)
