@@ -450,14 +450,15 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 end
 
 function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
-	local deltamoney = gamemode.Call("GetDeathMoney", ply, killer, weapon, weaponname)
+	local deltamoney = nil
 	
 	if killer:IsValid() && killer:IsPlayer() then
 		local killmoney = gamemode.Call("GetKillMoney", ply, killer, weapon, weaponname)
 		
-		local rewardmoney, bailoutmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, deltamoney, weapon, weaponname)
+		local rewardmoney, bailoutmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, weapon, weaponname)
 		
 		if rewardmoney == nil then
+			deltamoney = gamemode.Call("GetDeathMoney", ply, killer, killmoney, weapon, weaponname)
 			rewardmoney, bailoutmoney = gamemode.Call("GetKillReward", ply, killer, killmoney, deltamoney, weapon, weaponname)
 			killer:AddKillstreak(1)
 		end
@@ -465,29 +466,28 @@ function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
 		killer:AddMoney(rewardmoney)
 		killer:AddTotalKillMoney(bailoutmoney or rewardmoney)
 		buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), rewardmoney)
-		
-		-- Recalculate death money if suicide, so percentage loss is applied after penalty
-		if ply == killer then
-			deltamoney = gamemode.Call("GetDeathMoney", ply, killer, weapon, weaponname)
-		end
+	end
+	
+	if deltamoney == nil then
+		deltamoney = gamemode.Call("GetDeathMoney", ply, killer, killmoney, weapon, weaponname)
 	end
 	ply:AddMoney(-deltamoney)
 	buylogger.LogDeath(ply, killer, weaponname, ply:GetMoney(), -deltamoney)
-end
-
-function GM:GetDeathMoney(ply, killer, weapon, weaponname)
-	return math.ceil(ply:GetMoney() * GetConVar("sbuy_bonusratio"):GetFloat() / 100)
 end
 
 function GM:GetKillMoney(ply, killer, weapon, weaponname)
 	return GetConVar("sbuy_killmoney"):GetInt() * pricer.GetKillReward(weaponname)
 end
 
+function GM:GetDeathMoney(ply, killer, killmoney, weapon, weaponname)
+	return math.ceil(ply:GetMoney() * GetConVar("sbuy_bonusratio"):GetFloat() / 100)
+end
+
 function GM:GetKillReward(ply, killer, killmoney, deltamoney, weapon, weaponname)
 	return killmoney + deltamoney
 end
 
-function GM:GetKillPenalty(ply, killer, killmoney, deltamoney, weapon, weaponname)
+function GM:GetKillPenalty(ply, killer, killmoney, weapon, weaponname)
 	if ply == killer then
 		return -killmoney
 	elseif ply:Team() != TEAM_UNASSIGNED and ply:Team() == killer:Team() then
