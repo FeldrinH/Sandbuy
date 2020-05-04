@@ -1,8 +1,16 @@
 {
-	"allowedtools": {
+	"allowedtool": {
 		"paint": 1,
 		"colour": 1,
         "material": 1,
         "simfphyswheeleditor": 1
+	},
+	"allowedproperty": {
+		"editentity": 1
+	},
+	"allowededit": {
+		"edit_fog": 1,
+		"edit_sky": 1,
+		"edit_sun": 1
 	}
 }

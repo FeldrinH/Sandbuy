@@ -553,7 +553,7 @@ function GM:DoBuy(ply, price, class, buy_type, str_buy, str_needmoney, str_denie
 	end
 	
 	if GetConVar("sbuy_freebuy"):GetBool() then
-		if price >= 0 or GetConVar("sbuy_debug"):GetBool() then
+		if price >= 0 or (GetConVar("sbuy_debug"):GetBool() and ply:IsSuperAdmin()) then
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 			return true
 		else

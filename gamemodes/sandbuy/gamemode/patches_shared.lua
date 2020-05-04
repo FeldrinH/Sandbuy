@@ -210,11 +210,11 @@ end)
 hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
 	if ply:IsSuperAdmin() and GetConVar("sbuy_debug"):GetBool() then return end
 	
-	print(tool)
 	if IsValid(trace.Entity) and trace.Entity:IsPlayer() then
 		return false
 	end
 	if !pricer.InCategory(tool, 'allowedtool') then
+		print(tool)
 		return false
 	end
 end)
@@ -222,8 +222,8 @@ end)
 hook.Add("CanProperty", "Sandbuy_NerfProperties", function(ply, property, ent)
 	if ply:IsSuperAdmin() and GetConVar("sbuy_debug"):GetBool() then return end
 
-	print(property)
-	if !pricer.InCategory(tool, 'allowedproperty') then
+	if !pricer.InCategory(property, 'allowedproperty') then
+		print(property)
 		return false
 	end
 end)
