@@ -162,7 +162,7 @@
 	"weapon_ar2": 1200,
 	"weapon_bugbait": -2,
 	"weapon_jericho": 5000,
-	"weapon_neurowep_50cal": 2400,
+	"weapon_neurowep_50cal": 2800,
 	"weapon_neurowep_50cal_ap": 2400,
 	"weapon_neurowep_acr10": 2300,
 	"weapon_neurowep_ak47": 2800,

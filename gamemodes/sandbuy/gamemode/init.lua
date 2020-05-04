@@ -318,6 +318,17 @@ concommand.Add("buyheldammo", GiveHeldAmmo)
 concommand.Add("sbuy_giveprimaryammo", GiveHeldAmmo)--GetDeprecatedMessage("buyheldammo"))
 concommand.Add("sbuy_giveheldammo", GetDeprecatedMessage("buyheldammo")) 
 
+concommand.Add("showstats", function(ply, cmd, args)
+	if !IsValid(ply) then return end
+
+	ply:PrintMessage(HUD_PRINTTALK, "Kills: " .. ply:Frags() .. "  Deaths: " .. ply:Deaths())
+	ply:PrintMessage(HUD_PRINTTALK, "KDR: " .. math.Round(ply:Frags() / ply:Deaths(), 2))
+	local bailout = gamemode.Call("GetBailout", ply)
+	local bailoutlevel = (bailout - GetConVar("sbuy_defaultmoney"):GetInt()) / GetConVar("sbuy_levelbonus"):GetInt()
+	ply:PrintMessage(HUD_PRINTTALK, "Bailout: $" .. bailout .. " ($" .. GetConVar("sbuy_defaultmoney"):GetInt() .. "+$" .. (bailout - GetConVar("sbuy_defaultmoney"):GetInt()) .. ")")
+	ply:PrintMessage(HUD_PRINTTALK, "$" .. math.Round(((bailoutlevel + 2) * (bailoutlevel+1) / 2 - ply.TotalKillMoney) * GetConVar("sbuy_levelsize"):GetInt()) .. " until next bailout increase")
+end)
+
 concommand.Add("givemoney", function(ply, cmd, args)
 	if true then ply:PrintMessage(HUD_PRINTTALK, "Money sharing disabled") return end
 	
