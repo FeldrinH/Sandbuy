@@ -329,36 +329,6 @@ concommand.Add("showstats", function(ply, cmd, args)
 	ply:PrintMessage(HUD_PRINTTALK, "$" .. math.Round(((bailoutlevel + 2) * (bailoutlevel+1) / 2 - ply.TotalKillMoney) * GetConVar("sbuy_levelsize"):GetInt()) .. " until next bailout increase")
 end)
 
-concommand.Add("givemoney", function(ply, cmd, args)
-	if true then ply:PrintMessage(HUD_PRINTTALK, "Money sharing disabled") return end
-	
-	local target = nil
-	if args[2] then
-		for k,v in pairs(player.GetAll()) do 
-			if v:Nick() == args[2] then
-				target = v
-				break
-			end
-		end
-	else
-		target = ply:GetEyeTrace().HitEntity
-	end
-	if !IsValid(target) or !target:IsPlayer() then return end
-	if ply:GetPos():Distance(target:GetPos()) > 500 then ply:PrintMessage(HUD_PRINTTALK, "Player too far") return end
-	
-	local amount = tonumber(args[1])
-	if !amount or amount < 0 then ply:PrintMessage(HUD_PRINTTALK, "Invalid amount") return end
-	if ply:GetMoney() < amount then
-		amount = ply:GetMoney()
-	end
-	
-	ply:AddMoney(-amount)
-	target:AddMoney(amount)
-	
-	ply:PrintMessage(HUD_PRINTTALK, "Given " .. target:Nick() .. " $" .. amount)
-	target:PrintMessage(HUD_PRINTCENTER, "You were given $" .. amount .. " by " .. ply:Nick())
-end)
-
 function GM:PostGamemodeLoaded()
 	pricer.LoadPrices()
 	

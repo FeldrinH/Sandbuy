@@ -111,6 +111,8 @@ hook.Add("PlayerInitialSpawn", "LoadStats", function(ply)
 		ply.TotalKillMoney = plystats.killmoney
 
 		ply.HasDied = true
+		
+		hook.Call("LoadStatSaver", nil, ply, plystats)
 	end
 	
 	print("End Initial Spawn")
@@ -118,6 +120,8 @@ end)
 
 hook.Add("PlayerDisconnected", "SaveStats", function(ply)
 	local plystats = { frags=ply:Frags(), deaths=ply:Deaths(), money=ply:GetMoney(), killstreak=ply:GetKillstreak(), killmoney=ply.TotalKillMoney }
+	
+	hook.Call("SaveStatSaver", nil, ply, plystats)
 	
 	stats[ply:SteamID()] = plystats
 end)
