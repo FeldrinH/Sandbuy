@@ -13,7 +13,7 @@
 	"sent_a-12_p": 2600,
 	"sent_a-6_p": 2600,
 	"sent_a-7_p": 2800,
-	"sent_aatrailer_p": 3000,
+	"sent_aatrailer_p": 3200,
 	"sent_ac-47_skytrain_p": 2500,
 	"sent_ac130_p": 4000,
 	"sent_adf01falken": 3200,

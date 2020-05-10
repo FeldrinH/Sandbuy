@@ -5,6 +5,7 @@
 	"edit_fog": -4,
 	"edit_sky": -4,
 	"edit_sun": -4,
+	"ent_thermalflir": 300,
 	"finishbox": -4,
 	"flagtotem": -4,
 	"functiontotem": -4,

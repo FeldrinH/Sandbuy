@@ -1,0 +1,3 @@
+{
+	"weapon_fists": 2
+}
