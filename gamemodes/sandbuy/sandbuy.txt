@@ -29,7 +29,7 @@
 		{
 			"name"		"sbuy_log"
 			"text"		"Logging"
-			"help"		"If enabled, all monetary transactions (buying, dying, killing) will be logged for statistical purposes to data/buylogs/. Requires restart"
+			"help"		"If enabled, all monetary transactions (buying, dying, killing) will be logged for statistical purposes to data/buylogs/"
 			"type"		"CheckBox"
 			"default"	"1"
 		}
@@ -38,7 +38,7 @@
 		{
 			"name"		"sbuy_statsaver"
 			"text"		"Stat Saver"
-			"help"		"If enabled, players' stats, money and weapons will be restored on rejoin. Requires restart"
+			"help"		"If enabled, players' stats and money (but not owned weapons and ammo) will be restored on rejoin. Requires restart"
 			"type"		"CheckBox"
 			"default"	"1"
 		}
@@ -54,6 +54,15 @@
 		
 		6
 		{
+			"name"		"sbuy_hidemoney"
+			"text"		"Hide money"
+			"help"		"If enabled, the amount of money a player has will be hidden from the scoreboard"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+		
+		7
+		{
 			"name"		"sbuy_debug"
 			"text"		"Debug"
 			"help"		"If enabled, all weapons, entities and vehicles will be visible in spawnmenu. NPCs and props will be spawnable"
@@ -62,7 +71,7 @@
 			"singleplayer" "1"
 		}
 		
-		7
+		8
 		{
 			"name"		"sbuy_bonusratio"
 			"text"		"Bonus Ratio"
@@ -72,7 +81,7 @@
 			"singleplayer" "1"
 		}
 		
-		8
+		9
 		{
 			"name"		"sbuy_startmoney"
 			"text"		"Start Money"
@@ -82,7 +91,7 @@
 			"singleplayer" "1"
 		}
 		
-		9
+		10
 		{
 			"name"		"sbuy_defaultmoney"
 			"text"		"Base Money"
@@ -92,7 +101,7 @@
 			"singleplayer" "1"
 		}
 		
-		10
+		11
 		{
 			"name"		"sbuy_killmoney"
 			"text"		"Kill Money"
@@ -102,7 +111,7 @@
 			"singleplayer" "1"
 		}
 		
-		11
+		12
 		{
 			"name"		"sbuy_levelsize"
 			"text"		"Kills Required Per Level"
@@ -112,7 +121,7 @@
 			"singleplayer" "1"
 		}
 		
-		12
+		13
 		{
 			"name"		"sbuy_levelbonus"
 			"text"		"Bonus Per Level"
@@ -122,7 +131,7 @@
 			"singleplayer" "1"
 		}
 		
-		13
+		14
 		{
 			"name"		"physgun_limited"
 			"text"		"limit_physgun"
@@ -131,7 +140,7 @@
 			"default"	"0"
 		}
 
-		14
+		15
 		{
 			"name"		"sbox_noclip"
 			"text"		"noclip"
@@ -140,7 +149,7 @@
 			"default"	"0"
 		}
 
-		15
+		16
 		{
 			"name"		"sbox_godmode"
 			"text"		"god_mode"
@@ -149,7 +158,7 @@
 			"default"	"0"
 		}
 
-		16
+		17
 		{
 			"name"		"sbox_playershurtplayers"
 			"text"		"players_damage_players"
@@ -158,7 +167,7 @@
 			"default"	"1"
 		}
 
-		17
+		18
 		{
 			"name"		"sbox_maxprops"
 			"text"		"max_props"
@@ -167,7 +176,7 @@
 			"default"	"200"
 		}
 
-		18
+		19
 		{
 			"name"		"sbox_maxragdolls"
 			"text"		"max_ragdolls"
@@ -176,7 +185,7 @@
 			"default"	"10"
 		}
 
-		19
+		20
 		{
 			"name"		"sbox_maxvehicles"
 			"text"		"max_vehicles"
@@ -185,7 +194,7 @@
 			"default"	"4"
 		}
 
-		20
+		21
 		{
 			"name"		"sbox_maxeffects"
 			"text"		"max_effects"
@@ -194,7 +203,7 @@
 			"default"	"200"
 		}
 
-		21
+		22
 		{
 			"name"		"sbox_maxballoons"
 			"text"		"max_balloons"
@@ -203,7 +212,7 @@
 			"default"	"100"
 		}
 
-		22
+		23
 		{
 			"name"		"sbox_maxcameras"
 			"text"		"max_cameras"
@@ -212,7 +221,7 @@
 			"default"	"10"
 		}
 
-		23
+		24
 		{
 			"name"		"sbox_maxnpcs"
 			"text"		"max_npcs"
@@ -221,7 +230,7 @@
 			"default"	"10"
 		}
 
-		24
+		25
 		{
 			"name"		"sbox_maxsents"
 			"text"		"max_entities"
@@ -230,7 +239,7 @@
 			"default"	"100"
 		}
 
-		25
+		26
 		{
 			"name"		"sbox_maxdynamite"
 			"text"		"max_dynamite"
@@ -239,7 +248,7 @@
 			"default"	"10"
 		}
 
-		26
+		27
 		{
 			"name"		"sbox_maxlamps"
 			"text"		"max_lamps"
@@ -248,7 +257,7 @@
 			"default"	"3"
 		}
 
-		27
+		28
 		{
 			"name"		"sbox_maxlights"
 			"text"		"max_lights"
@@ -257,7 +266,7 @@
 			"default"	"5"
 		}
 
-		28
+		29
 		{
 			"name"		"sbox_maxwheels"
 			"text"		"max_wheels"
@@ -266,7 +275,7 @@
 			"default"	"50"
 		}
 
-		29
+		30
 		{
 			"name"		"sbox_maxthrusters"
 			"text"		"max_thrusters"
@@ -275,7 +284,7 @@
 			"default"	"50"
 		}
 
-		30
+		31
 		{
 			"name"		"sbox_maxhoverballs"
 			"text"		"max_hoverballs"
@@ -284,7 +293,7 @@
 			"default"	"50"
 		}
 
-		31
+		32
 		{
 			"name"		"sbox_maxbuttons"
 			"text"		"max_buttons"
@@ -293,7 +302,7 @@
 			"default"	"50"
 		}
 
-		32
+		33
 		{
 			"name"		"sbox_maxemitters"
 			"text"		"max_emitters"
@@ -301,8 +310,8 @@
 			"type"		"Numeric"
 			"default"	"20"
 		}
-
-		33
+		
+		34
 		{
 			"name"		"sbox_bonemanip_npc"
 			"text"		"bone_manipulate_npcs"
@@ -311,7 +320,7 @@
 			"default"	"1"
 		}
 
-		34
+		35
 		{
 			"name"		"sbox_bonemanip_player"
 			"text"		"bone_manipulate_players"
@@ -320,7 +329,7 @@
 			"default"	"0"
 		}
 
-		35
+		36
 		{
 			"name"		"sbox_bonemanip_misc"
 			"text"		"bone_manipulate_others"

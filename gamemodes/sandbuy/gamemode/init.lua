@@ -21,14 +21,23 @@ util.AddNetworkString("moneychanged")
 util.AddNetworkString("weaponbought")
 util.AddNetworkString("newprices")
 
-CreateConVar("sbuy_freebuy", 0, FCVAR_NOTIFY, "If enabled allows all weapons to be obtained for free. Temporarily disables logging to data/buylogs/ while active")
+CreateConVar("sbuy_freebuy", 0, FCVAR_NOTIFY, "If enabled allows all weapons and other purchasable items to be obtained for free")
+
 cvars.AddChangeCallback("sbuy_freebuy", function(convar, old, new)
-	if !tobool(new) then
+	if tobool(new) then
+		buylogger.LogTimestamped("freebuy-enabled", "")
+	else
+		buylogger.LogTimestamped("freebuy-disabled", "")
+	end
+end, "Sandbuy_ToggleFreebuy")
+
+cvars.AddChangeCallback("sbuy_log", function(convar, old, new)
+	if tobool(new) then
 		buylogger.Init()
 	else
 		buylogger.Close(true)
 	end
-end, "Sandbuy_Freebuy")
+end, "Sandbuy_ToggleLogging")
 
 local function MsgCaller(text, ply)
 	if ply and !ply:IsListenServerHost() then
@@ -524,6 +533,7 @@ function GM:DoBuy(ply, price, class, buy_type, str_buy, str_needmoney, str_denie
 	
 	if GetConVar("sbuy_freebuy"):GetBool() then
 		if price >= 0 or (GetConVar("sbuy_debug"):GetBool() and ply:IsSuperAdmin()) then
+			ply:PrintMessage(HUD_PRINTCENTER, string.format(str_buy, price))
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 			return true
 		else

@@ -3,6 +3,8 @@
 -- and then from that point on it pretty much looks after itself. It updates player info
 -- in the think function, and removes itself when the player leaves the server.
 --
+local showmoney = !GetConVar("sbuy_hidemoney"):GetBool()
+
 local PLAYER_LINE = {
 	Init = function( self )
 
@@ -86,10 +88,16 @@ local PLAYER_LINE = {
 			self.Name:SetText( self.PName )
 		end
 		
-		if ( self.NumMoney == nil || self.NumMoney != self.Player:GetMoney() ) then
-			self.NumMoney = self.Player:GetMoney()
-			self.Money:SetText( "$" .. self.NumMoney )
+		if showmoney then
+			if ( self.NumMoney == nil || self.NumMoney != self.Player:GetMoney() ) then
+				self.NumMoney = self.Player:GetMoney()
+				self.Money:SetText( "$" .. self.NumMoney )
+				self.Money:SizeToContentsX( 25 )
+			end
+		elseif self.NumMoney != nil then
+			self.Money:SetText("")
 			self.Money:SizeToContentsX( 25 )
+			self.NumMoney = nil
 		end
 		
 		if ( self.NumKills == nil || self.NumKills != self.Player:Frags() ) then
@@ -228,13 +236,6 @@ local SCORE_BOARD = {
 		--
 		local plyrs = player.GetAll()
 		for id, pl in pairs( plyrs ) do
-			if pl:GetNWBool("isphantom") then
-				if IsValid(pl.ScoreEntry) then
-					pl.ScoreEntry:SetZPos( 9999 )
-					pl.ScoreEntry:Remove()
-				end
-				continue
-			end
 			
 			if ( IsValid( pl.ScoreEntry ) ) then continue end
 
@@ -265,8 +266,9 @@ function GM:ScoreboardShow()
 		g_Scoreboard:MakePopup()
 		g_Scoreboard:SetKeyboardInputEnabled( false )
 		g_Scoreboard:SetMouseInputEnabled( false )
+		
+		showmoney = !GetConVar("sbuy_hidemoney"):GetBool()
 	end
-
 end
 
 --[[---------------------------------------------------------

@@ -7,30 +7,30 @@ function buylogger.Init()
 	if !file.Exists("buylogs", "DATA") then
 		file.CreateDir("buylogs")
 	end
-	if !file.Exists(filename, "DATA") then
-		file.Write(filename, "action,player,target,newmoney,deltamoney,killweapon\n")
-	end
 	
 	if buylogger.Freebuy then
-		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --FREEBUY DISABLED--\n")
+		buylogger.LogTimestamped("logging-enabled", "")
 	else
+		if !file.Exists(filename, "DATA") then
+			file.Write(filename, "action,player,target,newmoney,deltamoney,killweapon\n")
+		end
 		buylogger.File = file.Open(filename, "a", "DATA")
-		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " " .. game.GetMap() .. " --LOGGING STARTED--\n")
+		buylogger.LogTimestamped("logging-started", "")
 	end
 	buylogger.Active = true
 	buylogger.Freebuy = false
 end
 
-function buylogger.Close(isfreebuy)
+function buylogger.Close(keepfile)
 	if !buylogger.Active and !buylogger.Freebuy then return end
 	
 	buylogger.Active = false
-	if isfreebuy then
-		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --FREEBUY ENABLED--\n")
+	if keepfile then
+		buylogger.LogTimestamped("logging-disabled", "")
 		buylogger.File:Flush()
 		buylogger.Freebuy = true
 	else
-		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --LOGGING ENDED--\n")
+		buylogger.LogTimestamped("logging-ended", "")
 		buylogger.File:Close()
 	end
 end
@@ -75,19 +75,23 @@ end
 
 function buylogger.LogReset(resettype, newmoney)
 	if buylogger.Active then
-		buylogger.File:Write("reset-" .. resettype .. ",,," .. newmoney .. "\n")
+		buylogger.LogTimestamped("reset-" .. resettype, "")
 		--buylogger.File:Flush()
 	end
 end
 
+function buylogger.LogTimestamped(log_type, message)
+	buylogger.File:Write(log_type .. "," .. message .. "," .. os.date("%H:%M:%S %d.%m.%Y", os.time()) .. "\n")
+end
+
 function buylogger.LogJoin(ply)
 	if buylogger.Active or buylogger.Freebuy then
-		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --" .. ply:Nick() .. " JOINED--\n")
+		buylogger.LogTimestamped("join", ply:Nick())
 	end
 end
 
 function buylogger.LogLeave(ply)
 	if buylogger.Active or buylogger.Freebuy then
-		buylogger.File:Write(os.date("%H:%M:%S %d.%m.%Y", os.time()) .. " --" .. ply:Nick() .. " LEFT--\n")
+		buylogger.LogTimestamped("leave", ply:Nick())
 	end
 end

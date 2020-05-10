@@ -19,7 +19,8 @@ local function SandbuySettings(pnl)
 		sbuy_killmoney = GetConVar("sbuy_killmoney"):GetDefault(),
 		sbuy_levelsize = GetConVar("sbuy_levelsize"):GetDefault(),
 		sbuy_levelbonus = GetConVar("sbuy_levelbonus"):GetDefault(),
-		sbuy_freebuy = "0"
+		sbuy_freebuy = "0",
+		sbuy_hidemoney = "0"
 	}
 
 	pnl:AddControl( "ComboBox", { MenuButton = 1, Folder = "util_sandbuy", Options = { [ "#preset.default" ] = ConVarsDefault }, CVars = table.GetKeys( ConVarsDefault ) } )
@@ -75,10 +76,13 @@ local function SandbuySettings(pnl)
 	slider.TranslateSliderValues = TranslateValuesRound
 	slider.RoundDecimals = -1
 	
-	pnl:AddControl( "CheckBox", { Label = "Free weapons (disables logging while active)", Command = "sbuy_freebuy" } )
-	pnl:AddControl( "CheckBox", { Label = "Logging (requires restart)", Command = "sbuy_log" } )
+	pnl:AddControl( "CheckBox", { Label = "Logging", Command = "sbuy_log" } )
 	pnl:AddControl( "CheckBox", { Label = "Stat saver (requires restart)", Command = "sbuy_statsaver" } )
+	
 	pnl:AddControl( "CheckBox", { Label = "Disable undo", Command = "sbuy_noundo" } )
+	pnl:AddControl( "CheckBox", { Label = "Hide money", Command = "sbuy_hidemoney" } )
+	
+	pnl:AddControl( "CheckBox", { Label = "Everything free", Command = "sbuy_freebuy" } )
 	pnl:AddControl( "CheckBox", { Label = "Debug mode", Command = "sbuy_debug" } )
 	pnl:AddControl( "CheckBox", { Label = "Autoreload prices", Command = "sbuy_autoreload" } )
 end
