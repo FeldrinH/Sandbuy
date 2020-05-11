@@ -3,6 +3,9 @@
 -- and then from that point on it pretty much looks after itself. It updates player info
 -- in the think function, and removes itself when the player leaves the server.
 --
+if !GetConVar("sbuy_hidemoney") then
+	CreateConVar("sbuy_hidemoney", "0", 0, "If enabled, hide money in scoreboard")
+end
 local showmoney = !GetConVar("sbuy_hidemoney"):GetBool()
 
 local PLAYER_LINE = {

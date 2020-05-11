@@ -15,7 +15,7 @@ function buylogger.Init()
 			file.Write(filename, "action,player,target,newmoney,deltamoney,killweapon\n")
 		end
 		buylogger.File = file.Open(filename, "a", "DATA")
-		buylogger.LogTimestamped("logging-started", "")
+		buylogger.LogTimestamped("logging-started", game.GetMap())
 	end
 	buylogger.Active = true
 	buylogger.Freebuy = false
