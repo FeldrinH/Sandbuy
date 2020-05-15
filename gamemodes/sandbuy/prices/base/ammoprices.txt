@@ -44,7 +44,7 @@
 	"ProxMine": -1,
 	"RPG_Round": 200,
 	"SMG1": 6,
-	"SMG1_Grenade": 100,
+	"SMG1_Grenade": 50,
 	"SatCannon": 2000,
 	"Shuriken": 10,
 	"SniperPenetratedRound": 20,

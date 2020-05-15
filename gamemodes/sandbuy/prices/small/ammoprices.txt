@@ -4,5 +4,6 @@
 	"Improvised_Explosive": 2000,
 	"NerveGas": 1800,
 	"SatCannon": 3000,
-	"nitroG": 800
+	"nitroG": 800,
+	"SMG1_Grenade": 100
 }
