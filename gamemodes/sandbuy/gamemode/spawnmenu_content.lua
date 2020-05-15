@@ -596,7 +596,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 			menu:AddSpacer()
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "3" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
-			if LocalPlayer():IsAdmin() then
+			if CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then
 				menu:AddOption( "Set price", function()
 					local oldprice = pricer.GetPrice(obj.spawnname, 'weapon')
 					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", oldprice, function(text)
@@ -680,7 +680,7 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 		local menu = DermaMenu()
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "0" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
-			if LocalPlayer():IsAdmin() then
+			if CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then
 				menu:AddOption( "Set price", function()
 					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", price, function(text)
 						local newprice = tonumber(text)
@@ -763,7 +763,7 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 		local menu = DermaMenu()
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "1" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
-			if LocalPlayer():IsAdmin() then
+			if CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then
 				menu:AddOption( "Set price", function()
 					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", price, function(text)
 						local newprice = tonumber(text)
@@ -845,7 +845,7 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 
 		local menu = DermaMenu()
 			menu:AddOption( "Copy to Clipboard", function() SetClipboardText( obj.spawnname ) end )
-			if LocalPlayer():IsAdmin() then
+			if CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then
 				menu:AddOption( "Set price", function()
 					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", price, function(text)
 						local newprice = tonumber(text)

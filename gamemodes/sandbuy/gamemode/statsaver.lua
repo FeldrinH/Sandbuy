@@ -5,7 +5,7 @@ function GetStatSaverData()
 end
 
 concommand.Add("resetfull", function( ply, cmd, args, argString  )
-	if IsValid(ply) and !ply:IsAdmin() then return end
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.reset") then return end
 	
 	for k,v in pairs(player.GetAll()) do
 		if argString == "" or argString == v:Nick() then
@@ -36,7 +36,7 @@ concommand.Add("resetfull", function( ply, cmd, args, argString  )
 end)
 
 concommand.Add("resetplayers", function( ply, cmd, args, argString )
-	if IsValid(ply) and !ply:IsAdmin() then return end
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.reset") then return end
 	
 	local targetid = nil
 	
@@ -67,7 +67,7 @@ concommand.Add("resetplayers", function( ply, cmd, args, argString )
 end)
 
 concommand.Add("resetstats", function( ply, cmd, args, argString  )
-	if IsValid(ply) and !ply:IsAdmin() then return end
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.reset") then return end
 	
 	for k,v in pairs(player.GetAll()) do
 		if argString == "" or argString == v:Nick() then

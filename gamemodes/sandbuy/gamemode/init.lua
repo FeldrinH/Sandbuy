@@ -1,4 +1,5 @@
 AddCSLuaFile('shared.lua')
+AddCSLuaFile('sh_cami.lua')
 AddCSLuaFile('playermeta.lua')
 AddCSLuaFile('pricer.lua')
 AddCSLuaFile('player_class/player_sandbuy.lua')
@@ -54,7 +55,7 @@ local function GetDeprecatedMessage(cmdname)
 end
 
 concommand.Add("reloadprices", function(ply)
-	if IsValid(ply) and !ply:IsAdmin() then return end
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then return end
 
 	pricer.StartRepl(ply)
 	pricer.LoadPrices()
@@ -64,7 +65,7 @@ concommand.Add("reloadprices", function(ply)
 end)
 
 concommand.Add("quickloadprices", function(ply)
-	if IsValid(ply) and !ply:IsAdmin() then return end
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then return end
 
 	pricer.StartRepl(ply)
 	pricer.LoadPrices()
@@ -75,7 +76,7 @@ end)
 
 -- TODO
 concommand.Add("listprices", function(ply)
-	if IsValid(ply) and !ply:IsAdmin() then return end
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then return end
 
 	MsgCaller("CUSTOM:", ply)
 	local fsc,drc = file.Find("prices/*", "DATA")
@@ -91,7 +92,7 @@ concommand.Add("listprices", function(ply)
 end)
 
 concommand.Add("normalizeprices", function(ply)
-	if IsValid(ply) and !ply:IsAdmin() then return end
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.manageprices") then return end
 	
 	local fs,dr = file.Find("prices/*", "DATA")
 	for k,v in pairs(dr) do
@@ -105,41 +106,18 @@ concommand.Add("normalizeprices", function(ply)
 	MsgCaller("Normalized prices", ply)
 end)
 
-concommand.Add("mergeactiveprices", function(ply, argStr, args)
-	if IsValid(ply) and !ply:IsAdmin() then return end
+concommand.Add("saveactiveprices", function(ply, argStr, args)
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.editprices", nil, nil, { CommandArguments = { args[1] } }) then return end
 	
 	local outprices = args[1]
 	if !outprices then
-		MsgCaller('No priceset to output to specified', ply)
+		MsgCaller('No priceset to save to specified', ply)
 		return
 	end
 	
 	pricer.SaveLoadedPrices(outprices)
 	
-	MsgCaller("Merged active prices and output to '" .. outprices .. "'", ply)
-end)
-
-concommand.Add("setcategoryprice", function(ply, cmd, args)
-	if IsValid(ply) and !ply:IsAdmin() then return end
-	
-	local category = args[1]
-	if !pricer.CategoriesLookup[category] then
-		MsgCaller("Invalid category: " .. category, ply)
-		return
-	end
-	
-	local price = tonumber(args[2])
-	if !price then
-		hook.Remove("ApplyPriceModifiers", "CategoryOverride_" .. category)
-
-		MsgCaller("Removed category price: " .. category, ply)
-	else
-		hook.Add("OnPricesLoaded", "CategoryOverride_" .. category, function()
-			pricer.ApplyModifier(pricer.CategoriesLookup[category], {"weapon", "entity", "vehicle", "ammo"}, function() return price end)
-		end)
-		
-		MsgCaller("New category price:  " .. category .. "  $" .. price, ply)
-	end
+	MsgCaller("Merged active prices and saved to '" .. outprices .. "'", ply)
 end)
 
 local function DoAutoReload()
@@ -148,7 +126,9 @@ local function DoAutoReload()
 end
 
 concommand.Add("setprice", function(ply, cmd, args)
-	if IsValid(ply) and !ply:IsAdmin() then return end
+	local priceset = args[4] or (ply and ply:GetInfo("sbuy_saveto"))
+
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.editprices", nil, nil, { CommandArguments = { priceset } }) then return end
 
 	local wep = args[1]
 	local price = tonumber(args[2])
@@ -158,9 +138,8 @@ concommand.Add("setprice", function(ply, cmd, args)
 		return
 	end
 	
-	local priceset = args[4] or (ply and ply:GetInfo("sbuy_saveto"))
 	if !pricer.ValidatePriceSetName(priceset, true) then
-		MsgCaller('ERROR: Invalid priceset name', ply)
+		MsgCaller("ERROR: Invalid priceset name: '" .. priceset .. "'", ply)
 		return
 	end
 	if !file.Exists("prices/" .. priceset, "DATA") and #file.Find("gamemodes/sandbuy/prices/" .. priceset .. "/*", "GAME") > 0 then
@@ -178,7 +157,7 @@ concommand.Add("setprice", function(ply, cmd, args)
 end)
 
 concommand.Add("addsourceweapon", function(ply, cmd, args)
-	if !IsValid(ply) or !ply:IsAdmin() then return end
+	if !IsValid(ply) or !CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then return end
 	
 	local sourcewep = ply:GetActiveWeapon()
 	if !IsValid(sourcewep) then
@@ -250,14 +229,14 @@ local function PrintHeldAmmoUsage(ply)
 	--TODO
 end
 
-local usagestr = "Usage: buyheldammo [amount of ammo to buy or 0 for weapon clip size (default 0)] [maximum money to spend (default 800)] [primary/secondary/auto (default auto)]"
+local usagestr = "Usage: buyheldammo [amount of ammo to buy or 0 for weapon clip size (default 0)] [primary/secondary/auto (default auto)] [maximum money to spend (default 500)] "
 local function GiveHeldAmmo(ply, cmd, args)
 	local wep = ply:GetActiveWeapon()
 	if !IsValid(wep) then return end
 	
 	local amountarg = args[1] or 0
-	local limitarg = args[2] or 500
-	local typearg = args[3] or "auto"
+	local typearg = args[2] or "auto"
+	local limitarg = args[3] or 500
 	
 	local limit = tonumber(limitarg)
 	if !limit or limit <= 0 then
@@ -333,9 +312,9 @@ concommand.Add("showstats", function(ply, cmd, args)
 	ply:PrintMessage(HUD_PRINTTALK, "Kills: " .. ply:Frags() .. "  Deaths: " .. ply:Deaths())
 	ply:PrintMessage(HUD_PRINTTALK, "KDR: " .. math.Round(ply:Frags() / ply:Deaths(), 2))
 	local bailout = gamemode.Call("GetBailout", ply)
-	local bailoutlevel = (bailout - GetConVar("sbuy_defaultmoney"):GetInt()) / GetConVar("sbuy_levelbonus"):GetInt()
-	ply:PrintMessage(HUD_PRINTTALK, "Bailout: $" .. bailout .. " ($" .. GetConVar("sbuy_defaultmoney"):GetInt() .. "+$" .. (bailout - GetConVar("sbuy_defaultmoney"):GetInt()) .. ")")
-	ply:PrintMessage(HUD_PRINTTALK, "$" .. math.Round(((bailoutlevel + 2) * (bailoutlevel+1) / 2 - ply.TotalKillMoney) * GetConVar("sbuy_levelsize"):GetInt()) .. " until next bailout increase")
+	local bailoutlevel = math.floor(math.sqrt(0.25 + math.max(ply.TotalKillMoney or 0, 0) * 2) - 0.5)
+	ply:PrintMessage(HUD_PRINTTALK, "Bailout: $" .. bailout .. " ($" .. GetConVar("sbuy_defaultmoney"):GetInt() .. "+$" .. bailoutlevel * GetConVar("sbuy_levelbonus"):GetInt() .. ")")
+	ply:PrintMessage(HUD_PRINTTALK, "$" .. math.ceil(((bailoutlevel + 2) * (bailoutlevel+1) / 2 - ply.TotalKillMoney) * GetConVar("sbuy_levelsize"):GetInt()) .. " until next bailout increase")
 end)
 
 function GM:PostGamemodeLoaded()
@@ -493,6 +472,10 @@ function GM:GetBailout(ply)
 	return GetConVar("sbuy_defaultmoney"):GetInt() + math.floor(math.sqrt(0.25 + math.max(ply.TotalKillMoney or 0, 0) * 2) - 0.5) * GetConVar("sbuy_levelbonus"):GetInt()
 end
 
+function GM:GetDestroyReward(ply, ent, price, markedasvehicle)
+	return markedasvehicle and math.floor(price * 0.5) or 0
+end
+
 -- If ply == nil, this should return a generic default value for startmoney
 function GM:GetStartMoney(ply)
 	return GetConVar("sbuy_startmoney"):GetInt()
@@ -521,7 +504,7 @@ function GM:DoBuy(ply, price, class, buy_type, str_buy, str_needmoney, str_denie
 		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
 		return false
 	elseif price == -4 then
-		if ply:IsAdmin() then
+		if CAMI.PlayerHasAccess(ply, "sandbuy.useadminitems") then
 			ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 			return true
 		else
@@ -626,8 +609,9 @@ end
 
 function GM:PlayerSpawnedSENT(ply, ent)
 	local price = gamemode.Call("GetBuyPrice", ply, ent:GetClass(), "entity")
-	if price > 0 and pricer.InCategory(ent:GetClass(), "machines") then
-		ent.DestroyReward = math.floor(price * 0.5)
+	local destroyreward = gamemode.Call("GetDestroyReward", ply, ent, price, pricer.InCategory(ent:GetClass(), "machines"))
+	if destroyreward > 0 then
+		ent.DestroyReward = destroyreward
 	end
 	
 	return BaseClass.PlayerSpawnedSENT(self, ply, ent)
@@ -635,8 +619,9 @@ end
 
 function GM:PlayerSpawnedVehicle(ply, ent)
 	local price = gamemode.Call("GetBuyPrice", ply, ent.VehicleName, "vehicle")
-	if price > 0 then
-		ent.DestroyReward = math.floor(price * 0.5)
+	local destroyreward = gamemode.Call("GetDestroyReward", ply, ent, price, true)
+	if destroyreward > 0 then
+		ent.DestroyReward = destroyreward
 	end
 	
 	return BaseClass.PlayerSpawnedVehicle(self, ply, ent)
@@ -655,8 +640,9 @@ function GM:EntityTakeDamage(target, dmg)
 end
 
 function GM:EntityRemoved(ent)
-	if ent.DestroyReward and IsValid(ent.DestroyRewardPlayer) and CurTime() - ent.DestroyRewardTime <= 0.5 then
+	if ent.DestroyReward and IsValid(ent.DestroyRewardPlayer) and CurTime() - ent.DestroyRewardTime <= 1 then
 		ent.DestroyRewardPlayer:AddMoney(ent.DestroyReward)
+		ent.DestroyRewardPlayer:AddTotalKillMoney(ent.DestroyReward)
 		buylogger.LogDestroy(ent.DestroyRewardPlayer, ent, ent.DestroyRewardPlayer:GetMoney(), ent.DestroyReward)
 	end
 	

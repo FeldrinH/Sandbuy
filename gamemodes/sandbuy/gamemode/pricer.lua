@@ -39,6 +39,14 @@ local function WarningRepl(text)
 	ErrorNoHalt(text .. '\n')
 end
 
+function pricer.SetSelected(func)
+	for k,v in pairs(pricer.SelectedIcons) do
+		local oldprice = pricer.GetPrice(v:GetSpawnName(), v.pricetype or v:GetContentType())
+		local newprice = func(v:GetSpawnName(), oldprice, v)
+		RunConsoleCommand("setprice", v:GetSpawnName(), newprice, v.pricetype or v:GetContentType(), GetConVar("sbuy_saveto"):GetString())
+	end
+end
+
 function pricer.StartRepl(ply)
 	if IsValid(ply) and !ply:IsListenServerHost() then
 		replplayer = ply
@@ -413,6 +421,8 @@ function pricer.SetPrice(wep, price, filename, priceset)
 	else
 		pricer.SavePriceTable(filepath, pricetable)
 	end
+	
+	hook.Call("PostSetPrice", nil, wep, price, filename, priceset)
 end
 
 function pricer.LoadPrices()

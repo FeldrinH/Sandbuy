@@ -4,6 +4,7 @@ DeriveGamemode( "sandbox" )
 
 CreateConVar("sbuy_autoreload", 1, FCVAR_REPLICATED + (SERVER and FCVAR_ARCHIVE or 0), "Enables automatic reloading of prices when setting prices in-game")
 
+include("sh_cami.lua")
 include("playermeta.lua")
 include("pricer.lua")
 include("player_class/player_sandbuy.lua")
@@ -14,6 +15,11 @@ DEFINE_BASECLASS( "gamemode_sandbox" )
 GM.Name = "Sandbuy"
 GM.Author = "FeldrinH"
 GM.IsSandboxDerived = true
+
+CAMI.RegisterPrivilege({ Name = "sandbuy.editprices", MinAccess = "admin" })
+CAMI.RegisterPrivilege({ Name = "sandbuy.manageprices", MinAccess = "superadmin" })
+CAMI.RegisterPrivilege({ Name = "sandbuy.useadminitems", MinAccess = "admin" })
+CAMI.RegisterPrivilege({ Name = "sandbuy.reset", MinAccess = "admin" })
 
 hook.Add("PostGamemodeLoaded", "Sanbuy_ClearAdminOnly", function()
 	local itemlist = list.GetForEdit("Weapon")
