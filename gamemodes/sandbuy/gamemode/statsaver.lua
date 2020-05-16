@@ -7,6 +7,8 @@ end
 concommand.Add("resetfull", function( ply, cmd, args, argString  )
 	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.reset") then return end
 	
+	buylogger.LogReset("full", argString)
+	
 	for k,v in pairs(player.GetAll()) do
 		if argString == "" or argString == v:Nick() then
 			v:SetFrags(0)
@@ -20,36 +22,7 @@ concommand.Add("resetfull", function( ply, cmd, args, argString  )
 			v:SetMoney(gamemode.Call("GetStartMoney", v))
 			v:Spawn()
 			
-			if argString != "" then
-				targetid = v:SteamID()
-			end
-		end
-	end
-	
-	if argString == "" then
-		stats = {}
-	elseif targetid then
-		stats[targetid] = nil
-	end
-	
-	buylogger.LogReset("full", gamemode.Call("GetStartMoney"))
-end)
-
-concommand.Add("resetplayers", function( ply, cmd, args, argString )
-	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.reset") then return end
-	
-	local targetid = nil
-	
-	for k,v in pairs(player.GetAll()) do
-		if argString == "" or argString == v:Nick() then
-			v:SetFrags(0)
-			v:SetDeaths(0)
-			v:StripWeaponsRaw()
-			v:RemoveAllAmmo()
-			v.NeuroPlanes_SavedWeapons = nil
-			v.NeuroPlanes_ActiveWeapon = nil
-			v.TotalKillMoney = 0
-			v:SetMoney(gamemode.Call("GetStartMoney", v))
+			buylogger.LogStartingBailout(v, v:GetMoney(), v:GetMoney())
 			
 			if argString != "" then
 				targetid = v:SteamID()
@@ -62,12 +35,44 @@ concommand.Add("resetplayers", function( ply, cmd, args, argString )
 	elseif targetid then
 		stats[targetid] = nil
 	end
+end)
+
+concommand.Add("resetplayers", function( ply, cmd, args, argString )
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.reset") then return end
 	
-	buylogger.LogReset("players", gamemode.Call("GetStartMoney"))
+	buylogger.LogReset("players", argString)
+	
+	local targetid = nil
+	for k,v in pairs(player.GetAll()) do
+		if argString == "" or argString == v:Nick() then
+			v:SetFrags(0)
+			v:SetDeaths(0)
+			v:StripWeaponsRaw()
+			v:RemoveAllAmmo()
+			v.NeuroPlanes_SavedWeapons = nil
+			v.NeuroPlanes_ActiveWeapon = nil
+			v.TotalKillMoney = 0
+			v:SetMoney(gamemode.Call("GetStartMoney", v))
+			
+			buylogger.LogStartingBailout(v, v:GetMoney(), v:GetMoney())
+			
+			if argString != "" then
+				targetid = v:SteamID()
+			end
+		end
+	end
+	
+	if argString == "" then
+		stats = {}
+	elseif targetid then
+		stats[targetid] = nil
+	end
 end)
 
 concommand.Add("resetstats", function( ply, cmd, args, argString  )
 	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.reset") then return end
+	
+	buylogger.LogReset("stats", argString)
 	
 	for k,v in pairs(player.GetAll()) do
 		if argString == "" or argString == v:Nick() then
@@ -92,8 +97,6 @@ concommand.Add("resetstats", function( ply, cmd, args, argString  )
 			plystats.deaths = 0
 		end
 	end
-	
-	buylogger.LogReset("stats", "")
 end)
 
 if !GetConVar("sbuy_statsaver"):GetBool() then return end

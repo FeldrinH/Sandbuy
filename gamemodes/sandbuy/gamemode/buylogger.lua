@@ -69,9 +69,15 @@ function buylogger.LogBailout(ply, newmoney, delta)
 	end
 end
 
-function buylogger.LogReset(resettype)
+function buylogger.LogStartingBailout(ply, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write(GetLogTime() .. ",reset-" .. resettype .. "\n")
+		buylogger.File:Write(GetLogTime() .. ",bailout-start," .. ply:Nick() .. ",," .. newmoney .. "," .. delta .. "\n")
+	end
+end
+
+function buylogger.LogReset(resettype, resettarget)
+	if buylogger.Active then
+		buylogger.File:Write(GetLogTime() .. ",reset-" .. resettype .. "," .. resettarget .. "\n")
 	end
 end
 
