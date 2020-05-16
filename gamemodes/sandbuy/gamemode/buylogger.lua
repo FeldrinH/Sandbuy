@@ -8,58 +8,55 @@ function buylogger.Init()
 		file.CreateDir("buylogs")
 	end
 	
-	if buylogger.Freebuy then
+	if buylogger.File then
 		buylogger.LogTimestamped("logging-enabled", "")
 	else
 		if !file.Exists(filename, "DATA") then
-			file.Write(filename, "action,player,target,newmoney,deltamoney,killweapon\n")
+			file.Write(filename, "action,time,player,target,newmoney,deltamoney,killweapon\n")
 		end
 		buylogger.File = file.Open(filename, "a", "DATA")
 		buylogger.LogTimestamped("logging-started", game.GetMap())
 	end
+	
 	buylogger.Active = true
-	buylogger.Freebuy = false
 end
 
-function buylogger.Close(keepfile)
-	if !buylogger.Active and !buylogger.Freebuy then return end
+function buylogger.Close()
+	if !buylogger.File then return end
 	
 	buylogger.Active = false
-	if keepfile then
-		buylogger.LogTimestamped("logging-disabled", "")
-		buylogger.File:Flush()
-		buylogger.Freebuy = true
-	else
-		buylogger.LogTimestamped("logging-ended", "")
-		buylogger.File:Close()
-	end
+	
+	buylogger.LogTimestamped("logging-ended", "")
+	buylogger.File:Close()
+	buylogger.File = nil
+end
+
+local function GetLogTime()
+	return math.Round(CurTime(), 1)
 end
 
 function buylogger.LogKill(ply, victim, wepname, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write("kill," .. ply:Nick() .. "," .. (victim:IsPlayer() and victim:Nick() or victim:GetClass()).. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
-		--buylogger.File:Flush()
+		buylogger.File:Write(GetLogTime() .. ",kill," .. ply:Nick() .. "," .. (victim:IsPlayer() and victim:Nick() or victim:GetClass()).. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
 	end
 end
 
 function buylogger.LogDeath(ply, atk, wepname, newmoney, delta)
 	if buylogger.Active then
 		--if ply == atk then atk = nil end
-		buylogger.File:Write("death," .. ply:Nick() .. "," .. (IsValid(atk) and atk:IsPlayer() and atk:Nick() or "") .. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
-		--buylogger.File:Flush()
+		buylogger.File:Write(GetLogTime() .. ",death," .. ply:Nick() .. "," .. (IsValid(atk) and atk:IsPlayer() and atk:Nick() or "") .. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
 	end
 end
 
 function buylogger.LogDestroy(ply, veh, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write("destroy," .. ply:Nick() .. "," .. veh:GetClass() .. "," .. newmoney .. "," .. delta .. "\n")
-		--buylogger.File:Flush()
+		buylogger.File:Write(GetLogTime() .. ",destroy," .. ply:Nick() .. "," .. veh:GetClass() .. "," .. newmoney .. "," .. delta .. "\n")
 	end
 end
 
 function buylogger.LogBuy(ply, class, buytype, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write("buy-" .. buytype .. "," .. ply:Nick() .. "," .. class .. "," .. newmoney .. "," .. delta .. "\n")
+		buylogger.File:Write(GetLogTime() .. ",buy-" .. buytype .. "," .. ply:Nick() .. "," .. class .. "," .. newmoney .. "," .. delta .. "\n")
 		if buytype != "ammo" then
 			buylogger.File:Flush()
 		end
@@ -68,30 +65,32 @@ end
 
 function buylogger.LogBailout(ply, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write("bailout," .. ply:Nick() .. ",," .. newmoney .. "," .. delta .. "\n")
-		--buylogger.File:Flush()
+		buylogger.File:Write(GetLogTime() .. ",bailout," .. ply:Nick() .. ",," .. newmoney .. "," .. delta .. "\n")
 	end
 end
 
-function buylogger.LogReset(resettype, newmoney)
+function buylogger.LogReset(resettype)
 	if buylogger.Active then
-		buylogger.LogTimestamped("reset-" .. resettype, "")
-		--buylogger.File:Flush()
+		buylogger.File:Write(GetLogTime() .. ",reset-" .. resettype .. "\n")
+	end
+end
+
+function buylogger.LogString(log_type, message)
+	if buylogger.Active then
+		buylogger.File:Write(GetLogTime() .. "," .. log_type .. "," .. GetLogTime() .. "," .. message .. "\n")
 	end
 end
 
 function buylogger.LogTimestamped(log_type, message)
-	buylogger.File:Write(log_type .. "," .. message .. "," .. os.date("%H:%M:%S %d.%m.%Y", os.time()) .. "\n")
+	if buylogger.File then
+		buylogger.File:Write(GetLogTime() .. "," .. log_type .. "," .. message .. "," .. os.date("%H:%M:%S %d.%m.%Y", os.time()) .. "\n")
+	end
 end
 
 function buylogger.LogJoin(ply)
-	if buylogger.Active or buylogger.Freebuy then
-		buylogger.LogTimestamped("join", ply:Nick())
-	end
+	buylogger.LogTimestamped("join", ply:Nick())
 end
 
 function buylogger.LogLeave(ply)
-	if buylogger.Active or buylogger.Freebuy then
-		buylogger.LogTimestamped("leave", ply:Nick())
-	end
+	buylogger.LogTimestamped("leave", ply:Nick())
 end
