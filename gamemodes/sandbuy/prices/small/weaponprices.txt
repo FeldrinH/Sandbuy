@@ -1,7 +1,6 @@
 {
 	"<OVERLAY>": 1,
-	"m9k_browningauto5": 4000,
-	"m9k_dbarrel": 9000,
+	"m9k_dbarrel": 6000,
 	"m9k_ex41": 5000,
 	"m9k_ied_detonator": 3000,
 	"m9k_m202": 7000,
@@ -15,6 +14,7 @@
 	"m9k_rpg7": 5200,
 	"m9k_spas12": 8000,
 	"m9k_striker12": 4500,
+	"m9k_suicide_bomb": 800,
 	"m9k_usas": 5500,
 	"tfa_browningauto5": 4000,
 	"tfa_jackhammer": 4800,
