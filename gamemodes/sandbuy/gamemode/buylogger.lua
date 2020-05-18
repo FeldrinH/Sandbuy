@@ -35,28 +35,42 @@ local function GetLogTime()
 	return math.Round(CurTime(), 1)
 end
 
-function buylogger.LogKill(ply, victim, wepname, newmoney, delta)
+function buylogger.FormatPlayer(ply)
+	return ply.BuylogID
+end
+local FormatPlayer = buylogger.FormatPlayer
+
+function buylogger.FormatActor(ent)
+	if IsValid(ent) then
+		return ent.BuylogID or ent:GetClass()
+	else
+		return ''
+	end
+end
+local FormatActor = buylogger.FormatActor
+
+function buylogger.LogKill(ply, victim, wepname, newmoney, delta, ispenalty)
 	if buylogger.Active then
-		buylogger.File:Write(GetLogTime() .. ",kill," .. ply:Nick() .. "," .. (victim:IsPlayer() and victim:Nick() or victim:GetClass()).. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
+		buylogger.File:Write(GetLogTime() .. (ispenalty and ",kill-penalty," or ",kill,") .. FormatPlayer(ply) .. "," .. FormatActor(victim) .. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
 	end
 end
 
 function buylogger.LogDeath(ply, atk, wepname, newmoney, delta)
 	if buylogger.Active then
 		--if ply == atk then atk = nil end
-		buylogger.File:Write(GetLogTime() .. ",death," .. ply:Nick() .. "," .. (IsValid(atk) and atk:IsPlayer() and atk:Nick() or "") .. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
+		buylogger.File:Write(GetLogTime() .. ",death," .. FormatPlayer(ply) .. "," .. FormatActor(atk) .. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
 	end
 end
 
-function buylogger.LogDestroy(ply, veh, newmoney, delta)
+function buylogger.LogDestroy(ply, vehclass, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write(GetLogTime() .. ",destroy," .. ply:Nick() .. "," .. veh:GetClass() .. "," .. newmoney .. "," .. delta .. "\n")
+		buylogger.File:Write(GetLogTime() .. ",destroy," .. FormatPlayer(ply) .. "," .. vehclass .. "," .. newmoney .. "," .. delta .. "\n")
 	end
 end
 
 function buylogger.LogBuy(ply, class, buytype, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write(GetLogTime() .. ",buy-" .. buytype .. "," .. ply:Nick() .. "," .. class .. "," .. newmoney .. "," .. delta .. "\n")
+		buylogger.File:Write(GetLogTime() .. ",buy-" .. buytype .. "," .. FormatPlayer(ply) .. "," .. class .. "," .. newmoney .. "," .. delta .. "\n")
 		if buytype != "ammo" then
 			buylogger.File:Flush()
 		end
@@ -65,13 +79,13 @@ end
 
 function buylogger.LogBailout(ply, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write(GetLogTime() .. ",bailout," .. ply:Nick() .. ",," .. newmoney .. "," .. delta .. "\n")
+		buylogger.File:Write(GetLogTime() .. ",bailout," .. FormatPlayer(ply) .. ",," .. newmoney .. "," .. delta .. "\n")
 	end
 end
 
 function buylogger.LogStartingBailout(ply, newmoney, delta)
 	if buylogger.Active then
-		buylogger.File:Write(GetLogTime() .. ",bailout-start," .. ply:Nick() .. ",," .. newmoney .. "," .. delta .. "\n")
+		buylogger.File:Write(GetLogTime() .. ",bailout-start," .. FormatPlayer(ply) .. ",," .. newmoney .. "," .. delta .. "\n")
 	end
 end
 
@@ -89,14 +103,14 @@ end
 
 function buylogger.LogTimestamped(log_type, message)
 	if buylogger.File then
-		buylogger.File:Write(GetLogTime() .. "," .. log_type .. "," .. message .. "," .. os.date("%H:%M:%S %d.%m.%Y", os.time()) .. "\n")
+		buylogger.File:Write(GetLogTime() .. "," .. log_type .. "," .. os.date("%H:%M:%S %d.%m.%Y", os.time()) .. "," .. message .. "\n")
 	end
 end
 
 function buylogger.LogJoin(ply)
-	buylogger.LogTimestamped("join", ply:Nick())
+	buylogger.LogTimestamped("join", FormatPlayer(ply) .. "," .. ply:Nick() .. "," .. ply:SteamID())
 end
 
 function buylogger.LogLeave(ply)
-	buylogger.LogTimestamped("leave", ply:Nick())
+	buylogger.LogTimestamped("leave", FormatPlayer(ply) .. "," .. ply:Nick() .. "," .. ply:SteamID())
 end

@@ -337,13 +337,27 @@ function GM:ShutDown()
 	return BaseClass.ShutDown(self)
 end
 
+function GM:GetBuylogID(ply)
+	return ply:Nick()
+	/*local steamid = ply:SteamID()
+	if string.StartWith(steamid, "STEAM_") then
+		return string.sub(steamid, 7)
+	else
+		return steamid .. ":" .. ply:AccountID()
+	end*/
+end
+
 function GM:PlayerAuthed(ply, steamid, uniqueid)
+	ply.BuylogID = gamemode.Call("GetBuylogID", ply)
+
 	pricer.SendPrices(ply, 0)
 	
 	return BaseClass.PlayerAuthed(self, ply, steamid, uniqueid)
 end
 
 function GM:PlayerInitialSpawn(ply)
+	ply.BuylogID = gamemode.Call("GetBuylogID", ply)
+
 	buylogger.LogJoin(ply)
 
 	ply.TotalKillMoney = ply.TotalKillMoney or 0
@@ -425,16 +439,18 @@ function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
 		local killmoney = gamemode.Call("GetKillMoney", ply, killer, weapon, weaponname)
 		
 		local rewardmoney, bailoutmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, weapon, weaponname)
+		local ispenalty = true
 		
 		if rewardmoney == nil then
 			deltamoney = gamemode.Call("GetDeathMoney", ply, killer, killmoney, weapon, weaponname)
 			rewardmoney, bailoutmoney = gamemode.Call("GetKillReward", ply, killer, killmoney, deltamoney, weapon, weaponname)
+			ispenalty = false
 			killer:AddKillstreak(1)
 		end
 		
 		killer:AddMoney(rewardmoney)
 		killer:AddTotalKillMoney(bailoutmoney or rewardmoney)
-		buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), rewardmoney)
+		buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), rewardmoney, ispenalty)
 	end
 	
 	if deltamoney == nil then
