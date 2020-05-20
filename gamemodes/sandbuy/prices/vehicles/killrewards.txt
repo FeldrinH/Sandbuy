@@ -1,0 +1,3 @@
+{
+	"helicopter_gun_generic": 0.25
+}
