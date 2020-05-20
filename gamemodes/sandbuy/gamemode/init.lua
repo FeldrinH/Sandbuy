@@ -659,7 +659,7 @@ function GM:EntityRemoved(ent)
 	if ent.DestroyReward and IsValid(ent.DestroyRewardPlayer) and CurTime() - ent.DestroyRewardTime <= 1 then
 		ent.DestroyRewardPlayer:AddMoney(ent.DestroyReward)
 		ent.DestroyRewardPlayer:AddTotalKillMoney(ent.DestroyReward)
-		buylogger.LogDestroy(ent.DestroyRewardPlayer, ent, ent.DestroyRewardPlayer:GetMoney(), ent.DestroyReward)
+		buylogger.LogDestroy(ent.DestroyRewardPlayer, ent:GetClass(), ent.DestroyRewardPlayer:GetMoney(), ent.DestroyReward)
 	end
 	
 	return BaseClass.EntityRemoved(self, ent)

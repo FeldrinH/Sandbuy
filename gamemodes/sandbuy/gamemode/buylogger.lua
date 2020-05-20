@@ -97,7 +97,7 @@ end
 
 function buylogger.LogString(log_type, message)
 	if buylogger.Active then
-		buylogger.File:Write(GetLogTime() .. "," .. log_type .. "," .. GetLogTime() .. "," .. message .. "\n")
+		buylogger.File:Write(GetLogTime() .. "," .. log_type .. "," .. message .. "\n")
 	end
 end
 
