@@ -5,6 +5,6 @@
 	"sent_flying_bomb": -1,
 	"sent_improvbomb": -1,
 	"sent_land_mine": -1,
-	"sent_mortar_p": -1,
+	"sent_mortar_p": 2000,
 	"sent_neuro_bouncingbetty": -1
 }

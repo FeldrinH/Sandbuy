@@ -12,9 +12,8 @@
 	"m9k_orbital_strike": 5000,
 	"m9k_proxy_mine": 2000,
 	"m9k_rpg7": 5200,
-	"m9k_spas12": 8000,
+	"m9k_spas12": 6000,
 	"m9k_striker12": 4500,
-	"m9k_suicide_bomb": 800,
 	"m9k_usas": 5500,
 	"tfa_browningauto5": 4000,
 	"tfa_jackhammer": 4800,
@@ -34,6 +33,5 @@
 	"weapon_neurowep_rpg7": 5200,
 	"weapon_rpg": 3600,
 	"weapon_slam": 1200,
-	"weapon_smg1": 1000,
 	"weapon_stinger": 3500
 }

@@ -24,9 +24,13 @@ patcher.ModifyEntity = ModifyEntity
 //include('custom_buy.lua')
 
 game.AddAmmoType({name = "Shuriken"})
+game.AddAmmoType({name = "Molotov"})
+game.AddAmmoType({name = "TearGas"})
 
 if CLIENT then
 	language.Add("Shuriken_ammo", "Shuriken")
+	language.Add("Molotov_ammo", "Molotov")
+	language.Add("TearGas_ammo", "Tear Gas Grenades")
 	language.Add("SniperPenetratedRound_ammo", "Sniper Rounds")
 	language.Add("AirboatGun_ammo", "High-Caliber Rounds")
 	language.Add("AR2AltFire_ammo", "Plasma Orbs")
@@ -245,6 +249,8 @@ patcher.AddAmmoOverride("weapon_neurowep_acr10", "SniperPenetratedRound")
 patcher.AddAmmoOverride("weapon_neurowep_m24", "SniperPenetratedRound")
 patcher.AddAmmoOverride("weapon_neurowep_ptrs41", "SniperPenetratedRound")
 patcher.AddAmmoOverride("weapon_neurowep_he44", "SMG1_Grenade")
+patcher.AddAmmoOverride("weapon_neurowep_molotov", "Molotov")
+patcher.AddAmmoOverride("weapon_neurowep_teargas", "TearGas")
 
 patcher.AddAmmoOverride("tfa_cso_gungnir_nrm", "AirboatGun")
 patcher.AddAmmoOverride("tfa_cso_gungnir", "AirboatGun")
