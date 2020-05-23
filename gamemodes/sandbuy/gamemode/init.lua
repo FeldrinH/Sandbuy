@@ -438,18 +438,18 @@ function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
 	if killer:IsValid() && killer:IsPlayer() then
 		local killmoney = gamemode.Call("GetKillMoney", ply, killer, weapon, weaponname)
 		
-		local rewardmoney, bailoutmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, weapon, weaponname)
+		local rewardmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, weapon, weaponname)
 		local ispenalty = true
 		
 		if rewardmoney == nil then
 			deltamoney = gamemode.Call("GetDeathMoney", ply, killer, killmoney, weapon, weaponname)
-			rewardmoney, bailoutmoney = gamemode.Call("GetKillReward", ply, killer, killmoney, deltamoney, weapon, weaponname)
+			rewardmoney = gamemode.Call("GetKillReward", ply, killer, killmoney, deltamoney, weapon, weaponname)
 			ispenalty = false
 			killer:AddKillstreak(1)
 		end
 		
 		killer:AddMoney(rewardmoney)
-		killer:AddTotalKillMoney(bailoutmoney or rewardmoney)
+		killer:AddTotalKillMoney(rewardmoney)
 		buylogger.LogKill(killer, ply, weaponname, killer:GetMoney(), rewardmoney, ispenalty)
 	end
 	
