@@ -514,7 +514,8 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
 	end
 end
 
-function GM:DoBuy(ply, price, class, buy_type, str_buy, str_needmoney, str_denied) -- may include extra arguments, e.g. amount for ammo purchases
+-- Amount is optional and defaults to 1
+function GM:DoBuy(ply, price, class, buy_type, str_buy, str_needmoney, str_denied, amount)
 	if price == -5 then
 		ply:PrintMessage(HUD_PRINTCENTER, "Bad!")
 		ply:SendLua("surface.PlaySound('sandbuy/denied.wav')")
@@ -546,7 +547,7 @@ function GM:DoBuy(ply, price, class, buy_type, str_buy, str_needmoney, str_denie
 		ply:PrintMessage(HUD_PRINTCENTER, string.format(str_buy, price))
 		ply:SendLua("surface.PlaySound('sandbuy/kaching.wav')")
 		
-		buylogger.LogBuy(ply, class, buy_type, ply:GetMoney(), -price)
+		buylogger.LogBuy(ply, class, buy_type, ply:GetMoney(), -price, amount)
 		
 		return true
 	elseif price >= 0 then

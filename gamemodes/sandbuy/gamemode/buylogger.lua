@@ -68,9 +68,9 @@ function buylogger.LogDestroy(ply, vehclass, newmoney, delta)
 	end
 end
 
-function buylogger.LogBuy(ply, class, buytype, newmoney, delta)
+function buylogger.LogBuy(ply, class, buytype, newmoney, delta, amount)
 	if buylogger.Active then
-		buylogger.File:Write(GetLogTime() .. ",buy-" .. buytype .. "," .. FormatPlayer(ply) .. "," .. class .. "," .. newmoney .. "," .. delta .. "\n")
+		buylogger.File:Write(GetLogTime() .. ",buy-" .. buytype .. "," .. FormatPlayer(ply) .. "," .. class .. "," .. newmoney .. "," .. delta .. "," .. (amount or 1) .. "\n")
 		if buytype != "ammo" then
 			buylogger.File:Flush()
 		end
