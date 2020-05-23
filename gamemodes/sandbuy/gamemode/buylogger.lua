@@ -1,6 +1,7 @@
 buylogger = buylogger or {Active=false}
 
 local logfile = nil
+local eventcount = 0
 
 function buylogger.Init()
 	if buylogger.Active then return end
@@ -61,6 +62,11 @@ function buylogger.LogDeath(ply, atk, wepname, newmoney, delta)
 	if buylogger.Active then
 		--if ply == atk then atk = nil end
 		logfile:Write(GetLogTime() .. ",death," .. FormatPlayer(ply) .. "," .. FormatActor(atk) .. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
+		eventcount = eventcount + 1
+		if eventcount > 30 then
+			eventcount = 0
+			logfile:Flush()
+		end
 	end
 end
 
@@ -73,9 +79,11 @@ end
 function buylogger.LogBuy(ply, class, buytype, newmoney, delta, amount)
 	if buylogger.Active then
 		logfile:Write(GetLogTime() .. ",buy-" .. buytype .. "," .. FormatPlayer(ply) .. "," .. class .. "," .. newmoney .. "," .. delta .. "," .. (amount or 1) .. "\n")
-		--[[if buytype != "ammo" then
+		eventcount = eventcount + 1
+		if eventcount > 30 then
+			eventcount = 0
 			logfile:Flush()
-		end]]
+		end
 	end
 end
 
