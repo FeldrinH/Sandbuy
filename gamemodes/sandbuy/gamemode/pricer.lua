@@ -413,7 +413,7 @@ function pricer.SaveLoadedPrices(priceset)
 	-- TODO: Save categories
 end
 
-function pricer.SetPrice(wep, price, filename, priceset, istext)
+function pricer.SetPrice(wep, price, filename, priceset)
 	if priceset == nil then
 		error("No priceset specified")
 	end
@@ -439,7 +439,7 @@ function pricer.SetPrice(wep, price, filename, priceset, istext)
 		loadedtable[wep] = price
 	end
 
-	if istext then
+	if filename == "sourceweapons.txt" then
 		pricer.SaveTextTable(filepath, loadedtable)
 	else
 		pricer.SavePriceTable(filepath, loadedtable)

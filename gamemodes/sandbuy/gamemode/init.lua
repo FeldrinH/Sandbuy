@@ -213,7 +213,7 @@ concommand.Add("addsourceweapon", function(ply, cmd, args)
 	if args[1] then
 		local wep = args[1]
 		
-		pricer.SetPrice(wep, sourcewep, "sourceweapons.txt", ply:GetInfo("sbuy_saveto"), true)
+		pricer.SetPrice(wep, sourcewep, "sourceweapons.txt", ply:GetInfo("sbuy_saveto"))
 		
 		MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. ply:GetInfo("sbuy_saveto"), ply)
 	else
@@ -222,7 +222,7 @@ concommand.Add("addsourceweapon", function(ply, cmd, args)
 			
 			local wep = infl:GetClass()
 			
-			pricer.SetPrice(wep, sourcewep, "sourceweapons.txt", ply:GetInfo("sbuy_saveto"), true)
+			pricer.SetPrice(wep, sourcewep, "sourceweapons.txt", ply:GetInfo("sbuy_saveto"))
 		
 			MsgCaller("New source weapon " .. wep .. " -> " .. sourcewep .. "   " .. ply:GetInfo("sbuy_saveto"), ply)
 		
