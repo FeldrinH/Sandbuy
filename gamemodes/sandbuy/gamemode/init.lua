@@ -532,7 +532,7 @@ function GM:GetBailout(ply)
 end
 
 function GM:GetDestroyReward(ply, ent, price, markedasvehicle)
-	return markedasvehicle and math.floor(price * 0.5) or 0
+	return markedasvehicle and math.floor(price * 0.5) or nil
 end
 
 -- If ply == nil, this should return a generic default value for startmoney
@@ -670,7 +670,7 @@ end
 function GM:PlayerSpawnedSENT(ply, ent)
 	local price = gamemode.Call("GetBuyPrice", ply, ent:GetClass(), "entity")
 	local destroyreward = gamemode.Call("GetDestroyReward", ply, ent, price, pricer.InCategory(ent:GetClass(), "machines"))
-	if destroyreward > 0 then
+	if destroyreward != nil then
 		ent.DestroyReward = destroyreward
 	end
 	
@@ -680,7 +680,7 @@ end
 function GM:PlayerSpawnedVehicle(ply, ent)
 	local price = gamemode.Call("GetBuyPrice", ply, ent.VehicleName, "vehicle")
 	local destroyreward = gamemode.Call("GetDestroyReward", ply, ent, price, true)
-	if destroyreward > 0 then
+	if destroyreward != nil then
 		ent.DestroyReward = destroyreward
 	end
 	
