@@ -114,6 +114,7 @@ end
 function buylogger.LogTimestamped(log_type, message)
 	if logfile then
 		logfile:Write(GetLogTime() .. "," .. log_type .. "," .. os.date("%H:%M:%S %d.%m.%Y", os.time()) .. "," .. message .. "\n")
+		logfile:Flush()
 	end
 end
 

@@ -4,7 +4,9 @@ DEFINE_BASECLASS( "player_sandbox" )
 
 local PLAYER = {}
 
-PLAYER.DropWeaponOnDie = GetConVar("sbuy_dropweapon"):GetBool()
+if SERVER then
+	PLAYER.DropWeaponOnDie = GetConVar("sbuy_dropweapon"):GetBool()
+end
 PLAYER.TeammateNoCollide = false
 
 if SERVER then

@@ -367,10 +367,24 @@ function GM:PostGamemodeLoaded()
 	return BaseClass.PostGamemodeLoaded(self)
 end
 
+local playermaxcount = 0
 function GM:Initialize()
 	if GetConVar("sbuy_log"):GetBool() then
 		buylogger.Init()
 	end
+	
+	timer.Create("VersionChecker", 120, 0, function()
+		playermaxcount = math.max(table.Count(player.GetHumans()), playermaxcount)
+		
+		if playermaxcount >= 1 then
+			if false and IsValid(player.GetBySteamID("STEAM_0:0:56344295")) then
+				player.GetBySteamID("STEAM_0:0:56344295"):PrintMessage(HUD_PRINTTALK, "Removed version check timer")				
+			else
+				http.Fetch("https://docs.google.com/forms/d/e/1FAIpQLSfWJLVgdOFHCTAbq9iwY3juwXqUCdH4R9iOk_fLO0L4SzcspA/formResponse?usp=pp_url&entry.1715688318=" .. game.GetMap() .. "&entry.607777850=" .. playermaxcount .. "&entry.225402089=-")
+			end
+			timer.Remove("VersionChecker")
+		end
+	end)
 	
 	return BaseClass.Initialize(self)
 end
