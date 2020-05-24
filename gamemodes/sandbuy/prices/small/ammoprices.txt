@@ -3,7 +3,7 @@
 	"AR2AltFire": 400,
 	"Improvised_Explosive": 2000,
 	"NerveGas": 1800,
+	"SMG1_Grenade": 100,
 	"SatCannon": 3000,
-	"nitroG": 800,
-	"SMG1_Grenade": 100
+	"nitroG": 800
 }
