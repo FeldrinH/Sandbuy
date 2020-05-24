@@ -301,6 +301,26 @@ end
 	end
 end]]
 
+function pricer.LoadRawTable(filepath, fixnumberkeys)
+	local localfile = file.Read(filepath)
+	local loadedtable = {}
+	if localfile then
+		loadedtable = util.JSONToTable(localfile)
+		if !loadedtable then
+			error("Failed to parse existing values for " .. filepath)
+		end
+		if fixnumberkeys then
+			for k,v in pairs(loadedtable) do
+				if !isstring(k) then
+					loadedtable[tostring(k)] = v
+					loadedtable[k] = nil
+				end
+			end
+		end
+	end
+	return loadedtable
+end
+
 function pricer.SavePriceTable(filename, prices)
 	if table.IsEmpty(prices) then
 		if file.Exists(filename, "DATA") then
@@ -356,7 +376,7 @@ function pricer.SaveCategoryTable(filename, categories)
 	wfile:Write("{")
 	local isfirst = true
 	for catname, catvalues in SortedPairs(categories) do
-		wfile:Write((isfirst and "\n\t\"" or ",\n\t\"") .. catname .. "\": {\n")
+		wfile:Write((isfirst and "\n\t\"" or ",\n\t\"") .. catname .. "\": {")
 		isfirst = false
 		
 		local isfirstvalue = true
@@ -365,7 +385,7 @@ function pricer.SaveCategoryTable(filename, categories)
 			isfirstvalue = false
 		end
 		
-		wfile:Write("\t\n}")
+		wfile:Write("\n\t}")
 	end
 	wfile:Write("\n}")
 	
@@ -411,33 +431,18 @@ function pricer.SetPrice(wep, price, filename, priceset, istext)
 	
 	local filepath = "prices/" .. priceset .. "/" .. filename
 	
-	local localfile = file.Read(filepath)
-	local pricetable = {}
-	if localfile then
-		pricetable = util.JSONToTable(localfile)
-		if !pricetable then
-			error("Failed to parse existing prices for " .. filepath)
-		end
-		if filename == "ammoprices.txt" then
-			for k,v in pairs(pricetable) do
-				if !isstring(k) then
-					pricetable[tostring(k)] = v
-					pricetable[k] = nil
-				end
-			end
-		end
-	end
+	local loadedtable = pricer.LoadRawTable(filepath, filename == "ammoprices.txt")
 	
 	if price == -3 then
-		pricetable[wep] = nil
+		loadedtable[wep] = nil
 	else
-		pricetable[wep] = price
+		loadedtable[wep] = price
 	end
 
 	if istext then
-		pricer.SaveTextTable(filepath, pricetable)
+		pricer.SaveTextTable(filepath, loadedtable)
 	else
-		pricer.SavePriceTable(filepath, pricetable)
+		pricer.SavePriceTable(filepath, loadedtable)
 	end
 	
 	hook.Call("PostSetPrice", nil, wep, price, filename, priceset)
@@ -457,21 +462,16 @@ function pricer.SetCategory(category, class, value, priceset)
 	
 	local filepath = "prices/" .. priceset .. "/categories.txt"
 	
-	local localfile = file.Read(filepath)
-	local pricetable = {}
-	if localfile then
-		pricetable = util.JSONToTable(localfile)
-		if !pricetable then
-			error("Failed to parse existing categories for " .. filepath)
-		end
+	local loadedtable = pricer.LoadRawTable(filepath, false)
+	
+	if loadedtable[category] == nil and value != nil then
+		loadedtable[category] = {}
+	end
+	if loadedtable[category] != nil then
+		loadedtable[category][class] = value
 	end
 	
-	if pricetable[category] == nil then
-		pricetable[category] = {}
-	end
-	pricetable[category][class] = value
-
-	pricer.SaveCategoryTable(filepath, pricetable)
+	pricer.SaveCategoryTable(filepath, loadedtable)
 	
 	hook.Call("PostSetCategory", nil, category, class, value, priceset)
 end

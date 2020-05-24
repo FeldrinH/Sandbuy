@@ -101,8 +101,11 @@ concommand.Add("normalizeprices", function(ply)
 	for k,v in pairs(dr) do
 		local pfs,pdr = file.Find("prices/" .. v .. "/*", "DATA")
 		for i,j in pairs(pfs) do
-			if j == "categories.txt" then continue end
-			pricer.SetPrice("!!!normalizeprices!!!", -3, j, v)
+			if j == "categories.txt" then
+				pricer.SetCategory("!!!normalizeprices!!!", "!!!normalizeprices!!!", nil, v)
+			else
+				pricer.SetPrice("!!!normalizeprices!!!", -3, j, v)
+			end
 		end
 	end
 	
