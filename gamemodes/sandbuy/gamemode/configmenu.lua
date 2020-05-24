@@ -12,6 +12,7 @@ local function SandbuySettings(pnl)
 		sbuy_log = "1",
 		sbuy_statsaver = "1",
 		sbuy_noundo = "0",
+		sbuy_dropweapon = "1",
 		sbuy_debug = "0",
 		sbuy_bonusratio = "20",
 		sbuy_startmoney = GetConVar("sbuy_startmoney"):GetDefault(),
@@ -79,6 +80,7 @@ local function SandbuySettings(pnl)
 	pnl:AddControl( "CheckBox", { Label = "Logging", Command = "sbuy_log" } )
 	pnl:AddControl( "CheckBox", { Label = "Stat saver (requires restart)", Command = "sbuy_statsaver" } )
 	
+	pnl:AddControl( "CheckBox", { Label = "Drop held weapon on death", Command = "sbuy_dropweapon" } )
 	pnl:AddControl( "CheckBox", { Label = "Disable undo", Command = "sbuy_noundo" } )
 	pnl:AddControl( "CheckBox", { Label = "Hide money", Command = "sbuy_hidemoney" } )
 	

@@ -4,7 +4,18 @@ DEFINE_BASECLASS( "player_sandbox" )
 
 local PLAYER = {}
 
-PLAYER.DropWeaponOnDie = true
+PLAYER.DropWeaponOnDie = GetConVar("sbuy_dropweapon"):GetBool()
+PLAYER.TeammateNoCollide = false
+
+if SERVER then
+	cvars.AddChangeCallback("sbuy_dropweapon", function(convar, old, new)
+		local newbool = tobool(new)
+		PLAYER.DropWeaponOnDie = newbool
+		for k,v in pairs(player.GetAll()) do
+			v:ShouldDropWeapon(newbool)
+		end
+	end, "Sandbuy_ToggleDropWeapon")
+end
 
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Int", 0, "Money")
