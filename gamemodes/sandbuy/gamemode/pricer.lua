@@ -11,10 +11,6 @@ pricer = pricer or {
 	}
 }
 
-pricer.TeamKillPenalty = 200
---pricer.ArmorPrice = 8
---pricer.LadderPrice = 50
-
 -- Local variable for faster and more convenient access
 local pricetable = pricer.PriceTable
 local replplayer = nil
@@ -287,13 +283,6 @@ local function LoadAmmoPrices()
 	return prices
 end
 
-if CLIENT then
-	function pricer.ModifySelected(func)
-		
-		
-	end
-end
-
 function pricer.ApplyModifier(items, pricesets, modifier)
 	for i,j in pairs(pricesets) do
 		for k,v in pairs(items) do
@@ -313,7 +302,7 @@ end
 end]]
 
 function pricer.SavePriceTable(filename, prices)
-	if table.IsEmpty(prices) then 
+	if table.IsEmpty(prices) then
 		if file.Exists(filename, "DATA") then
 			file.Delete(filename)
 		end
@@ -334,7 +323,7 @@ function pricer.SavePriceTable(filename, prices)
 end
 
 function pricer.SaveTextTable(filename, prices)
-	if table.IsEmpty(prices) then 
+	if table.IsEmpty(prices) then
 		if file.Exists(filename, "DATA") then
 			file.Delete(filename)
 		end
@@ -348,6 +337,35 @@ function pricer.SaveTextTable(filename, prices)
 	for k,v in SortedPairs(prices) do
 		wfile:Write((isfirst and "\n\t\"" or ",\n\t\"" ).. k .. "\": \"" .. v .. "\"")
 		isfirst = false
+	end
+	wfile:Write("\n}")
+	
+	wfile:Close()
+end
+
+function pricer.SaveCategoryTable(filename, categories)
+	if table.IsEmpty(categories) then
+		if file.Exists(filename, "DATA") then
+			file.Delete(filename)
+		end
+		return
+	end
+
+	local wfile = file.Open(filename, "w", "DATA")
+	
+	wfile:Write("{")
+	local isfirst = true
+	for catname, catvalues in SortedPairs(categories) do
+		wfile:Write((isfirst and "\n\t\"" or ",\n\t\"") .. catname .. "\": {\n")
+		isfirst = false
+		
+		local isfirstvalue = true
+		for k,v in SortedPairs(catvalues) do
+			wfile:Write((isfirstvalue and "\n\t\t\"" or ",\n\t\t\"") .. k .. "\": " .. v)
+			isfirstvalue = false
+		end
+		
+		wfile:Write("\t\n}")
 	end
 	wfile:Write("\n}")
 	
@@ -423,6 +441,39 @@ function pricer.SetPrice(wep, price, filename, priceset, istext)
 	end
 	
 	hook.Call("PostSetPrice", nil, wep, price, filename, priceset)
+end
+
+function pricer.SetCategory(category, class, value, priceset)
+	if priceset == nil then
+		error("No priceset specified")
+	end
+	
+	if !file.Exists("prices/" .. priceset, "DATA") then
+		if #file.Find("gamemodes/sandbuy/prices/" .. priceset .. "/*", "GAME") > 0 then
+			error("Attempt to set category value on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory")
+		end
+		file.CreateDir("prices/" .. priceset)
+	end
+	
+	local filepath = "prices/" .. priceset .. "/categories.txt"
+	
+	local localfile = file.Read(filepath)
+	local pricetable = {}
+	if localfile then
+		pricetable = util.JSONToTable(localfile)
+		if !pricetable then
+			error("Failed to parse existing categories for " .. filepath)
+		end
+	end
+	
+	if pricetable[category] == nil then
+		pricetable[category] = {}
+	end
+	pricetable[category][class] = value
+
+	pricer.SaveCategoryTable(filepath, pricetable)
+	
+	hook.Call("PostSetCategory", nil, category, class, value, priceset)
 end
 
 function pricer.LoadPrices()
@@ -520,8 +571,9 @@ function pricer.GetClipSize(wep)
 	return pricetable.clipsize[wep]
 end
 
+local emptytable = {}
 function pricer.InCategory(class, category)
-	return (pricer.CategoriesLookup[category] or {})[class]
+	return (pricer.CategoriesLookup[category] or emptytable)[class]
 end
 
 function pricer.GetPrice(name, priceset)
@@ -534,7 +586,7 @@ function pricer.GetPrintPrice(price)
 	elseif price == -4 then
 		return "ADMIN"
 	elseif price == -3 then
-		return "RESET"
+		return "UNSET"
 	elseif price == -2 then
 		return "UNDEFINED"
 	elseif price == -1 then

@@ -137,7 +137,7 @@ concommand.Add("setprice", function(ply, cmd, args)
 	local price = tonumber(args[2])
 	
 	if !wep or !price or !args[3] then 
-		MsgCaller("Usage:  setprice [classname] [price] [type] [priceset (defaults to value of sbuy_saveto)]", ply)
+		MsgCaller("Usage:  setprice [classname] [price (use -3 to unset)] [type (weapon, entity, etc.)] [priceset (defaults to value of sbuy_saveto)]", ply)
 		return
 	end
 	
@@ -149,10 +149,48 @@ concommand.Add("setprice", function(ply, cmd, args)
 		MsgCaller('ERROR: Attempt to set price on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory', ply)
 		return
 	end
-		
+	
 	pricer.SetPrice(wep, price, args[3] .. "prices.txt", priceset)
 	
 	MsgCaller("New override price:  " .. wep .. ": $" .. price .. " in '" .. priceset .. "'", ply)
+	
+	if GetConVar("sbuy_autoreload"):GetBool() then
+		timer.Create("Sandbuy_AutoReloadTimer", 0.5, 1, DoAutoReload) // Ensure that autoreload only occurs once if a lot of prices are set at once
+	end
+end)
+
+concommand.Add("setcategory", function(ply, cmd, args)
+	local category = args[1]
+	local priceset = args[4] or (ply and ply:GetInfo("sbuy_saveto"))
+
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.editprices", nil, nil, { CommandArguments = { priceset, category } }) then return end
+
+	local class = args[2]
+	local valuenum = tonumber(args[3])
+	
+	if !category or !class or !valuenum or !priceset then
+		MsgCaller("Usage:  setcategory [category] [classname] [value (use -3 to unset)] [priceset (defaults to value of sbuy_saveto)]", ply)
+		return
+	end
+	
+	if !pricer.ValidatePriceSetName(priceset, true) then
+		MsgCaller("ERROR: Invalid priceset name: '" .. priceset .. "'", ply)
+		return
+	end
+	if !file.Exists("prices/" .. priceset, "DATA") and #file.Find("gamemodes/sandbuy/prices/" .. priceset .. "/*", "GAME") > 0 then
+		MsgCaller('ERROR: Attempt to set category value on built-in priceset. If this was intentional, create copy of priceset in data/prices/ directory', ply)
+		return
+	end
+	
+	local value = valuenum >= 0 and valuenum or nil
+	
+	pricer.SetCategory(category, class, value, priceset)
+	
+	if value then
+		MsgCaller("Set category value:  " .. class .. ": " .. value .. " in category " .. category .. " in priceset '" .. priceset .. "'", ply)
+	else
+		MsgCaller("Unset category value:  " .. class .. " in category " .. category .. " in priceset '" .. priceset .. "'", ply)
+	end
 	
 	if GetConVar("sbuy_autoreload"):GetBool() then
 		timer.Create("Sandbuy_AutoReloadTimer", 0.5, 1, DoAutoReload) // Ensure that autoreload only occurs once if a lot of prices are set at once
