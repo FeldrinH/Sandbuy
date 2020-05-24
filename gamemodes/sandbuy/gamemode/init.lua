@@ -10,7 +10,10 @@ AddCSLuaFile('patches_shared.lua')
 //AddCSLuaFile('custom_buy.lua')
 AddCSLuaFile('configmenu.lua')
 
-include('buylogger.lua')
+-- Do not reload buylogger if it is already active
+if !buylogger then
+	include('buylogger.lua')
+end
 include('shared.lua')
 include('patches.lua')
 include('statsaver.lua')
@@ -434,15 +437,17 @@ end
 
 function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
 	local deltamoney = nil
+	if killer != ply then
+		deltamoney = gamemode.Call("GetDeathMoney", ply, killer, weapon, weaponname)
+	end
 	
 	if killer:IsValid() && killer:IsPlayer() then
 		local killmoney = gamemode.Call("GetKillMoney", ply, killer, weapon, weaponname)
 		
-		local rewardmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, weapon, weaponname)
+		local rewardmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, deltamoney, weapon, weaponname)
 		local ispenalty = true
 		
 		if rewardmoney == nil then
-			deltamoney = gamemode.Call("GetDeathMoney", ply, killer, killmoney, weapon, weaponname)
 			rewardmoney = gamemode.Call("GetKillReward", ply, killer, killmoney, deltamoney, weapon, weaponname)
 			ispenalty = false
 			killer:AddKillstreak(1)
@@ -454,28 +459,28 @@ function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
 	end
 	
 	if deltamoney == nil then
-		deltamoney = gamemode.Call("GetDeathMoney", ply, killer, killmoney, weapon, weaponname)
+		deltamoney = gamemode.Call("GetDeathMoney", ply, killer, weapon, weaponname)
 	end
 	ply:AddMoney(-deltamoney)
 	buylogger.LogDeath(ply, killer, weaponname, ply:GetMoney(), -deltamoney)
 end
 
-function GM:GetKillMoney(ply, killer, weapon, weaponname)
+function GM:GetKillMoney(victim, killer, weapon, weaponname)
 	return GetConVar("sbuy_killmoney"):GetInt() * pricer.GetKillReward(weaponname)
 end
 
-function GM:GetDeathMoney(ply, killer, killmoney, weapon, weaponname)
-	return math.ceil(ply:GetMoney() * GetConVar("sbuy_bonusratio"):GetFloat() / 100)
+function GM:GetDeathMoney(victim, killer, weapon, weaponname)
+	return math.ceil(victim:GetMoney() * GetConVar("sbuy_bonusratio"):GetFloat() / 100)
 end
 
-function GM:GetKillReward(ply, killer, killmoney, deltamoney, weapon, weaponname)
+function GM:GetKillReward(victim, killer, killmoney, deltamoney, weapon, weaponname)
 	return killmoney + deltamoney
 end
 
-function GM:GetKillPenalty(ply, killer, killmoney, weapon, weaponname)
-	if ply == killer then
+function GM:GetKillPenalty(victim, killer, killmoney, deltamoney, weapon, weaponname)
+	if victim == killer then
 		return -killmoney
-	elseif ply:Team() != TEAM_UNASSIGNED and ply:Team() == killer:Team() then
+	elseif victim:Team() != TEAM_UNASSIGNED and victim:Team() == killer:Team() then
 		return -GetConVar("sbuy_killmoney"):GetInt() / 2
 	end
 end
