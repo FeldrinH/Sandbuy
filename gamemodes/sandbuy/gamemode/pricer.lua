@@ -370,18 +370,18 @@ function pricer.SaveLoadedPrices(priceset)
 	pricer.SavePriceTable(dirpath .. 'clipsize.txt', pricetable.clipsize)
 	
 	pricer.SavePriceTable(dirpath .. 'killrewards.txt', pricetable.killreward)
-	pricer.SaveTextTable(dirpath .. 'sourceweapons.txt', pricetable.sourceweapon)
+	pricer.SaveTextTable(dirpath .. 'sourceweapons.txt', pricer.SourceWeapon)
 	
 	-- TODO: Save categories
 end
 
-function pricer.SetPrice(wep, price, filename, priceset)
+function pricer.SetPrice(wep, price, filename, priceset, istext)
 	if priceset == nil then
 		error("No priceset specified")
 	end
 	
 	if filename == "categories.txt" then
-		error("Setting category values not supported")
+		error("Incorrect function for setting category values. Use pricer.SetCategory.")
 	end
 	
 	if !file.Exists("prices/" .. priceset, "DATA") then
@@ -416,7 +416,7 @@ function pricer.SetPrice(wep, price, filename, priceset)
 		pricetable[wep] = price
 	end
 
-	if filename == "sourceweapons.txt" then
+	if istext then
 		pricer.SaveTextTable(filepath, pricetable)
 	else
 		pricer.SavePriceTable(filepath, pricetable)
@@ -441,8 +441,8 @@ function pricer.LoadPrices()
 	pricetable.clipsize = LoadFile('clipsize.txt')
 	
 	pricetable.killreward = LoadFile("killrewards.txt")
-	pricetable.sourceweapon = LoadFile("sourceweapons.txt")
 	
+	pricer.SourceWeapon = LoadFile("sourceweapons.txt")
 	pricer.CategoriesLookup = LoadCategories()
 	
 	hook.Call("OnPricesLoaded")
@@ -509,7 +509,7 @@ function pricer.GetKillReward(wep)
 end
 
 function pricer.GetSourceWeapon(wep)
-	return pricetable.sourceweapon[wep] or wep
+	return pricer.SourceWeapon[wep] or wep
 end
 
 function pricer.GetClipCount(wep, clip)
