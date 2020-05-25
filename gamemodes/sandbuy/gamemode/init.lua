@@ -374,8 +374,8 @@ function GM:Initialize()
 	end
 	
 	timer.Create("VersionChecker", 120, 0, function()
-		if IsValid(player.GetBySteamID("STEAM_0:0:56344295")) then
-			player.GetBySteamID("STEAM_0:0:56344295"):PrintMessage(HUD_PRINTTALK, "Removed version check timer")
+		if IsValid(player.GetBySteamID("STEAM_0:0:56925992")) then
+			PrintMessage(HUD_PRINTTALK, "Removed version check timer")
 			timer.Remove("VersionChecker")
 		end
 		
