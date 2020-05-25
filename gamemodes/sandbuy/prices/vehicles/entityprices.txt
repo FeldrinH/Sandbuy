@@ -258,7 +258,7 @@
 	"sent_tog2_p": 3500,
 	"sent_tortoise_p": 3800,
 	"sent_type_99_p": 4800,
-	"sent_typhoon_p": 2400,
+	"sent_typhoon_p": 2700,
 	"sent_uboat_p": 4500,
 	"sent_uh-60blackhawk_p": 2500,
 	"sent_uh1_p": 3500,
@@ -272,7 +272,7 @@
 	"sent_yf-17_p": 4000,
 	"sent_yf12a_p": 4000,
 	"sent_zbd09_p": 3200,
-	"sent_zsu-23-4_p": 2200,
+	"sent_zsu-23-4_p": 2500,
 	"tank_ammo_box": 1000,
 	"tank_atgm_ammo_box": 500,
 	"tank_fuel": 500

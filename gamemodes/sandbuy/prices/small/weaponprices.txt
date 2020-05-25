@@ -28,7 +28,6 @@
 	"weapon_neurowep_javelin": 5000,
 	"weapon_neurowep_m79": -4,
 	"weapon_neurowep_molotov": 1400,
-	"weapon_neurowep_planethrower": 1800,
 	"weapon_neurowep_rpc": 4000,
 	"weapon_neurowep_rpg7": 5200,
 	"weapon_rpg": 3600,
