@@ -5,6 +5,6 @@
 	"ignore"	:
 	[
 		".git*",
-		"lua/autorun/*"
+		"lua/autorun/maintest.lua"
 	]
 }
