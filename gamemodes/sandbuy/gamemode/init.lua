@@ -440,8 +440,6 @@ function GM:PlayerSpawn(ply)
 end
 
 function GM:PlayerDeath(ply, inflictor, attacker)
-	print("On", ply)
-
 	local weapon = inflictor
 	local killer = attacker
 	
