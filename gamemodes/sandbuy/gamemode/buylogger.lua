@@ -52,6 +52,13 @@ function buylogger.FormatActor(ent)
 end
 local FormatActor = buylogger.FormatActor
 
+function buylogger.EscapeCSV(s)
+	if string.find(s, '[,"]') then
+		s = '"' .. string.gsub(s, '"', '""') .. '"'
+	end
+	return s
+end
+
 function buylogger.LogKill(ply, victim, wepname, newmoney, delta, ispenalty)
 	if buylogger.Active then
 		logfile:Write(GetLogTime() .. (ispenalty and ",kill-penalty," or ",kill,") .. FormatPlayer(ply) .. "," .. FormatActor(victim) .. "," .. newmoney .. "," .. delta .. "," .. wepname .. "\n")
@@ -119,7 +126,7 @@ function buylogger.LogTimestamped(log_type, message)
 end
 
 function buylogger.LogJoin(ply)
-	buylogger.LogTimestamped("join", FormatPlayer(ply) .. "," .. ply:Nick() .. "," .. ply:SteamID())
+	buylogger.LogTimestamped("join", FormatPlayer(ply) .. "," .. buylogger.EscapeCSV(ply:Nick()) .. "," .. ply:SteamID())
 end
 
 function buylogger.LogLeave(ply)

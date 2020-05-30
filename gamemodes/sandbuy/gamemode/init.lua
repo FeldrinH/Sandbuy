@@ -382,7 +382,7 @@ function GM:ShutDown()
 end
 
 function GM:GetBuylogID(ply)
-	return ply:Nick()
+	return buylogger.EscapeCSV(ply:Nick())
 	/*local steamid = ply:SteamID()
 	if string.StartWith(steamid, "STEAM_") then
 		return string.sub(steamid, 7)
