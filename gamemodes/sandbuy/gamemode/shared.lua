@@ -22,7 +22,6 @@ CAMI.RegisterPrivilege({ Name = "sandbuy.useadminitems", MinAccess = "admin" })
 CAMI.RegisterPrivilege({ Name = "sandbuy.reset", MinAccess = "admin" })
 
 function GM:GetBuyPrice(ply, class, priceset)
-	print(ply, class, priceset)	if !IsValid(ply) then return -5 end
 	return pricer.GetPrice(class, priceset) or -2
 end
 

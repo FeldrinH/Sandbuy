@@ -96,7 +96,7 @@ function GM:HUDPaint()
 	
 	if GetConVarNumber("cl_drawhud") == 0 then return end
 	
-	if hook.Run("HUDShouldDraw", "CHudHealth") and LocalPlayer():Alive() and LocalPlayer():GetObserverMode() == OBS_MODE_NONE then
+	if hook.Call("HUDShouldDraw", gmod.GetGamemode(), "CHudHealth") and LocalPlayer():Alive() and LocalPlayer():GetObserverMode() == OBS_MODE_NONE then
 		curmoney = LocalPlayer():GetMoney()
 		
 		if curmoney != lastmoney then
