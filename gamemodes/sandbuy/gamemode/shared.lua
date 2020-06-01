@@ -21,6 +21,11 @@ CAMI.RegisterPrivilege({ Name = "sandbuy.manageprices", MinAccess = "superadmin"
 CAMI.RegisterPrivilege({ Name = "sandbuy.useadminitems", MinAccess = "admin" })
 CAMI.RegisterPrivilege({ Name = "sandbuy.reset", MinAccess = "admin" })
 
+function GM:GetBuyPrice(ply, class, priceset)
+	print(ply, class, priceset)	if !IsValid(ply) then return -5 end
+	return pricer.GetPrice(class, priceset) or -2
+end
+
 hook.Add("PostGamemodeLoaded", "Sanbuy_ClearAdminOnly", function()
 	local itemlist = list.GetForEdit("Weapon")
 	for k,v in pairs(itemlist) do

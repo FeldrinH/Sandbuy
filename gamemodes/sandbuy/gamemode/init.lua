@@ -237,7 +237,7 @@ concommand.Add("sbuy_giveammo", function(ply, cmd, args)
 	local ammo = args[1]
 	local amount = tonumber(args[2])
 	
-	if !gamemode.Call("PlayerGiveAmmo", ply, ammo, amount) then return end
+	if !hook.Run("PlayerGiveAmmo", ply, ammo, amount) then return end
 	
 	ply:GiveAmmo(amount, ammo, false)
 end)
@@ -320,7 +320,7 @@ local function GiveHeldAmmo(ply, cmd, args)
 		return
 	end
 	ammo = game.GetAmmoName(ammo)
-	local ammoprice = pricer.GetPrice(ammo, "ammo")
+	local ammoprice = hook.Run("GetBuyPrice", ply, ammo, "ammo")
 	
 	local amount = 1
 	if ammoprice >= 0 then
@@ -339,7 +339,7 @@ local function GiveHeldAmmo(ply, cmd, args)
 		end
 	end
 	
-	if !gamemode.Call("PlayerGiveAmmo", ply, ammo, amount) then return end
+	if !hook.Run("PlayerGiveAmmo", ply, ammo, amount) then return end
 	
 	ply:GiveAmmo(amount, ammo, false)
 end
@@ -355,7 +355,7 @@ concommand.Add("showstats", function(ply, cmd, args)
 
 	ply:PrintMessage(HUD_PRINTTALK, "Kills: " .. ply:Frags() .. "  Deaths: " .. ply:Deaths())
 	ply:PrintMessage(HUD_PRINTTALK, "KDR: " .. math.Round(ply:Frags() / ply:Deaths(), 2))
-	local bailout = gamemode.Call("GetBailout", ply)
+	local bailout = hook.Run("GetBailout", ply)
 	local bailoutlevel = math.floor(math.sqrt(0.25 + math.max(ply.TotalKillMoney or 0, 0) * 2) - 0.5)
 	ply:PrintMessage(HUD_PRINTTALK, "Bailout: $" .. bailout .. " ($" .. GetConVar("sbuy_defaultmoney"):GetInt() .. "+$" .. bailoutlevel * GetConVar("sbuy_levelbonus"):GetInt() .. ")")
 	ply:PrintMessage(HUD_PRINTTALK, "$" .. math.ceil(((bailoutlevel + 2) * (bailoutlevel+1) / 2 - ply.TotalKillMoney) * GetConVar("sbuy_levelsize"):GetInt()) .. " until next bailout increase")
@@ -392,7 +392,7 @@ function GM:GetBuylogID(ply)
 end
 
 function GM:PlayerAuthed(ply, steamid, uniqueid)
-	ply.BuylogID = gamemode.Call("GetBuylogID", ply)
+	ply.BuylogID = hook.Run("GetBuylogID", ply)
 
 	pricer.SendPrices(ply, 0)
 	
@@ -400,7 +400,7 @@ function GM:PlayerAuthed(ply, steamid, uniqueid)
 end
 
 function GM:PlayerInitialSpawn(ply)
-	ply.BuylogID = gamemode.Call("GetBuylogID", ply)
+	ply.BuylogID = hook.Run("GetBuylogID", ply)
 
 	buylogger.LogJoin(ply)
 
@@ -423,7 +423,7 @@ function GM:PlayerSpawn(ply)
 	if ply.HasDied then
 		ply:SetKillstreak(0)
 	
-		local bailoutamount = gamemode.Call("GetBailout", ply)
+		local bailoutamount = hook.Run("GetBailout", ply)
 	
 		if ply.GetMoney and ply:GetMoney() < bailoutamount then
 			buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply:GetMoney())
@@ -465,7 +465,7 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	end
 	print(inflictor, attacker, weapon, killer, "[" .. weaponname .. "]")
 	
-	gamemode.Call("HandlePlayerDeath", ply, killer, weapon, weaponname)
+	hook.Run("HandlePlayerDeath", ply, killer, weapon, weaponname)
 	
 	ply.HasDied = true
 	
@@ -477,17 +477,17 @@ end
 function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
 	local deltamoney = nil
 	if killer != ply then
-		deltamoney = gamemode.Call("GetDeathMoney", ply, killer, weapon, weaponname)
+		deltamoney = hook.Run("GetDeathMoney", ply, killer, weapon, weaponname)
 	end
 	
 	if killer:IsValid() && killer:IsPlayer() then
-		local killmoney = gamemode.Call("GetKillMoney", ply, killer, weapon, weaponname)
+		local killmoney = hook.Run("GetKillMoney", ply, killer, weapon, weaponname)
 		
-		local rewardmoney = gamemode.Call("GetKillPenalty", ply, killer, killmoney, deltamoney, weapon, weaponname)
+		local rewardmoney = hook.Run("GetKillPenalty", ply, killer, killmoney, deltamoney, weapon, weaponname)
 		local ispenalty = true
 		
 		if rewardmoney == nil then
-			rewardmoney = gamemode.Call("GetKillReward", ply, killer, killmoney, deltamoney, weapon, weaponname)
+			rewardmoney = hook.Run("GetKillReward", ply, killer, killmoney, deltamoney, weapon, weaponname)
 			ispenalty = false
 			killer:AddKillstreak(1)
 		end
@@ -498,7 +498,7 @@ function GM:HandlePlayerDeath(ply, killer, weapon, weaponname)
 	end
 	
 	if deltamoney == nil then
-		deltamoney = gamemode.Call("GetDeathMoney", ply, killer, weapon, weaponname)
+		deltamoney = hook.Run("GetDeathMoney", ply, killer, weapon, weaponname)
 	end
 	ply:AddMoney(-deltamoney)
 	buylogger.LogDeath(ply, killer, weaponname, ply:GetMoney(), -deltamoney)
@@ -522,10 +522,6 @@ function GM:GetKillPenalty(victim, killer, killmoney, deltamoney, weapon, weapon
 	elseif victim:Team() != TEAM_UNASSIGNED and victim:Team() == killer:Team() then
 		return -GetConVar("sbuy_killmoney"):GetInt() / 2
 	end
-end
-
-function GM:GetBuyPrice(ply, class, priceset)
-	return pricer.GetPrice(class, priceset)
 end
 
 function GM:GetBailout(ply)
@@ -612,8 +608,8 @@ function GM:PlayerGiveSWEP(ply, class, swep)
 		return true
 	end
 	
-	local price = gamemode.Call("GetBuyPrice", ply, class, "weapon")
-	local didbuy = gamemode.Call("DoBuy", ply, price, class, 'weapon', "Weapon bought for $%i", "Need $%i to buy weapon", "Weapon not for sale")
+	local price = hook.Run("GetBuyPrice", ply, class, "weapon")
+	local didbuy = hook.Run("DoBuy", ply, price, class, 'weapon', "Weapon bought for $%i", "Need $%i to buy weapon", "Weapon not for sale")
 	if didbuy then
 		net.Start("weaponbought")
 		net.WriteString(class)
@@ -626,30 +622,30 @@ end
 function GM:PlayerSpawnSWEP(ply, class, swep)
 	if !ply:Alive() or !BaseClass.PlayerSpawnSWEP(self, ply, class, swep) then return false end
 	
-	local price = gamemode.Call("GetBuyPrice", ply, class, "weapon")
-	return gamemode.Call("DoBuy", ply, price, class, 'weapon-drop', "Weapon bought for $%i", "Need $%i to buy weapon", "Weapon not for sale") 
+	local price = hook.Run("GetBuyPrice", ply, class, "weapon")
+	return hook.Run("DoBuy", ply, price, class, 'weapon-drop', "Weapon bought for $%i", "Need $%i to buy weapon", "Weapon not for sale") 
 end
 
 function GM:PlayerGiveAmmo(ply, ammo, amount)
 	if !ply:Alive() then return false end
 	if amount <= 0 then return false end
 
-	local price = pricer.GetPrice(ammo, "ammo") * amount
-	return gamemode.Call("DoBuy", ply, price, ammo, 'ammo', "Ammo bought for $%i", "Need $%i to buy ammo", "Ammo type not for sale", amount)
+	local price = hook.Run("GetBuyPrice", ply, ammo, "ammo") * amount
+	return hook.Run("DoBuy", ply, price, ammo, 'ammo', "Ammo bought for $%i", "Need $%i to buy ammo", "Ammo type not for sale", amount)
 end
 
 function GM:PlayerSpawnSENT(ply, class)
 	if !ply:Alive() or !BaseClass.PlayerSpawnSENT(self, ply, class) then return false end
 	
-	local price = gamemode.Call("GetBuyPrice", ply, class, "entity")
-	return gamemode.Call("DoBuy", ply, price, class, 'entity', "Entity bought for $%i", "Need $%i to buy entity", "Entity not for sale")
+	local price = hook.Run("GetBuyPrice", ply, class, "entity")
+	return hook.Run("DoBuy", ply, price, class, 'entity', "Entity bought for $%i", "Need $%i to buy entity", "Entity not for sale")
 end
 
 function GM:PlayerSpawnVehicle(ply, model, class, vtable)
 	if !ply:Alive() or !BaseClass.PlayerSpawnVehicle(self, ply, model, class, vtable) then return false end
 	
-	local price = gamemode.Call("GetBuyPrice", ply, class, "vehicle")
-	return gamemode.Call("DoBuy", ply, price, class, 'vehicle', "Vehicle bought for $%i", "Need $%i to buy vehicle", "Vehicle not for sale")
+	local price = hook.Run("GetBuyPrice", ply, class, "vehicle")
+	return hook.Run("DoBuy", ply, price, class, 'vehicle', "Vehicle bought for $%i", "Need $%i to buy vehicle", "Vehicle not for sale")
 end
 
 function GM:PlayerSpawnProp(ply, model)
@@ -669,8 +665,8 @@ function GM:PlayerSpawnObject(ply, model, skin)
 end
 
 function GM:PlayerSpawnedSENT(ply, ent)
-	local price = gamemode.Call("GetBuyPrice", ply, ent:GetClass(), "entity")
-	local destroyreward = gamemode.Call("GetDestroyReward", ply, ent, price, pricer.InCategory(ent:GetClass(), "machines"))
+	local price = hook.Run("GetBuyPrice", ply, ent:GetClass(), "entity")
+	local destroyreward = hook.Run("GetDestroyReward", ply, ent, price, pricer.InCategory(ent:GetClass(), "machines"))
 	if destroyreward != nil then
 		ent.DestroyReward = destroyreward
 	end
@@ -679,8 +675,8 @@ function GM:PlayerSpawnedSENT(ply, ent)
 end
 
 function GM:PlayerSpawnedVehicle(ply, ent)
-	local price = gamemode.Call("GetBuyPrice", ply, ent.VehicleName, "vehicle")
-	local destroyreward = gamemode.Call("GetDestroyReward", ply, ent, price, true)
+	local price = hook.Run("GetBuyPrice", ply, ent.VehicleName, "vehicle")
+	local destroyreward = hook.Run("GetDestroyReward", ply, ent, price, true)
 	if destroyreward != nil then
 		ent.DestroyReward = destroyreward
 	end

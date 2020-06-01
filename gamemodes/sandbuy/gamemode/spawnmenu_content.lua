@@ -49,21 +49,22 @@ net.Receive("moneychanged", function()
 end)
 
 local function UpdateWepPrice( icon, money )
-	icon:SetTextColor( ( LocalPlayer():HasWeapon( icon:GetSpawnName() ) and has_color ) or ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), "weapon" ) ) and buy_color ) or nobuy_color )
+	icon:SetTextColor( ( LocalPlayer():HasWeapon( icon:GetSpawnName() ) and has_color ) or ( pricer.CanBuy( money, icon.BuyPrice ) and buy_color ) or nobuy_color )
 end
 local function UpdateEntPrice( icon, money )
-	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), "entity" ) ) and buy_color ) or nobuy_color )
+	icon:SetTextColor( ( pricer.CanBuy( money, icon.BuyPrice ) and buy_color ) or nobuy_color )
 end
 local function UpdateVehiclePrice( icon, money )
-	icon:SetTextColor( ( pricer.CanBuy( money, pricer.GetPrice( icon:GetSpawnName(), "vehicle" ) ) and buy_color ) or nobuy_color )
+	icon:SetTextColor( ( pricer.CanBuy( money, icon.BuyPrice ) and buy_color ) or nobuy_color )
 end
 local function UpdateAmmoOption( opt, money )
 	opt:SetTextColor( ( pricer.CanBuy( money, opt.AmmoPrice ) and buy_color_dark ) or nobuy_color_dark )
 end
 
 local function UpdatePriceLabel(icon, pricetable)
-	local price = pricer.GetPrice(icon:GetSpawnName(), pricetable)
+	local price = hook.Run("GetBuyPrice", LocalPlayer(), icon:GetSpawnName(), pricetable)
 	local printprice = pricer.GetPrintPrice(price)
+	icon.BuyPrice = price
 	if icon:GetText() != printprice then
 		icon:SetText(printprice)
 		icon:SetFont((price >= 0 and "TrebuchetPrice24" ) or "Trebuchet18")
@@ -115,7 +116,7 @@ local function UpdateAmmoWeapon(button, wepclass)
 	local clipsize = pricer.GetClipSize(wep:GetClass()) or (isprimary and wep:GetMaxClip1()) or wep:GetMaxClip2()
 	local clipcount = pricer.GetClipCount(wep:GetClass(), clipsize)
 	local amount = clipsize * clipcount
-	local price = pricer.GetPrice(ammo, "ammo")
+	local price = hook.Run("GetBuyPrice", LocalPlayer(), ammo, "ammo")
 		
 	if amount == 0 or price < 0 then
 		button:SetText( "Buy Ammo:\nNo ammo for sale" )
@@ -311,7 +312,7 @@ local function AddBuyAmmoOpts(menu, wep)
 			local ammo = game.GetAmmoName(wep:GetPrimaryAmmoType())
 			local clipcount = pricer.GetClipCount(wepclass, pricer.GetClipSize(wepclass) or wep:GetMaxClip1())
 			local amount = (pricer.GetClipSize(wepclass) or wep:GetMaxClip1()) * clipcount
-			local price = pricer.GetPrice(ammo, "ammo")
+			local price = hook.Run("GetBuyPrice", LocalPlayer(), ammo, "ammo")
 			if price >= -1 or price == -4 then
 				if amount > 0 then
 					local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Primary Ammo (" .. ( price < 0 and pricer.GetPrintPrice(price) or pricer.GetPrintPrice(price * amount) ) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
@@ -333,7 +334,7 @@ local function AddBuyAmmoOpts(menu, wep)
 			local ammo = game.GetAmmoName(wep:GetSecondaryAmmoType())
 			local clipcount = pricer.GetClipCount(wepclass, pricer.GetClipSize(wepclass) or wep:GetMaxClip2())
 			local amount = (pricer.GetClipSize(wepclass) or wep:GetMaxClip2()) * clipcount
-			local price = pricer.GetPrice(ammo, "ammo")
+			local price = hook.Run("GetBuyPrice", LocalPlayer(), ammo, "ammo")
 			if price >= -1 or price == -4 then
 				if amount > 0 then
 					local opt = menu:AddOption( "Buy " .. clipcount .. ( clipcount > 1 and " Clips" or " Clip") .. " of Secondary Ammo (" .. ( price < 0 and pricer.GetPrintPrice(price) or pricer.GetPrintPrice(price * amount) ) .. ")", function() RunConsoleCommand("sbuy_giveammo", ammo, amount) end )
@@ -566,7 +567,8 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 	//icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 135, 206, 250, 255 ) )
 	
-	local price = pricer.GetPrice( obj.spawnname, "weapon" )
+	local price = hook.Run("GetBuyPrice", LocalPlayer(), obj.spawnname, "weapon")
+	icon.BuyPrice = price
 	icon:SetText( pricer.GetPrintPrice(price) )
 	icon:SetContentAlignment( 7 )
 	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
@@ -598,7 +600,7 @@ spawnmenu.AddContentType( "weapon", function( container, obj )
 			--menu:AddOption( "Spawn Using Toolgun", function() RunConsoleCommand( "gmod_tool", "creator" ) RunConsoleCommand( "creator_type", "3" ) RunConsoleCommand( "creator_name", obj.spawnname ) end )
 			if CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then
 				menu:AddOption( "Set price", function()
-					local oldprice = pricer.GetPrice(obj.spawnname, 'weapon')
+					local oldprice = hook.Run("GetBuyPrice", LocalPlayer(), obj.spawnname, 'weapon')
 					Derma_StringRequestSmall("Set price (" .. GetConVar("sbuy_saveto"):GetString() .. ")", "New price:", oldprice, function(text)
 						local newprice = tonumber(text)
 						if newprice == nil then
@@ -659,7 +661,8 @@ spawnmenu.AddContentType( "entity", function( container, obj )
 	//icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 205, 92, 92, 255 ) )
 	
-	local price = pricer.GetPrice( obj.spawnname, "entity" )
+	local price = hook.Run("GetBuyPrice", LocalPlayer(), obj.spawnname, "entity" )
+	icon.BuyPrice = price
 	icon:SetText( pricer.GetPrintPrice(price) )
 	icon:SetContentAlignment( 7 )
 	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
@@ -742,7 +745,8 @@ spawnmenu.AddContentType( "vehicle", function( container, obj )
 	//icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 0, 0, 0, 255 ) )
 	
-	local price = pricer.GetPrice( obj.spawnname, "vehicle" )
+	local price = hook.Run("GetBuyPrice", LocalPlayer(), obj.spawnname, "vehicle" )
+	icon.BuyPrice = price
 	icon:SetText( pricer.GetPrintPrice(price) )
 	icon:SetContentAlignment( 7 )
 	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then
@@ -825,7 +829,8 @@ spawnmenu.AddContentType( "simfphys_vehicles", function( container, obj )
 	//icon:SetAdminOnly( obj.admin )
 	icon:SetColor( Color( 0, 0, 0, 255 ) )
 	
-	local price = pricer.GetPrice( obj.spawnname, "vehicle" )
+	local price = hook.Run("GetBuyPrice", LocalPlayer(), obj.spawnname, "vehicle")
+	icon.BuyPrice = price
 	icon:SetText( pricer.GetPrintPrice(price) )
 	icon:SetContentAlignment( 7 )
 	if IsValid(LocalPlayer()) and LocalPlayer().GetMoney then

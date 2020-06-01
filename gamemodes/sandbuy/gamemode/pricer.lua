@@ -35,11 +35,13 @@ local function WarningRepl(text)
 	ErrorNoHalt(text .. '\n')
 end
 
-function pricer.SetSelected(func)
+function pricer.LoopSelected(func)
 	for k,v in pairs(pricer.SelectedIcons) do
 		local oldprice = pricer.GetPrice(v:GetSpawnName(), v.pricetype or v:GetContentType())
 		local newprice = func(v:GetSpawnName(), oldprice, v)
-		RunConsoleCommand("setprice", v:GetSpawnName(), newprice, v.pricetype or v:GetContentType(), GetConVar("sbuy_saveto"):GetString())
+		if newprice != nil then
+			RunConsoleCommand("setprice", v:GetSpawnName(), newprice, v.pricetype or v:GetContentType(), GetConVar("sbuy_saveto"):GetString())
+		end
 	end
 end
 
@@ -282,24 +284,6 @@ local function LoadAmmoPrices()
 	
 	return prices
 end
-
-function pricer.ApplyModifier(items, pricesets, modifier)
-	for i,j in pairs(pricesets) do
-		for k,v in pairs(items) do
-			if pricer.GetPrice(v, j) >= 0 then
-				pricer.PriceTable[j][v] = modifier(pricer.GetPrice(v, j), v)
-			end
-		end
-	end
-end
-
---[[function pricer.PrintModifier(category, prices, modifier)
-	for k,v in pairs(pricer.CategoriesLookup[category]) do
-		if pricer.GetPrice(k, prices) >= 0 then
-			print('"' .. k .. '": ' .. modifier(pricer.GetPrice(k, prices)) .. ',')
-		end
-	end
-end]]
 
 function pricer.LoadRawTable(filepath, fixnumberkeys)
 	local localfile = file.Read(filepath)
@@ -577,7 +561,7 @@ function pricer.InCategory(class, category)
 end
 
 function pricer.GetPrice(name, priceset)
-	return pricetable[priceset][name] or -2
+	return pricetable[priceset][name]
 end
 
 function pricer.GetPrintPrice(price)

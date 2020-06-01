@@ -96,7 +96,7 @@ function GM:HUDPaint()
 	
 	if GetConVarNumber("cl_drawhud") == 0 then return end
 	
-	if gamemode.Call("HUDShouldDraw", "CHudHealth") and LocalPlayer():Alive() and LocalPlayer():GetObserverMode() == OBS_MODE_NONE then
+	if hook.Run("HUDShouldDraw", "CHudHealth") and LocalPlayer():Alive() and LocalPlayer():GetObserverMode() == OBS_MODE_NONE then
 		curmoney = LocalPlayer():GetMoney()
 		
 		if curmoney != lastmoney then
@@ -292,7 +292,8 @@ local function FilterItems(listname, priceset, isdebug)
 	local itemlist = list.GetForEdit(listname)
 	local itemcopy = list.GetForEdit(listname .. "Backup")
 	for k,v in pairs(itemcopy) do
-		if pricer.GetPrice(k, priceset) <= -2 and pricer.GetPrice(k, priceset) != -4 and !isdebug then
+		local price = hook.Run("GetBuyPrice", LocalPlayer(), k, priceset)
+		if price <= -2 and price != -4 and !isdebug then
 			itemlist[k] = nil
 		else
 			itemlist[k] = v
@@ -348,7 +349,8 @@ net.Receive("newprices", function(len)
 			if v.SpawnableBackup == nil then
 				v.SpawnableBackup = v.Spawnable or false
 			end
-			v.Spawnable = v.SpawnableBackup and (pricer.GetPrice(k, "weapon") > -2 or isdebug)
+			local price = hook.Run("GetBuyPrice", LocalPlayer(), k, "weapon")
+			v.Spawnable = v.SpawnableBackup and (price > -2 or price == -4 or isdebug)
 		end
 		
 		FilterItems("SpawnableEntities", "entity", isdebug)

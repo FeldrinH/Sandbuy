@@ -19,7 +19,7 @@ concommand.Add("resetfull", function( ply, cmd, args, argString  )
 			v.NeuroPlanes_SavedWeapons = nil
 			v.NeuroPlanes_ActiveWeapon = nil
 			v.TotalKillMoney = 0
-			v:SetMoney(gamemode.Call("GetStartMoney", v))
+			v:SetMoney(hook.Run("GetStartMoney", v))
 			v:Spawn()
 			
 			buylogger.LogStartingBailout(v, v:GetMoney(), v:GetMoney())
@@ -52,7 +52,7 @@ concommand.Add("resetplayers", function( ply, cmd, args, argString )
 			v.NeuroPlanes_SavedWeapons = nil
 			v.NeuroPlanes_ActiveWeapon = nil
 			v.TotalKillMoney = 0
-			v:SetMoney(gamemode.Call("GetStartMoney", v))
+			v:SetMoney(hook.Run("GetStartMoney", v))
 			
 			buylogger.LogStartingBailout(v, v:GetMoney(), v:GetMoney())
 			

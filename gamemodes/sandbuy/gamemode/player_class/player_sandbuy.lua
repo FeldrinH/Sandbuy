@@ -31,7 +31,7 @@ function PLAYER:SetupDataTables()
 			net.Send(ply)
 		end)
 		
-		self.Player:SetMoney(self.Player.DefaultMoneyOverride or gamemode.Call("GetStartMoney", self.Player))
+		self.Player:SetMoney(self.Player.DefaultMoneyOverride or hook.Run("GetStartMoney", self.Player))
 		if !self.Player.DefaultMoneyOverride then
 			buylogger.LogStartingBailout(self.Player, self.Player:GetMoney(), self.Player:GetMoney())
 		end
