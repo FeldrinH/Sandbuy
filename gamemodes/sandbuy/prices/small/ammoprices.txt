@@ -1,6 +1,7 @@
 {
 	"<OVERLAY>": 1,
 	"AR2AltFire": 400,
+	"Harpoon": 250,
 	"Improvised_Explosive": 2000,
 	"NerveGas": 1800,
 	"SMG1_Grenade": 100,
