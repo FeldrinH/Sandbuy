@@ -14,9 +14,6 @@ function buylogger.Init()
 	if logfile then
 		buylogger.LogTimestamped("logging-enabled", "")
 	else
-		if !file.Exists(filename, "DATA") then
-			file.Write(filename, "action,time,player,target,newmoney,deltamoney,killweapon\n")
-		end
 		logfile = file.Open(filename, "a", "DATA")
 		buylogger.LogTimestamped("logging-started", game.GetMap())
 	end
