@@ -1,8 +1,8 @@
 {
 	"feldrinh_binoculars": 0,
-	"gmod_tool": -1,
+	"gmod_tool": -4,
 	"sbuy_armorkit": -1,
 	"sbuy_medkit": 0,
 	"weapon_fists": 0,
-	"weapon_physgun": -1
+	"weapon_physgun": -4
 }
