@@ -64,10 +64,10 @@ local deathmessage_text = ""
 local deathmessage_killstreak = ""
 
 local deathmessage_overrides = {
-	["76561198076382343"] = "You were claimed by ", --Martin
-	["76561198315916037"] = "You were deported by ", --TRUMP
-	["76561198033567884"] = "You were corrected by ", --Egert
-	["76561198100147578"] = "You were kräked by " --Leidt
+	["76561198076382343"] = "You were claimed by ", -- Martin
+	["76561198315916037"] = "You were conquered by ", -- Napoleon
+	["76561198033567884"] = "You were claimed in the name of the Cult by ", -- Egert
+	["76561198100147578"] = "You were kräked by " -- kräk
 }
 
 local function AddSandbuyNotifier(hookname)
