@@ -226,5 +226,6 @@
 	"weapon_neurowep_xm1014": 3600,
 	"weapon_np_flaregun": 100,
 	"weapon_sb_white_smokegrenade": -2,
+	"weapon_simmines": 700,
 	"weapon_stinger": 3200
 }
