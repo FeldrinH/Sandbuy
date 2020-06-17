@@ -197,7 +197,7 @@ end
 	end
 end*/
 
-if !GetConVar("sbuy_debug") or !GetConVar("sbuy_debug"):GetBool() then
+/*if !GetConVar("sbuy_debug") or !GetConVar("sbuy_debug"):GetBool() then
 	local spawntabs = spawnmenu.GetCreationTabs()
 	
 	spawntabs["NeuroTec"] = nil
@@ -206,7 +206,7 @@ if !GetConVar("sbuy_debug") or !GetConVar("sbuy_debug"):GetBool() then
 	spawntabs["#spawnmenu.category.saves"] = nil
 	spawntabs["#spawnmenu.category.dupes"] = nil
 	--spawntabs["#spawnmenu.category.vehicles"] = nil
-end
+end*/
 
 local function AssembleTooltip(class, nicename)
 	local swep = weapons.GetStored(class)

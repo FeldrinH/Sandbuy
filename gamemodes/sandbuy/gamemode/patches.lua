@@ -58,17 +58,6 @@ hook.Add("WeaponEquip","ReduceSLAMDefaultAmmo", function(wep, ply)
 	end
 end)
 
-local allowed_freeze = {
-	sent_oldcannon_p = true,
-	sent_mortar_p = true
-}
-
---[[hook.Add("OnPhysgunFreeze", "Sandbuy_NerfPhysgun", function(wep, physobj, ent, ply)
-	if !allowed_freeze[ent:GetClass()] then
-		return false
-	end
-end)]]
-
 local mines_class = {}
 local mines_weapon = {}
 

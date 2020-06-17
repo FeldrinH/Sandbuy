@@ -200,29 +200,6 @@ local categoryoverrides = {
 	["melee weapon"] = "Melee weapons"
 }
 
-hook.Add("PhysgunPickup", "Sandbuy_NerfPhysgun", function(ply, ent)
-	if ply:IsSuperAdmin() and GetConVar("sbuy_debug"):GetBool() then return end
-
-	if !pricer.InCategory(ent:GetClass(), 'allowedphysgun') then
-		return false
-	end
-	if ent:IsVehicle() and IsValid(ent:GetDriver()) then
-		return false
-	end
-end)
-
-hook.Add("CanTool", "Sandbuy_NerfToolgun", function(ply, trace, tool)
-	if ply:IsSuperAdmin() and GetConVar("sbuy_debug"):GetBool() then return end
-	
-	if IsValid(trace.Entity) and trace.Entity:IsPlayer() then
-		return false
-	end
-	if !pricer.InCategory(tool, 'allowedtool') then
-		print(tool)
-		return false
-	end
-end)
-
 hook.Add("CanProperty", "Sandbuy_NerfProperties", function(ply, property, ent)
 	if ply:IsSuperAdmin() and GetConVar("sbuy_debug"):GetBool() then return end
 
