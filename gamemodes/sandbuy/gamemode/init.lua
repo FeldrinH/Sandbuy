@@ -29,9 +29,9 @@ CreateConVar("sbuy_freebuy", 0, FCVAR_NOTIFY, "If enabled allows all weapons and
 
 cvars.AddChangeCallback("sbuy_freebuy", function(convar, old, new)
 	if tobool(new) then
-		buylogger.LogTimestamped("freebuy-enabled", "")
+		buylogger.LogString("freebuy-enabled", "")
 	else
-		buylogger.LogTimestamped("freebuy-disabled", "")
+		buylogger.LogString("freebuy-disabled", "")
 	end
 end, "Sandbuy_ToggleFreebuy")
 
@@ -56,6 +56,12 @@ local function GetDeprecatedMessage(cmdname)
 		ply:PrintMessage(HUD_PRINTTALK, "This command is deprecated. Please use '" .. cmdname .. "'")
 	end
 end
+
+concommand.Add("logmessage", function(ply, cmd, args, argStr)
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.logmessage") then return end
+
+	buylogger.LogTimestamped("message", (IsValid(ply) and buylogger.FormatPlayer(ply) or "") .. "," .. buylogger.EscapeCSV(argStr))
+end)
 
 concommand.Add("reloadprices", function(ply)
 	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then return end

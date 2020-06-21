@@ -20,6 +20,7 @@ CAMI.RegisterPrivilege({ Name = "sandbuy.editprices", MinAccess = "admin" })
 CAMI.RegisterPrivilege({ Name = "sandbuy.manageprices", MinAccess = "superadmin" })
 CAMI.RegisterPrivilege({ Name = "sandbuy.useadminitems", MinAccess = "admin" })
 CAMI.RegisterPrivilege({ Name = "sandbuy.reset", MinAccess = "admin" })
+CAMI.RegisterPrivilege({ Name = "sandbuy.logmessage", MinAccess = "admin" })
 
 function GM:GetBuyPrice(ply, class, priceset)
 	return pricer.GetPrice(class, priceset) or -2
