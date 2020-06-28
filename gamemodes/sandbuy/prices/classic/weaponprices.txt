@@ -207,7 +207,7 @@
 	"weapon_neurowep_pkm": 2600,
 	"weapon_neurowep_planethrower": -1,
 	"weapon_neurowep_ptrs41": 2200,
-	"weapon_neurowep_rorsch": 3200,
+	"weapon_neurowep_rorsch": 3000,
 	"weapon_neurowep_rpc": 2800,
 	"weapon_neurowep_rpg7": 3900,
 	"weapon_neurowep_scout": 2200,
