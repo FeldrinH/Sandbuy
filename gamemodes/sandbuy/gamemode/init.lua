@@ -421,6 +421,11 @@ function GM:PlayerDisconnected(ply)
 	BaseClass.PlayerDisconnected(self, ply)
 end
 
+function GM:PlayerSay(ply, text, teamonly)
+	buylogger.LogString(teamonly and "chat-team" or "chat", buylogger.FormatPlayer(ply) .. "," .. buylogger.EscapeCSV(text))
+	return BaseClass.PlayerSay(self, ply, text, teamonly)
+end
+
 function GM:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_sandbuy")
 	
