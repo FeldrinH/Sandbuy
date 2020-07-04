@@ -92,8 +92,8 @@ end
 local function ResetMenu(pnl)
 	pnl:AddControl( "Header", { Description = "Reset various parts of a Sandbuy game" } )
 	
-	pnl:Button( "Reset stats & money & respawn players", "resetfull" )
-	pnl:Button( "Reset stats & money & weapons", "resetplayers" )
+	pnl:Button( "Reset all & respawn players", "resetfull" )
+	//pnl:Button( "Reset stats & money & weapons", "resetplayers" )
 	pnl:Button( "Reset stats", "resetstats" )
 end
 
