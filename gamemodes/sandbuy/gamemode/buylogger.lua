@@ -91,15 +91,9 @@ function buylogger.LogBuy(ply, class, buytype, newmoney, delta, amount)
 	end
 end
 
-function buylogger.LogBailout(ply, newmoney, delta)
+function buylogger.LogBailout(ply, newmoney, delta, isstarting)
 	if buylogger.Active then
-		logfile:Write(GetLogTime() .. ",bailout," .. FormatPlayer(ply) .. ",," .. newmoney .. "," .. delta .. "\n")
-	end
-end
-
-function buylogger.LogStartingBailout(ply, newmoney, delta)
-	if buylogger.Active then
-		logfile:Write(GetLogTime() .. ",bailout-start," .. FormatPlayer(ply) .. ",," .. newmoney .. "," .. delta .. "\n")
+		logfile:Write(GetLogTime() .. (isstarting and ",bailout-start," or ",bailout,") .. FormatPlayer(ply) .. ",," .. newmoney .. "," .. delta .. "\n")
 	end
 end
 

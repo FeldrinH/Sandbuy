@@ -406,6 +406,8 @@ function GM:PlayerAuthed(ply, steamid, uniqueid)
 end
 
 function GM:PlayerInitialSpawn(ply)
+	ply.IsInitialSpawn = true
+	
 	ply.BuylogID = hook.Run("GetBuylogID", ply)
 
 	buylogger.LogJoin(ply)
@@ -431,19 +433,28 @@ function GM:PlayerSpawn(ply)
 	
 	BaseBaseClass.PlayerSpawn(self, ply)
 	
+	if ply.IsInitialSpawn then
+		StatSaverLoad(ply)
+	end
+	
+	if ply.IsInitialSpawn then
+		ply.IsInitialSpawn = false
+		
+		local startamount = hook.Run("GetStartMoney", ply)
+		if ply.GetMoney then
+			buylogger.LogBailout(ply, startamount, startamount - ply:GetMoney(), true)
+			ply:SetMoney(startamount)
+		end
+	end
+	
 	if ply.HasDied then
 		ply:SetKillstreak(0)
 	
 		local bailoutamount = hook.Run("GetBailout", ply)
-	
 		if ply.GetMoney and ply:GetMoney() < bailoutamount then
 			buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply:GetMoney())
 			ply:SetMoney(bailoutamount)
 			ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
-		--elseif ply.DefaultMoneyOverride and ply.DefaultMoneyOverride < bailoutamount then
-		--	buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply.DefaultMoneyOverride)
-		--	ply.DefaultMoneyOverride = bailoutamount
-		--	ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
 		end
 	end
 	

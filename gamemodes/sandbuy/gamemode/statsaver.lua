@@ -4,45 +4,49 @@ function GetStatSaverData()
 	return stats
 end
 
+local function FindPlayerByNick(searchStr)
+	if searchStr == "" then return nil end
+	
+	for k,v in pairs(player.GetAll()) do
+		if searchStr == v:Nick() then
+			return target
+		end
+	end
+end
+
 concommand.Add("resetfull", function( ply, cmd, args, argString  )
 	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.reset") then return end
 	
-	buylogger.LogReset("full", argString)
+	buylogger.LogReset("full", buylogger.EscapeCSV(argString))
 	
-	for k,v in pairs(player.GetAll()) do
-		if argString == "" or argString == v:Nick() then
-			v:SetFrags(0)
-			v:SetDeaths(0)
-			v.HasDied = true
-			v:StripWeaponsRaw()
-			v:RemoveAllAmmo()
-			v.NeuroPlanes_SavedWeapons = nil
-			v.NeuroPlanes_ActiveWeapon = nil
-			v.TotalKillMoney = 0
-			v:SetMoney(hook.Run("GetStartMoney", v))
-			v:Spawn()
-			
-			buylogger.LogStartingBailout(v, v:GetMoney(), v:GetMoney())
-			
-			if argString != "" then
-				targetid = v:SteamID()
-			end
-		end
-	end
+	local target = FindPlayerByNick(argString)
 	
 	if argString == "" then
 		stats = {}
-	elseif targetid then
-		stats[targetid] = nil
+	elseif target then
+		stats[target:SteamID()] = nil
 	end
+	
+	for k,v in pairs(target and {target} or player.GetAll()) do
+		v:SetFrags(0)
+		v:SetDeaths(0)
+		v:StripWeaponsRaw()
+		v:RemoveAllAmmo()
+		v.NeuroPlanes_SavedWeapons = nil
+		v.NeuroPlanes_ActiveWeapon = nil
+		v:SetMoney(0)
+		v.TotalKillMoney = 0
+		v.IsInitialSpawn = true
+		v:Spawn()
+	end
+	
+	hook.Run("ResetPlayerStats", target, "full")
 end)
 
-concommand.Add("resetplayers", function( ply, cmd, args, argString )
+/*concommand.Add("resetplayers", function( ply, cmd, args, argString )
 	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.reset") then return end
 	
-	buylogger.LogReset("players", argString)
-	
-	local targetid = nil
+	local target = nil
 	for k,v in pairs(player.GetAll()) do
 		if argString == "" or argString == v:Nick() then
 			v:SetFrags(0)
@@ -57,74 +61,77 @@ concommand.Add("resetplayers", function( ply, cmd, args, argString )
 			buylogger.LogStartingBailout(v, v:GetMoney(), v:GetMoney())
 			
 			if argString != "" then
-				targetid = v:SteamID()
+				target = v
 			end
 		end
 	end
+	
+	hook.Run("ResetPlayerStats", target, "players")
+	
+	buylogger.LogReset("players", target and buylogger.FormatPlayer(target) or argString)
 	
 	if argString == "" then
 		stats = {}
-	elseif targetid then
-		stats[targetid] = nil
+	elseif target then
+		stats[target:SteamID()] = nil
 	end
-end)
+end)*/
 
-concommand.Add("resetstats", function( ply, cmd, args, argString  )
+concommand.Add("resetstats", function( ply, cmd, args, argString )
 	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.reset") then return end
 	
-	buylogger.LogReset("stats", argString)
+	buylogger.LogReset("stats", buylogger.EscapeCSV(argString))
 	
-	for k,v in pairs(player.GetAll()) do
-		if argString == "" or argString == v:Nick() then
-			v:SetFrags(0)
-			v:SetDeaths(0)
-			
-			if argString != "" then
-				targetid = v:SteamID()
-			end
-		end
-	end
+	local target = FindPlayerByNick(argString)
 	
 	if argString == "" then
 		for k,v in pairs(stats) do
 			v.frags = 0
 			v.deaths = 0
 		end
-	elseif targetid then
-		local plystats = stats[targetid]
+	elseif target then
+		local plystats = stats[target:SteamID()]
 		if plystats then
 			plystats.frags = 0
 			plystats.deaths = 0
 		end
 	end
-end)
-
-if !GetConVar("sbuy_statsaver"):GetBool() then return end
-
-hook.Add("PlayerInitialSpawn", "LoadStats", function(ply)
-	print("Initial Spawn")
 	
-	local plystats = stats[ply:SteamID()]
-	if plystats then
-		ply:SetFrags(plystats.frags)
-		ply:SetDeaths(plystats.deaths)
-		
-		ply.DefaultMoneyOverride = plystats.money
-		ply.KillstreakOverride = plystats.killstreak
-		ply.TotalKillMoney = plystats.killmoney
-
-		ply.HasDied = true
-		
-		hook.Call("LoadStatSaver", nil, ply, plystats)
+	for k,v in pairs(target and {target} or player.GetAll()) do
+		v:SetFrags(0)
+		v:SetDeaths(0)
 	end
 	
-	print("End Initial Spawn")
+	hook.Run("ResetPlayerStats", target, "stats")
 end)
 
-hook.Add("PlayerDisconnected", "SaveStats", function(ply)
-	local plystats = { frags=ply:Frags(), deaths=ply:Deaths(), money=ply:GetMoney(), killstreak=ply:GetKillstreak(), killmoney=ply.TotalKillMoney }
+
+if GetConVar("sbuy_statsaver"):GetBool() then 
+	function StatSaverLoad(ply) end
+	function StatSaverSave(ply) end
+else
+	function StatSaverLoad(ply)
+		local plystats = stats[ply:SteamID()]
+		if plystats then
+			ply:SetFrags(plystats.frags)
+			ply:SetDeaths(plystats.deaths)
+			
+			ply:SetMoney(plystats.money)
+			ply:SetKillstreak(plystats.killstreak)
+			ply.TotalKillMoney = plystats.killmoney
+
+			ply.IsInitialSpawn = false
+			ply.HasDied = true
+			
+			hook.Call("LoadStatSaver", nil, ply, plystats)
+		end
+	end
 	
-	hook.Call("SaveStatSaver", nil, ply, plystats)
+	function StatSaverSave(ply)
+		local plystats = { frags=ply:Frags(), deaths=ply:Deaths(), money=ply:GetMoney(), killstreak=ply:GetKillstreak(), killmoney=ply.TotalKillMoney }
 	
-	stats[ply:SteamID()] = plystats
-end)
+		hook.Call("SaveStatSaver", nil, ply, plystats)
+		
+		stats[ply:SteamID()] = plystats
+	end
+end

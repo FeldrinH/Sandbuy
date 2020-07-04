@@ -31,13 +31,8 @@ function PLAYER:SetupDataTables()
 			net.Send(ply)
 		end)
 		
-		self.Player:SetMoney(self.Player.DefaultMoneyOverride or hook.Run("GetStartMoney", self.Player))
-		if !self.Player.DefaultMoneyOverride then
-			buylogger.LogStartingBailout(self.Player, self.Player:GetMoney(), self.Player:GetMoney())
-		end
-		self.Player:SetKillstreak(self.Player.KillstreakOverride or 0)
-		self.Player.DefaultMoneyOverride = nil
-		self.Player.KillstreakOverride = nil
+		self.Player:SetMoney(0)
+		self.Player:SetKillstreak(0)
 	end
 
 	return BaseClass.SetupDataTables(self)
