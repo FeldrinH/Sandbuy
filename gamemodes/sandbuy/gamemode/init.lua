@@ -418,6 +418,8 @@ function GM:PlayerInitialSpawn(ply)
 end
 
 function GM:PlayerDisconnected(ply)
+	StatSaverSave(ply)
+
 	buylogger.LogLeave(ply)
 	
 	BaseClass.PlayerDisconnected(self, ply)
