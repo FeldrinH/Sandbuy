@@ -196,7 +196,7 @@
 	"sent_panzeri_p": 3000,
 	"sent_panzerivausfd_p": 4500,
 	"sent_pershing_p": 4000,
-	"sent_phalanx_p": 2500,
+	"sent_phalanx_p": 2400,
 	"sent_plz-05_p": 3500,
 	"sent_pz35t_p": 3000,
 	"sent_pz38t_p": 3000,
