@@ -106,11 +106,13 @@ concommand.Add("resetstats", function( ply, cmd, args, argString )
 end)
 
 
-if GetConVar("sbuy_statsaver"):GetBool() then 
+if !GetConVar("sbuy_statsaver"):GetBool() then 
 	function StatSaverLoad(ply) end
 	function StatSaverSave(ply) end
 else
 	function StatSaverLoad(ply)
+		if ply:IsBot() then return end
+	
 		local plystats = stats[ply:SteamID()]
 		if plystats then
 			ply:SetFrags(plystats.frags)
@@ -128,6 +130,8 @@ else
 	end
 	
 	function StatSaverSave(ply)
+		if ply:IsBot() then return end
+	
 		local plystats = { frags=ply:Frags(), deaths=ply:Deaths(), money=ply:GetMoney(), killstreak=ply:GetKillstreak(), killmoney=ply.TotalKillMoney }
 	
 		hook.Call("SaveStatSaver", nil, ply, plystats)
