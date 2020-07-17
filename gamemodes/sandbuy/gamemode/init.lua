@@ -457,6 +457,8 @@ function GM:PlayerSpawn(ply)
 			buylogger.LogBailout(ply, bailoutamount, bailoutamount - ply:GetMoney())
 			ply:SetMoney(bailoutamount)
 			ply:PrintMessage(HUD_PRINTCENTER, "You were given a bailout\n    You now have $" .. bailoutamount)
+		else
+			buylogger.LogBailoutNone(ply, ply:GetMoney())
 		end
 	end
 	

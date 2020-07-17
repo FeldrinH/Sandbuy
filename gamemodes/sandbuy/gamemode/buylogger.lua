@@ -97,6 +97,12 @@ function buylogger.LogBailout(ply, newmoney, delta, isstarting)
 	end
 end
 
+function buylogger.LogBailoutNone(ply, newmoney)
+	if buylogger.Active then
+		logfile:Write(GetLogTime() .. ",bailout-none," .. FormatPlayer(ply) .. ",," .. newmoney .. ",0\n")
+	end
+end
+
 function buylogger.LogReset(resettype, resettarget)
 	if buylogger.Active then
 		logfile:Write(GetLogTime() .. ",reset-" .. resettype .. "," .. resettarget .. "\n")
