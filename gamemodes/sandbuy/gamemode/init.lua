@@ -118,7 +118,7 @@ concommand.Add("normalizeprices", function(ply)
 	MsgCaller("Normalized prices", ply)
 end)
 
-concommand.Add("saveactiveprices", function(ply, argStr, args)
+concommand.Add("saveactiveprices", function(ply, cmd, args)
 	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.editprices", nil, nil, { CommandArguments = { args[1] } }) then return end
 	
 	local outprices = args[1]
@@ -130,6 +130,22 @@ concommand.Add("saveactiveprices", function(ply, argStr, args)
 	pricer.SaveLoadedPrices(outprices)
 	
 	MsgCaller("Merged active prices and saved to '" .. outprices .. "'", ply)
+end)
+
+concommand.Add("changeprices", function(ply, cmd, args, argStr)
+	if IsValid(ply) and !CAMI.PlayerHasAccess(ply, "sandbuy.editprices") then return end
+	
+	local newprices = string.Trim(argStr)
+	local cvar_prices = GetConVar("sbuy_prices")
+	if cvar_prices:GetString() != newprices then
+		cvar_prices:SetString(newprices)
+		
+		pricer.StartRepl(ply)
+		pricer.LoadPrices()
+		pricer.EndRepl()
+		
+		pricer.SendPrices(nil, 1)
+	end
 end)
 
 local function DoAutoReload()
