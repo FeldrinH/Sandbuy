@@ -196,7 +196,7 @@
 	"sent_panzeri_p": 3000,
 	"sent_panzerivausfd_p": 4500,
 	"sent_pershing_p": 4000,
-	"sent_phalanx_p": 2400,
+	"sent_phalanx_p": 2300,
 	"sent_plz-05_p": 3500,
 	"sent_pz35t_p": 3000,
 	"sent_pz38t_p": 3000,
@@ -272,7 +272,7 @@
 	"sent_yf-17_p": 4000,
 	"sent_yf12a_p": 4000,
 	"sent_zbd09_p": 3200,
-	"sent_zsu-23-4_p": 2500,
+	"sent_zsu-23-4_p": 2600,
 	"tank_ammo_box": 1000,
 	"tank_atgm_ammo_box": 500,
 	"tank_fuel": 500
